@@ -1,5 +1,6 @@
+var currcell = -1,
+	currdigit = -1;
 
-var currcell = -1; var currdigit = -1;
 function highlightDigit(d) {
 	clearHighlights();
 	if (d == "") d = -1;
@@ -12,14 +13,17 @@ function highlightDigit(d) {
 				$('td#' + i).addClass('hl1');
 	}
 }
+
 function highlightCell(i) {
 	clearHighlights();
 	$('td#' + i).addClass('hl1');
 }
+
 function highlightHouse(h, col) {
 	if (col == null) col = 'hl1';
 	$('td.h' + h).addClass(col);
 }
+
 function highlightNeighbours(i) {
 	clearHighlights();
 	for (var h = 0; h < 6; ++h)
@@ -48,6 +52,7 @@ function highlightNeighbours(i) {
 			}
 	$('td#' + i).addClass('hl5');
 }
+
 function clearHighlights() {
 	currdigit = -1;
 	for (var i = 1; i <= 6; ++i)

@@ -1,15 +1,15 @@
-var nt = "translate3d(0, 0, 100px)";
-var ft = "translate3d(0, 0, -100px) rotateY(180deg)";
-var tt = "translate3d(0, -100px, 0) rotateX(90deg)";
-var bt = "translate3d(0, 100px, 0) rotateX(-90deg) rotateZ(180deg)";
-var lt = "translate3d(100px, 0, 0) rotateY(90deg)";
-var rt = "translate3d(-100px, 0, 0) rotateY(-90deg)";
-var gt = "rotate3d(0.7, 0, 0.7, -54.74deg)";
+var nt = "translate3d(0, 0, 100px)",
+	ft = "translate3d(0, 0, -100px) rotateY(180deg)",
+	tt = "translate3d(0, -100px, 0) rotateX(90deg)",
+	bt = "translate3d(0, 100px, 0) rotateX(-90deg) rotateZ(180deg)",
+	lt = "translate3d(100px, 0, 0) rotateY(90deg)",
+	rt = "translate3d(-100px, 0, 0) rotateY(-90deg)",
+	gt = "rotate3d(0.7, 0, 0.7, -54.74deg)";
 function drawCube() {
-	var counts = new Array();
-	for (var i = 0; i < 16; ++i) counts[i] = 0;
-	for (var i = 0; i < 96; ++i) ++counts[pen[i]];
-	for (var i = 0; i < 96; ++i) {
+	var counts = [], i;
+	for (i = 0; i < 16; ++i) counts[i] = 0;
+	for (i = 0; i < 96; ++i) ++counts[pen[i]];
+	for (i = 0; i < 96; ++i) {
 		if (clues[i] > -1) {
 			$('td#' + i).html(clues[i] + 1);
 			$('td#' + i).addClass("clue");
@@ -36,30 +36,42 @@ function spincube(x) {
 	else if (x < 1) spincube(x + 1);
 	else {
 		var scrt = "rotateY(" + (360 * x) + "deg)";
-		$("div#n").css("-webkit-transform", scrt + " " + gt + " " + nt);
-		$("div#f").css("-webkit-transform", scrt + " " + gt + " " + ft);
-		$("div#t").css("-webkit-transform", scrt + " " + gt + " " + tt);
-		$("div#b").css("-webkit-transform", scrt + " " + gt + " " + bt);
-		$("div#r").css("-webkit-transform", scrt + " " + gt + " " + rt);
-		$("div#l").css("-webkit-transform", scrt + " " + gt + " " + lt);
-		$("div#n").css("-moz-transform", scrt + " " + gt + " " + nt);
-		$("div#f").css("-moz-transform", scrt + " " + gt + " " + ft);
-		$("div#t").css("-moz-transform", scrt + " " + gt + " " + tt);
-		$("div#b").css("-moz-transform", scrt + " " + gt + " " + bt);
-		$("div#r").css("-moz-transform", scrt + " " + gt + " " + rt);
-		$("div#l").css("-moz-transform", scrt + " " + gt + " " + lt);
-		$("div#n").css("-ms-transform", scrt + " " + gt + " " + nt);
-		$("div#f").css("-ms-transform", scrt + " " + gt + " " + ft);
-		$("div#t").css("-ms-transform", scrt + " " + gt + " " + tt);
-		$("div#b").css("-ms-transform", scrt + " " + gt + " " + bt);
-		$("div#r").css("-ms-transform", scrt + " " + gt + " " + rt);
-		$("div#l").css("-ms-transform", scrt + " " + gt + " " + lt);
-		$("div#n").css("transform", scrt + " " + gt + " " + nt);
-		$("div#f").css("transform", scrt + " " + gt + " " + ft);
-		$("div#t").css("transform", scrt + " " + gt + " " + tt);
-		$("div#b").css("transform", scrt + " " + gt + " " + bt);
-		$("div#r").css("transform", scrt + " " + gt + " " + rt);
-		$("div#l").css("transform", scrt + " " + gt + " " + lt);
+		$("div#n").css({
+			"-webkit-transform": scrt + " " + gt + " " + nt,
+			"-moz-transform": scrt + " " + gt + " " + nt,
+			"-ms-transform": scrt + " " + gt + " " + nt,
+			"transform": scrt + " " + gt + " " + nt
+		});
+		$("div#f").css({
+			"-webkit-transform": scrt + " " + gt + " " + ft,
+			"-moz-transform": scrt + " " + gt + " " + ft,
+			"-ms-transform": scrt + " " + gt + " " + ft,
+			"transform": scrt + " " + gt + " " + ft
+		});
+		$("div#t").css({
+			"-webkit-transform": scrt + " " + gt + " " + tt,
+			"-moz-transform": scrt + " " + gt + " " + tt,
+			"-ms-transform": scrt + " " + gt + " " + tt,
+			"transform": scrt + " " + gt + " " + tt
+		});
+		$("div#b").css({
+			"-webkit-transform": scrt + " " + gt + " " + bt,
+			"-moz-transform": scrt + " " + gt + " " + bt,
+			"-ms-transform": scrt + " " + gt + " " + bt,
+			"transform": scrt + " " + gt + " " + bt
+		});
+		$("div#r").css({
+			"-webkit-transform": scrt + " " + gt + " " + rt,
+			"-moz-transform": scrt + " " + gt + " " + rt,
+			"-ms-transform": scrt + " " + gt + " " + rt,
+			"transform": scrt + " " + gt + " " + rt
+		});
+		$("div#l").css({
+			"-webkit-transform": scrt + " " + gt + " " + lt,
+			"-moz-transform": scrt + " " + gt + " " + lt,
+			"-ms-transform": scrt + " " + gt + " " + lt,
+			"transform": scrt + " " + gt + " " + lt
+		});
 		// workaround for backfaces bug in chrome
 		if ((x > 1.209375) && (x < 1.70625)) $("div#n").hide(); else $("div#n").show();
 		if ((x > 1.209375) && (x < 1.70625)) $("div#f").show(); else $("div#f").hide();

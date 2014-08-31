@@ -102,17 +102,17 @@ function penin(cell, value, solve) {
 	}
 	if (solve) sol[cell] = value;
 }
-var houses = new Array(); initHouses();
-function initHouses() {
-	for (var i = 0; i < 6; ++i) {
-		houses[i] = new Array();
-		for (var j = 0; j < 16; ++j)
+var houses = (function initHouses() {
+	var i, j, houses = [];
+	for (i = 0; i < 6; ++i) {
+		houses[i] = [];
+		for (j = 0; j < 16; ++j)
 			houses[i][j] = j + i * 16;
 	}
-	for (var i = 0; i < 4; ++i) {
+	for (i = 0; i < 4; ++i) {
 		houses[i + 6] = new Array();
 		var l = 0;
-		for (var j = 0; j < 6; ++j)
+		for (j = 0; j < 6; ++j)
 			if (j == 1)
 				for (var k = 0; k < 4; ++k)
 					houses[i + 6][l++] = k * 4 + j * 16 + 3 - i;
@@ -120,26 +120,28 @@ function initHouses() {
 				for (var k = 0; k < 4; ++k)
 					houses[i + 6][l++] = k * 4 + j * 16 + i;
 	}
-	for (var i = 0; i < 4; ++i) {
+	for (i = 0; i < 4; ++i) {
 		houses[i + 10] = new Array();
 		var l = 0;
-		for (var j = 0; j < 4; ++j)
+		for (j = 0; j < 4; ++j)
 			for (var k = 0; k < 4; ++k)
 				houses[i + 10][l++] = k + j * 16 + i * 4;
 	}
-	for (var i = 0; i < 4; ++i) {
+	for (i = 0; i < 4; ++i) {
 		houses[i + 14] = new Array();
-		var l = 0;
-		for (var k = 0; k < 4; ++k)
+		var l = 0, k;
+		for (k = 0; k < 4; ++k)
 			houses[i + 14][l++] = k * 4 + 32 + 3 - i;
-		for (var k = 0; k < 4; ++k)
+		for (k = 0; k < 4; ++k)
 			houses[i + 14][l++] = k * 4 + 48 + i;
-		for (var k = 0; k < 4; ++k)
+		for (k = 0; k < 4; ++k)
 			houses[i + 14][l++] = k + 64 + i * 4;
-		for (var k = 0; k < 4; ++k)
+		for (k = 0; k < 4; ++k)
 			houses[i + 14][l++] = k + 80 + 12 - i * 4;
 	}
-}
+	return houses;
+}());
+
 function autopencil() {
 	for (var i = 0; i < 96; ++i) {
 		pencil[i] = new Array();

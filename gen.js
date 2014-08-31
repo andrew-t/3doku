@@ -1,5 +1,6 @@
-var sol = null; var pencil = null; var pen = null; var clues = null;
-var attempts = 0;
+var sol = null, pencil = null, pen = null, clues = null,
+	attempts = 0, guesses = 0;
+
 function newCube() {
 	attempts = 0;
 	clearCube();
@@ -24,12 +25,13 @@ function newCube() {
 		}
 	}
 }
+
 function clearCube() {
 	console.log("attempt " + ++ attempts);
-	sol = new Array();
-	pencil = new Array();
-	pen = new Array();
-	clues = new Array();
+	sol = [];
+	pencil = [];
+	pen = [];
+	clues = [];
 	for (var i = 0; i < 96; ++i) {
 		sol[i] = -1;
 		pencil[i] = new Array();
@@ -38,7 +40,7 @@ function clearCube() {
 		clues[i] = -1;
 	}
 }
-var guesses = 0;
+
 function guessClue(n) {
 	if (n == null) n = 1;
 	for (var m = 0; m < n; ++m) {
