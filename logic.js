@@ -110,7 +110,7 @@ var houses = (function initHouses() {
 			houses[i][j] = j + i * 16;
 	}
 	for (i = 0; i < 4; ++i) {
-		houses[i + 6] = new Array();
+		houses[i + 6] = [];
 		var l = 0;
 		for (j = 0; j < 6; ++j)
 			if (j == 1)
@@ -121,14 +121,14 @@ var houses = (function initHouses() {
 					houses[i + 6][l++] = k * 4 + j * 16 + i;
 	}
 	for (i = 0; i < 4; ++i) {
-		houses[i + 10] = new Array();
+		houses[i + 10] = [];
 		var l = 0;
 		for (j = 0; j < 4; ++j)
 			for (var k = 0; k < 4; ++k)
 				houses[i + 10][l++] = k + j * 16 + i * 4;
 	}
 	for (i = 0; i < 4; ++i) {
-		houses[i + 14] = new Array();
+		houses[i + 14] = [];
 		var l = 0, k;
 		for (k = 0; k < 4; ++k)
 			houses[i + 14][l++] = k * 4 + 32 + 3 - i;
@@ -144,7 +144,7 @@ var houses = (function initHouses() {
 
 function autopencil() {
 	for (var i = 0; i < 96; ++i) {
-		pencil[i] = new Array();
+		pencil[i] = [];
 		for (var j = 0; j < 16; ++j) pencil[i][j] = true;
 	}
 	for (var i = 0; i < 96; ++i)
