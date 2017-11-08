@@ -1,6 +1,7 @@
 // initialise
-$(this).scroll(function() { spincube(); });
-$(this).resize(function() {
+window.addEventListener('scroll', e => spincube());
+window.addEventListener('resize', onResize);
+function onResize() {
 	s1 = ($(this).width() - 200) / 400;
 	s2 = ($(this).height()) / 400;
 	if (s1 > s2) s = s2; else s = s1;
@@ -10,8 +11,9 @@ $(this).resize(function() {
 	$('div#cube').css('-ms-transform', 'scale('+s+','+s+')');
 	$('div#cube').css('-o-transform', 'scale('+s+','+s+')');
 	$('div#cube').css('-moz-transform', 'scale('+s+','+s+')');
-});
-$(this).load(function() {
+}
+window.addEventListener('DOMContentLoaded', function() {
+	onResize();
 	for (var i = 0; i < 16; ++i)
 		$("ul#hlopts").append('<li id="hlo' + i + '">' + (i + 1) + '</li>');
 	$("ul#hlopts>li").click(function() { 
@@ -100,8 +102,9 @@ function drawCube() {
 	currcell = -1;
 }
 function spincube(x) {
-	if (x == null) x = $("body").scrollLeft() / $("body").width();
-	else $("body").scrollLeft(x * $("body").width());
+	const w = document.getElementById('scroller').clientWidth - (document.body.scrollWidth || window.scrollWidth);
+	if (x == null) x = document.scrollingElement.scrollLeft * 3 / w;
+	else document.scrollingElement.scrollLeft = window.scrollX = x * w / 3;
 	if (x > 2) spincube(x - 1);
 	else if (x < 1) spincube(x + 1);
 	else {
