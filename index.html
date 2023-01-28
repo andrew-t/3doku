@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html><head>
 	<title>3Doku</title>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script src="3d.js"></script>
+	<script src="main.js" type="module"></script>
 	<link rel="stylesheet" type="text/css" href="3d.css" />
 </head><body>
 	<h1>3Doku</h1>
 	<div id="scroller"></div>
 	<div id="main">
+		<doku-cube id="cube"></doku-cube>
 		<div id="sidebar">
 			<h2>Highlight</h2><ul id="hlopts"><li id="hlo-1" class="sel">Off</li></ul>
 			<h2>Hint</h2><ul>
@@ -15,44 +15,51 @@
 				<li><a href="javascript:solve(true, true);">Suggest a move</a></li>
 				<li><a href="javascript:autopencil();">Autopencil</a></li>
 			</ul>
+			<button id="fill-in-pencil">Fill in pencil marks</button>
+			<button id="reset">Reset</button>
+			<radio-group
+				id="tool"
+				name="Tool"
+				value="pen"
+				option-pen="Pen"
+				option-pencil="Pencil"
+				option-highlight="Highlight"
+				option-none="Nothing"
+			></radio-group>
+			<radio-group
+				id="pencil-value"
+				name="Pencil Value"
+				value="0"
+				option-0="1"
+				option-1="2"
+				option-2="3"
+				option-3="4"
+				option-4="5"
+				option-5="6"
+				option-6="7"
+				option-7="8"
+				option-8="9"
+				option-9="10"
+				option-10="11"
+				option-11="12"
+				option-12="13"
+				option-13="14"
+				option-14="15"
+				option-15="16"
+			></radio-group>
+			<radio-group
+				id="highlight-colour"
+				name="Highlighter colour"
+				value="red"
+				option-red="Red"
+				option-green="Green"
+				option-blue="Blue"
+				option-yellow="Yellow"
+				option-purple="Purple"
+				option-teal="Teal"
+				option-orange="Orange"
+			></radio-group>
+			<label><input type="checkbox" id="autopencil"> Autopencil</label>
 		</div>
-		<div id="cc"><div id="cube">
-			<div id="n" class="face"><table>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-			</table></div>
-			<div id="f" class="face"><table>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-			</table></div>
-			<div id="l" class="face"><table>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-			</table></div>
-			<div id="r" class="face"><table>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-			</table></div>
-			<div id="t" class="face"><table>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-			</table></div>
-			<div id="b" class="face"><table>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-				<tr><td></td><td></td><td></td><td></td></tr>
-			</table></div>
-		</div></div>
 	</div>
 </body></html>
