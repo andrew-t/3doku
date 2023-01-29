@@ -2,12 +2,9 @@ import { shadowDom, el, classIf } from "./dom.js";
 import './cell.js';
 import style from './cube-style.js';
 
-const TABS = [5,2,4,1,0,3];
-
 export default class Cube extends HTMLElement {
 	constructor() {
 		super();
-		// this.playerCount = parseInt(this.getAttribute('players'), 10) || 1;
 
 		shadowDom(this, `
 			<style>${style}</style>
@@ -25,7 +22,10 @@ export default class Cube extends HTMLElement {
 		const faceEls = [];
 		for (let f = 0; f < 6; ++f) {
 			const table = el(null, `table.face.f${f}`);
-			faceEls[TABS[f]] = table;
+			// Append them in this silly order so the tab order is reasonable.
+			// Ideally I'd rewrite the code so they were natively in this order,
+			// but that would be an absurd waste of my time.
+			faceEls[[5,2,4,1,0,3][f]] = table;
 			const tbody = el(this.faces[f] = table, 'tbody');
 			for (let r = 0; r < 4; ++r) {
 				const tr = el(tbody, 'tr');
@@ -141,11 +141,14 @@ export default class Cube extends HTMLElement {
 			}
 			for (const group of this.groups)
 				for (let i = 0; i < 16; ++i)
-					if (!group.cells.some(c => c.value == i))
+					if (!group.cells.some(c => c.value == i)) {
+						console.warn('Generated invalid puzzle');
 						continue iterate;
+					}
+			for (const cell of this.cells) cell.answer = cell.value;
 			this.resetNonClueCells();
-			console.log('Generated with', iterations, 'iterations, in',
-				(Date.now() - start) / 1000, 'seconds')
+			console.log('Generated valid puzzle with', iterations, 'iterations, in',
+				(Date.now() - start) / 1000, 'seconds');
 			return;
 		}
 	}

@@ -35,13 +35,6 @@ input {
 		0 0 0 0.5vmin #48f inset;
 }
 
-input:focus {
-	outline: none;
-	box-shadow:
-		0 0 0 0.5vmin var(--bg) inset,
-		0 0 0 1.5vmin #48f inset;
-}
-
 input[readonly=true] {
 	color: blue;
 	box-shadow:
@@ -63,6 +56,20 @@ input.highlight-purple { --bg: #ecf !important; }
 input.highlight-orange { --bg: #fdb !important; }
 input.highlight-yellow { --bg: #ffc !important; }
 input.highlight-teal { --bg: #cdf !important; }
+input:invalid {
+	--bg: #ff0 !important; color: #f00;
+	box-shadow:
+		0 0 0 0.5vmin var(--bg) inset,
+		0 0 0 1.5vmin red inset;
+}
+
+input:focus {
+	outline: none;
+	box-shadow:
+		0 0 0 0.5vmin var(--bg) inset,
+		0 0 0 1.5vmin #48f inset
+		!important;
+}
 
 #pencilMarkDiv {
 	display: grid;
