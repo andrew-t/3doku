@@ -45,6 +45,7 @@ export default class Cube extends HTMLElement {
 		});
 
 		this.generate();
+		// console.log(JSON.stringify(this.cells.map((c, i) => c.groups.map(g => this.groups.indexOf(g)) )));
 	}
 
 	spinToCell(cell) {

@@ -23,3 +23,19 @@ function spinCube(x) {
 	else if (x < 1) spinCube(x + 1);
 	else cube.rotation = x;
 }
+
+const importObject = {
+  imports: {
+    imported_func(arg) {
+      console.log(arg);
+    },
+  },
+};
+
+
+WebAssembly.instantiateStreaming(fetch("generation/generate.wasm"), importObject).then(
+  (results) => {
+    console.log(results)
+    window.wasmmm = results
+  }
+);
