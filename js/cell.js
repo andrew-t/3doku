@@ -100,11 +100,11 @@ export default class DokuCell extends HTMLElement {
 		this.input.value = n + 1;
 	}
 
-	makeClue(value) {
-		this.value = value;
+	makeClue() {
 		this.input.setAttribute('readonly', true);
+		this.value = this.answer;
 		for (let i = 0; i < 16; ++i)
-			this.setPencil(i, i == value);
+			this.setPencil(i, i == this.answer);
 	}
 	get isClue() { return this.input.hasAttribute('readonly'); }
 

@@ -43,8 +43,14 @@ export default class Cube extends HTMLElement {
 		this.root.addEventListener('keyup', e => {
 			if (e.key == 'Tab') this.spinToCell(this.shadowRoot.activeElement);
 		});
+	}
 
-		this.generate();
+	async loadPuzzle(url) {
+		const resp = await fetch(url);
+		const json = await resp.text();
+		const { answers, moves, clues } = JSON.parse(json);
+		for (let i = 0; i < 96; ++i) this.cells[i].answer = answers[i];
+		for (const c of clues) this.cells[c].makeClue();
 	}
 
 	spinToCell(cell) {
@@ -107,50 +113,6 @@ export default class Cube extends HTMLElement {
 
 	reset() {
 		for (const cell of this.cells) cell.reset();
-	}
-
-	generate() {
-		let iterations = 0;
-		const start = Date.now();
-		iterate: while (true) {
-			++iterations;
-			// console.log('Generating puzzle');
-			this.reset();
-			attempt: while (true) {
-				const unsolvedCells = this.cells.filter(c => c.value === null);
-				if (unsolvedCells.length == 0) {
-					// console.log('No unsolved cells');
-					break attempt;
-				}
-				const cell = arrRand(unsolvedCells);
-				const possibilities = nWhere(n => cell.pencil[n]);
-				if (possibilities.length == 0) {
-					// console.warn('Unsolvable cell');
-					continue iterate;
-				}
-				cell.makeClue(arrRand(possibilities));
-				// console.log('clue', { cell, value: cell.value });
-				cell.propagate();
-				while (true) {
-					const move = this.findMove();
-					// console.log('deduction', move);
-					if (!move) break;
-					move.cell.value = move.value;
-					move.cell.propagate();
-				}
-			}
-			for (const group of this.groups)
-				for (let i = 0; i < 16; ++i)
-					if (!group.cells.some(c => c.value == i)) {
-						console.warn('Generated invalid puzzle');
-						continue iterate;
-					}
-			for (const cell of this.cells) cell.answer = cell.value;
-			this.resetNonClueCells();
-			console.log('Generated valid puzzle with', iterations, 'iterations, in',
-				(Date.now() - start) / 1000, 'seconds');
-			return;
-		}
 	}
 
 	fillInPencilMarks() {

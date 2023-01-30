@@ -3,6 +3,9 @@ import './radios.js';
 
 const cube = document.getElementById('cube');
 
+cube.loadPuzzle('generation/puzzle.json')
+	.then(console.log, console.error);
+
 document.addEventListener('DOMContentLoaded', e => {
 	window.addEventListener('scroll', e => spinCube());
 	spinCube(0.5);
