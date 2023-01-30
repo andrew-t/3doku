@@ -1,3 +1,4 @@
+import { classIf } from "./dom.js";
 import './cube.js';
 import './radios.js';
 
@@ -12,9 +13,17 @@ document.addEventListener('DOMContentLoaded', e => {
 	document.getElementById('fill-in-pencil')
 		.addEventListener('click', e => cube.fillInPencilMarks());
 	document.getElementById('reset')
-		.addEventListener('click', e => cube.resetNonClueCells());
+		.addEventListener('click', e => {
+			if (confirm("Remove all your working out so far?")) cube.reset();
+		});
 	document.getElementById('tool')
-		.addEventListener('change', e => cube.setTool(e.value));
+		.addEventListener('change', e => {
+			classIf(document.getElementById('pencil-value'), 'hidden', e.value != 'pencil');
+			classIf(document.getElementById('highlight-colour'), 'hidden', e.value != 'highlight');
+			classIf(document.getElementById('buttons'), 'hidden', e.value == 'pencil' || e.value == 'highlight');
+			cube.setTool(e.value);
+		});
+	fixSize();
 })
 
 function spinCube(x) {
@@ -25,4 +34,26 @@ function spinCube(x) {
 	if (x > 2) spinCube(x - 1);
 	else if (x < 1) spinCube(x + 1);
 	else cube.rotation = x;
+}
+
+window.addEventListener('resize', debounce(fixSize));
+
+function debounce(fn, t = 300) {
+	let h;
+	return () => {
+		if (h) clearTimeout(h);
+		h = setTimeout(fn, t);
+	};
+}
+
+function fixSize() {
+	// ok so what we have to do is make sure the cube render fits in the box
+	// it's rendered at 100vmin regardless of the box size so we just have to fit that in
+	const renderSize = Math.min(window.innerWidth, window.innerHeight);
+	const cubeEl = document.getElementById('cube');
+	const idealSize = Math.min(cube.clientWidth, cube.clientHeight);
+	cube.style.transform = `
+		scale(${ idealSize / renderSize })
+		translateY(${(cube.clientHeight - idealSize) / 2}px)
+	`;
 }

@@ -22,7 +22,7 @@ input, #pencilMarkDiv {
 input {
 	--bg: white;
 	font-size: 16vmin;
-	font-family: sans-serif;
+	font-family: Montserrat, sans-serif;
 	text-align: center;
 	background: var(--bg);
 	border-radius: 3vmin;
@@ -50,12 +50,12 @@ input.band-2-group { --bg: #cfd; }
 input.band-0-group.band-2-group { --bg: #ffc; }
 input.band-1-group.band-2-group { --bg: #dfe; }
 input.highlight-red { --bg: #fcc !important; }
-input.highlight-blue { --bg: #ccf !important; }
+input.highlight-blue { --bg: #bcf !important; }
 input.highlight-green { --bg: #cfc !important; }
 input.highlight-purple { --bg: #ecf !important; }
 input.highlight-orange { --bg: #fdb !important; }
 input.highlight-yellow { --bg: #ffc !important; }
-input.highlight-teal { --bg: #cdf !important; }
+input.highlight-teal { --bg: #bef !important; }
 input:invalid {
 	--bg: #ff0 !important; color: #f00;
 	box-shadow:
@@ -78,7 +78,7 @@ input:focus {
 	font-size: 4vmin;
 	pointer-events: none;
 	transition: opacity 300ms;
-	font-family: sans-serif;
+	font-family: Montserrat, sans-serif;
 	text-align: center;
 	opacity: 0.5;
 }

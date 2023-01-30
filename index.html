@@ -4,19 +4,11 @@
 	<script src="js/main.js" type="module"></script>
 	<link rel="stylesheet" type="text/css" href="3d.css" />
 </head><body>
-	<h1>3Doku</h1>
 	<div id="scroller"></div>
 	<div id="main">
+		<h1>3Doku</h1>
 		<doku-cube id="cube"></doku-cube>
 		<div id="sidebar">
-			<h2>Highlight</h2><ul id="hlopts"><li id="hlo-1" class="sel">Off</li></ul>
-			<h2>Hint</h2><ul>
-				<li><a href="javascript:check(true);">Highlight errors</a></li>
-				<li><a href="javascript:solve(true, true);">Suggest a move</a></li>
-				<li><a href="javascript:autopencil();">Autopencil</a></li>
-			</ul>
-			<button id="fill-in-pencil">Fill in pencil marks</button>
-			<button id="reset">Reset</button>
 			<radio-group
 				id="tool"
 				name="Tool"
@@ -27,6 +19,7 @@
 				option-none="Nothing"
 			></radio-group>
 			<radio-group
+				class="hidden"
 				id="pencil-value"
 				name="Pencil Value"
 				value="0"
@@ -48,6 +41,7 @@
 				option-15="16"
 			></radio-group>
 			<radio-group
+				class="hidden"
 				id="highlight-colour"
 				name="Highlighter colour"
 				value="red"
@@ -58,9 +52,16 @@
 				option-purple="Purple"
 				option-teal="Teal"
 				option-orange="Orange"
+				option-none="Clear"
 			></radio-group>
-			<label><input type="checkbox" id="autopencil"> Autopencil</label>
-			<label><input type="checkbox" id="show-errors"> Highlight errors</label>
+			<div id="buttons">
+				<button id="fill-in-pencil">Fill in pencil marks</button>
+				<button id="reset">Reset</button>
+				<label><input type="checkbox" id="autopencil"> Autopencil</label>
+				<label><input type="checkbox" id="show-errors"> Highlight errors</label>
+				<!--button id="hint">Suggest a move</button-->
+				<!--button id="show-help">Help</button-->
+			</div>
 		</div>
 	</div>
 </body></html>

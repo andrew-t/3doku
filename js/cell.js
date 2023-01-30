@@ -22,9 +22,11 @@ export default class DokuCell extends HTMLElement {
 			this.pencilMarks[x] = el(this.pencilMarkDiv, 'div', x + 1);
 
 		this.input.addEventListener('focus', e => {
-			if (this.tool == 'pen') this.pencilMarkDiv.classList.add('hidden');
-			for (const group of this.groups)
-				group.highlight();
+			if (this.tool == 'pen') {
+				this.pencilMarkDiv.classList.add('hidden');
+				for (const group of this.groups)
+					group.highlight();
+			}
 		});
 
 		this.input.addEventListener('blur', e => {
@@ -46,7 +48,12 @@ export default class DokuCell extends HTMLElement {
 					this.setPencil(p, !this.pencil[p]);
 					break;
 				case 'highlight':
-					const className = `highlight-${document.getElementById('highlight-colour').value}`;
+					const colour = document.getElementById('highlight-colour').value;
+					if (colour == 'none') {
+						this.clearHighlights();
+						return;
+					}
+					const className = `highlight-${colour}`;
 					if (this.input.classList.contains(className))
 						this.input.classList.remove(className);
 					else {
@@ -76,9 +83,11 @@ export default class DokuCell extends HTMLElement {
 	}
 
 	reset() {
-		this.value = null;
-		this.resetPencil();
-		this.input.removeAttribute('readonly');
+		if (!this.isClue) {
+			this.value = null;
+			this.resetPencil(false);
+		}
+		this.clearHighlights();
 	}
 
 	resetPencil(value = true) {
@@ -124,7 +133,7 @@ export default class DokuCell extends HTMLElement {
 	}
 
 	clearHighlights() {
-		this.inputs.classList.clear();
+		for (const c of [...this.input.classList]) this.input.classList.remove(c);
 	}
 
 	addGroup(group) {

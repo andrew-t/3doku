@@ -3,6 +3,8 @@ import json
 
 all_groups = []
 
+# TODO: generate a grid of answers first and then use it to generate clues, the theory being that always guessing valid clues should allow hard puzzles to be generated without too many reboots. my guess is we'll get mostly easy ones but i can easily pull out the hard ones
+
 # cache the numbers of bits in bitfields
 how_many = []
 for i in range(1 << 16):
@@ -45,9 +47,10 @@ class Cell:
 		self.is_clue = False
 
 	def make_clue(self):
-		self.set_answer(random_one_of([
-			n for n in range(16) if self.pencil & (1 << n)
-		]))
+		if self.answer == None:
+			self.set_answer(random_one_of([
+				n for n in range(16) if self.pencil & (1 << n)
+			]))
 		self.is_clue = True
 
 	def set_answer(self, n):

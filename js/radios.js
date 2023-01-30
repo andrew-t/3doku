@@ -1,13 +1,18 @@
 import { shadowDom, el, classIf } from "./dom.js";
-import style from "./cell-style.js";
+import style from "./radio-style.js";
 
 export default class Radios extends HTMLElement {
 	constructor() {
 		super();
-		shadowDom(this, `<fieldset id="fieldset">
-			<legend>${this.getAttribute("name")}</legend>
-		</fieldset>`);
+		shadowDom(this, `
+			<style>${style}</style>
+			<fieldset id="fieldset" class="${this.id}">
+				<legend>${this.getAttribute("name")}</legend>
+			</fieldset>
+		`);
 		this.radios = {};
+		// here "name" is the name of the attribute, which is the value of the option
+		// and "value" is the value of the attribute, which is the name of the option
 		for (let { name, value } of this.attributes) {
 			if (!name.startsWith('option-')) continue;
 			const label = el(this.fieldset, 'label');
@@ -19,7 +24,8 @@ export default class Radios extends HTMLElement {
 				this._val = name;
 				radio.setAttribute('checked', true);
 			}
-			label.appendChild(document.createTextNode(value));
+			el(label, 'span', value);
+			label.classList.add(`${this.id}-${name}`);
 			radio.addEventListener('change', e => {
 				if (radio.checked) this.value = name;
 			});

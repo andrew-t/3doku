@@ -51,6 +51,7 @@ export default class Cube extends HTMLElement {
 		const { answers, moves, clues } = JSON.parse(json);
 		for (let i = 0; i < 96; ++i) this.cells[i].answer = answers[i];
 		for (const c of clues) this.cells[c].makeClue();
+		this.reset();
 	}
 
 	spinToCell(cell) {
@@ -111,20 +112,13 @@ export default class Cube extends HTMLElement {
 		return null;
 	}
 
-	reset() {
-		for (const cell of this.cells) cell.reset();
-	}
-
 	fillInPencilMarks() {
 		for (const cell of this.cells) cell.resetPencil(true);
 		for (const cell of this.cells) cell.propagate();
 	}
 
-	resetNonClueCells() {
-		for (const cell of this.cells) {
-			if (!cell.isClue) cell.reset();
-			for (const cell of this.cells) cell.resetPencil(false);
-		}
+	reset() {
+		for (const cell of this.cells) cell.reset();
 	}
 
 	setTool(tool) {
