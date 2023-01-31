@@ -40,6 +40,7 @@ input[readonly=true] {
 	box-shadow:
 		0 0 0 0.5vmin var(--bg) inset,
 		0 0 0 1.5vmin black inset;
+	user-select: none;
 }
 
 input.face-group { --bg: #cdf; }

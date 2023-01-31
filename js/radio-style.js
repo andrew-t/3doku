@@ -10,12 +10,11 @@ legend {
 }
 
 label {
-	font-size: 0;
 	display: inline-block;
-	width: 12vmin;
-	height: 12vmin;
+	width: 12em;
+	height: 12em;
 	position: relative;
-	margin: 1vmin;
+	margin: 1em;
 	padding: 0;
 }
 
@@ -29,7 +28,7 @@ label input {
 	background-repeat: no-repeat;
 	margin: 0;
 	padding: 0;
-	border-radius: 3vmin;
+	border-radius: 1em;
 }
 
 label input:checked {
@@ -48,26 +47,29 @@ label.tool-pencil input:checked { background-image: url('assets/white/pencil-sol
 label.tool-highlight input:checked { background-image: url('assets/white/highlighter-solid.svg'); }
 label.tool-none input:checked { background-image: url('assets/white/hand-solid.svg'); }
 
+fieldset span {
+	font-size: 0;
+}
 fieldset.pencil-value span {
 	z-index: 1;
-	font-size: 6vmin;
+	font-size: 6em;
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 12vmin;
-	height: 12vmin;
-	line-height: 12vmin;
+	width: 2em;
+	height: 2em;
+	line-height: 2em;
 	text-align: center;
 }
 
 fieldset.highlight-colour label {
-	width: 26vmin;
+	width: 26em;
 }
 fieldset.highlight-colour input {
 	transition: box-shadow 500ms;
 }
 fieldset.highlight-colour input:checked {
-	box-shadow: 0 0 0 2vmin #000 inset;
+	box-shadow: 0 0 0 1em #000 inset;
 }
 label.highlight-colour-red input { background: #f00; }
 label.highlight-colour-yellow input { background: #ff0; }
@@ -76,6 +78,6 @@ label.highlight-colour-blue input { background: #04f; }
 label.highlight-colour-teal input { background: #0cf; }
 label.highlight-colour-orange input { background: #fc0; }
 label.highlight-colour-purple input { background: #c0f; }
-label.highlight-colour-none input { background: #fff; box-shadow: 0 0 0 .2vmin #000 inset }
+label.highlight-colour-none input { background: #fff; box-shadow: 0 0 0 .2em #000 inset }
 
 `;

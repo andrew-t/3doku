@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', e => {
 			classIf(document.getElementById('buttons'), 'hidden', e.value == 'pencil' || e.value == 'highlight');
 			cube.setTool(e.value);
 		});
+	// TODO: when the pencil tool is selected (or when you change the pencil value) highlight all cells that COULD be that number
 	fixSize();
 })
 

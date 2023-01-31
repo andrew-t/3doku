@@ -29,29 +29,30 @@ h1 {
 
 #cube {
 	display: block;
-	flex: 100vmin 0 10;
+	flex: 100vmin 1 1;
 	width: 100%;
 }
 
 #sidebar {
 	width: 100%;
 	box-sizing: border-box;
-	padding: 15px; margin: 0;
+	padding: 2vh; margin: 0;
 	background: #fff;
 	overflow: scroll;
-	flex: 10rem 1 0;
+	font-size: min(1vh, 1.2vw);
+	flex: 64em 0 0;
 	font-family: Montserrat, sans-serif;
 	display: flex;
 }
 
 #tool {
-	flex: 14vmin 0 0;
+	flex: 14em 0 0;
 }
 #pencil-value,
 #highlight-colour,
 #buttons {
-	flex: 56vmin 0 0;
-	margin-left: 4vmin;
+	flex: 56em 0 0;
+	margin-left: 4em;
 }
 
 #scroller { 
