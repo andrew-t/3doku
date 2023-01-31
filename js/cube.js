@@ -43,6 +43,8 @@ export default class Cube extends HTMLElement {
 		this.root.addEventListener('keyup', e => {
 			if (e.key == 'Tab') this.spinToCell(this.shadowRoot.activeElement);
 		});
+
+		this.undoStack = [];
 	}
 
 	async loadPuzzle(url) {
@@ -52,6 +54,7 @@ export default class Cube extends HTMLElement {
 		for (let i = 0; i < 96; ++i) this.cells[i].answer = answers[i];
 		for (const c of clues) this.cells[c].makeClue();
 		this.reset();
+		this.pushUndo();
 	}
 
 	spinToCell(cell) {
@@ -89,6 +92,10 @@ export default class Cube extends HTMLElement {
 			if (p >= 1) return self.rotation = x;
 			// todo: use a nicer easing function
 			self.rotation = startX * q + p * x;
+			// quick hack to update the scrollbar which i cba doing with like an event emitter or something
+			const w = document.getElementById('scroller').clientWidth -
+				(document.body.scrollWidth || window.scrollWidth);
+			window.scrollTo(x * w / 3, 0);
 			requestAnimationFrame(f);
 		}
 	}
@@ -123,6 +130,32 @@ export default class Cube extends HTMLElement {
 
 	setTool(tool) {
 		for (const cell of this.cells) cell.setTool(tool);
+	}
+
+	pushUndo(cell) {
+		this.undoStack.push({
+			cell,
+			state: this.cells.map(cell => ({
+				pen: cell.value,
+				pencil: [...cell.pencil],
+				highlight: [...cell.input.classList].filter(c => c.startsWith('highlight-')).map(c => c.substring(10))[0]
+			}))
+		});
+	}
+
+	popUndo() {
+		if (this.undoStack.length == 1) return;
+		this.undoStack.pop();
+		const { cell, state } = this.undoStack[this.undoStack.length - 1];
+		for (let i = 0; i < this.cells.length; ++i) {
+			const cell = this.cells[i];
+			const { pen, pencil, highlight } = state[i];
+			cell.value = pen;
+			for (let i = 0; i < 16; ++i) cell.setPencil(i, pencil[i]);
+			if (!highlight) cell.clearHighlights();
+			else cell.highlight(`highlight-${highlight}`);
+		}
+		if (cell) this.spinToCell(cell);
 	}
 }
 

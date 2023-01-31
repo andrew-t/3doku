@@ -32,11 +32,14 @@ export default class DokuCell extends HTMLElement {
 		this.input.addEventListener('blur', e => {
 			for (const group of this.groups)
 				group.unhighlight();
-			if (!/^([1-9]|1[0-6])?$/.test(this.input.value)) {
-				this.input.value = this._value == null ? '' : (this._value + 1);
-				return;
+			if (this.tool == 'pen') {
+				if (!/^([1-9]|1[0-6])?$/.test(this.input.value)) {
+					this.input.value = this._value == null ? '' : (this._value + 1);
+					return;
+				}
+				this.value = this.input.value ? this.input.value - 1 : null;
+				this.cube.pushUndo(this);
 			}
-			this.value = this.input.value ? this.input.value - 1 : null;
 			classIf(this.pencilMarkDiv, 'hidden', this.value != null);
 			if (document.getElementById('autopencil').checked) this.propagate();
 		});
@@ -46,11 +49,13 @@ export default class DokuCell extends HTMLElement {
 				case 'pencil':
 					const p = document.getElementById('pencil-value').value;
 					this.setPencil(p, !this.pencil[p]);
+					this.cube.pushUndo(this);
 					break;
 				case 'highlight':
 					const colour = document.getElementById('highlight-colour').value;
 					if (colour == 'none') {
 						this.clearHighlights();
+						this.cube.pushUndo(this);
 						return;
 					}
 					const className = `highlight-${colour}`;
@@ -62,6 +67,7 @@ export default class DokuCell extends HTMLElement {
 								this.input.classList.remove(className);
 						this.input.classList.add(className);
 					}
+					this.cube.pushUndo(this);
 					break;
 			}
 		});

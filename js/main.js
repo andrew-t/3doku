@@ -1,8 +1,13 @@
 import { classIf } from "./dom.js";
+import { openModal, closeModal } from "./modal.js";
 import './cube.js';
 import './radios.js';
 
 const cube = document.getElementById('cube');
+
+function button(id, cb) {
+	document.getElementById(id).addEventListener('click', cb);
+}
 
 cube.loadPuzzle('generation/puzzle.json')
 	.then(console.log, console.error);
@@ -10,12 +15,21 @@ cube.loadPuzzle('generation/puzzle.json')
 document.addEventListener('DOMContentLoaded', e => {
 	window.addEventListener('scroll', e => spinCube());
 	spinCube(0.5);
-	document.getElementById('fill-in-pencil')
-		.addEventListener('click', e => cube.fillInPencilMarks());
-	document.getElementById('reset')
-		.addEventListener('click', e => {
-			if (confirm("Remove all your working out so far?")) cube.reset();
-		});
+	button('fill-in-pencil',e => {
+		let prompt = "Fill in all possibilities in pencil?";
+		if (cube.cells.some(c => c.value === null && c.pencil.some(p => p)))
+			prompt += " This will remove your existing pencil marks.";
+		if (confirm(prompt)) {
+			cube.fillInPencilMarks();
+			cube.pushUndo();
+		}
+	});
+	button('reset', e => {
+		if (confirm("Remove all your working out so far?")) {
+			cube.reset();
+			cube.pushUndo();
+		}
+	});
 	document.getElementById('tool')
 		.addEventListener('change', e => {
 			classIf(document.getElementById('pencil-value'), 'hidden', e.value != 'pencil');
@@ -23,9 +37,14 @@ document.addEventListener('DOMContentLoaded', e => {
 			classIf(document.getElementById('buttons'), 'hidden', e.value == 'pencil' || e.value == 'highlight');
 			cube.setTool(e.value);
 		});
+	button('undo', e => cube.popUndo());
+	button('assistance', e => openModal('assistance-modal'));
+	button('help', e => openModal('help-modal'));
+	button('close-help', e => closeModal());
+	button('close-assistance', e => closeModal());
 	// TODO: when the pencil tool is selected (or when you change the pencil value) highlight all cells that COULD be that number
 	fixSize();
-})
+});
 
 function spinCube(x) {
 	const w = document.getElementById('scroller').clientWidth -
