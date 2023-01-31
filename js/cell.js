@@ -37,8 +37,11 @@ export default class DokuCell extends HTMLElement {
 					this.input.value = this._value == null ? '' : (this._value + 1);
 					return;
 				}
-				this.value = this.input.value ? this.input.value - 1 : null;
-				this.cube.pushUndo(this);
+				const newValue = this.input.value ? this.input.value - 1 : null;
+				if (newValue !== this.value) {
+					this.value = newValue;
+					this.cube.pushUndo(this);
+				}
 			}
 			classIf(this.pencilMarkDiv, 'hidden', this.value != null);
 			if (document.getElementById('autopencil').checked) this.propagate();

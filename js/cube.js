@@ -62,11 +62,11 @@ export default class Cube extends HTMLElement {
 		if (!group) return;
 		const i = this.groups.indexOf(group) - 12;
 		if (i < 0 || i > 6) return;
-		this.spinToFace(i);
+		return this.spinToFace(i);
 	}
 
 	spinToFace(i) {
-		this.spinTo([.03, .41, .88, .40, .20, .68][i]);
+		return this.spinTo([0, 3, 5, 2, 1, 4][i] / 6 + 0.05);
 	}
 
 	get rotation() {
@@ -81,22 +81,25 @@ export default class Cube extends HTMLElement {
 		let start, startX = this.rotation, self = this;
 		while (x - startX > 0.5) x -= 1;
 		while (x - startX < -0.5) x += 1;
-		if (Math.abs(x - startX) < 0.1) return;
+		if (Math.abs(x - startX) < 0.1) return false;
+		this.targetSpin = x;
 		requestAnimationFrame(x => {
 			start = x;
-			f(start);
+			nextFrame(start);
 		});
-		function f(now) {
+		return true;
+		function nextFrame(now) {
+			if (self.targetSpin != x) return;
 			const t = now - start;
-			const p = t / 300, q = 1 - p;
-			if (p >= 1) return self.rotation = x;
-			// todo: use a nicer easing function
+			const f = t / 300;
+			// this long string of gibberish is smoothstep:
+			const p = f<0 ? 0 : f>1 ? 1 : (3*f**2 - 2*f**3), q = 1-p;
 			self.rotation = startX * q + p * x;
 			// quick hack to update the scrollbar which i cba doing with like an event emitter or something
 			const w = document.getElementById('scroller').clientWidth -
 				(document.body.scrollWidth || window.scrollWidth);
 			window.scrollTo(x * w / 3, 0);
-			requestAnimationFrame(f);
+			if (f < 1) requestAnimationFrame(nextFrame);
 		}
 	}
 
@@ -145,17 +148,19 @@ export default class Cube extends HTMLElement {
 
 	popUndo() {
 		if (this.undoStack.length == 1) return;
-		this.undoStack.pop();
-		const { cell, state } = this.undoStack[this.undoStack.length - 1];
-		for (let i = 0; i < this.cells.length; ++i) {
-			const cell = this.cells[i];
-			const { pen, pencil, highlight } = state[i];
-			cell.value = pen;
-			for (let i = 0; i < 16; ++i) cell.setPencil(i, pencil[i]);
-			if (!highlight) cell.clearHighlights();
-			else cell.highlight(`highlight-${highlight}`);
-		}
-		if (cell) this.spinToCell(cell);
+		const { cell } = this.undoStack.pop();
+		const { state } = this.undoStack[this.undoStack.length - 1];
+		const spinning = cell && this.spinToCell(cell);
+		setTimeout(() => {
+			for (let i = 0; i < this.cells.length; ++i) {
+				const cell = this.cells[i];
+				const { pen, pencil, highlight } = state[i];
+				cell.value = pen;
+				for (let i = 0; i < 16; ++i) cell.setPencil(i, pencil[i]);
+				if (!highlight) cell.clearHighlights();
+				else cell.highlight(`highlight-${highlight}`);
+			}
+		}, spinning ? 300 : 0);
 	}
 }
 

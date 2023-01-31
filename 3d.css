@@ -142,6 +142,9 @@ p {
 	font-family: Montserrat, sans-serif;
 	font-size: 0.6em;
 }
+p.smol {
+	font-size: 0.4em;
+}
 
 dialog h1 {
 	padding: 0 0 2vh 0;
@@ -149,4 +152,8 @@ dialog h1 {
 
 label span {
 	margin-top: 0.1em;
+}
+
+img {
+	width: 100%;
 }
