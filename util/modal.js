@@ -1,7 +1,11 @@
+import $ from "./dom.js";
+import { classIf } from "../common/dom.js";
+
 const stack = [ ...document.querySelectorAll('dialog[open]') ].map(el => el.id);
 
 export function openModal(id) {
 	hideCurrent();
+	$.dialogOverlay.classList.remove('hidden');
 	for (let i = stack.length - 2; i >= 0; --i)
 		if (stack[i] == id) {
 			hideCurrent();
@@ -28,22 +32,22 @@ export function closeModal() {
 	hideCurrent();
 	stack.pop();
 	showCurrent();
+	classIf($.dialogOverlay, 'hidden', stack.length < 1);
 }
 
 export function clearModals() {
 	hideCurrent();
 	stack.length = 0;
+	$.dialogOverlay.classList.add('hidden');
 }
 
 function hideCurrent() {
 	currentModal()?.removeAttribute?.('open');
-	if (stack.length < 2) document.getElementById('scroller').classList.remove('hidden');
 }
 
 function showCurrent() {
 	currentModal()?.setAttribute('open', true);
 	scrollToTop(currentModal());
-	if (stack.length > 0) document.getElementById('scroller').classList.add('hidden');
 }
 
 function scrollToTop(el) {
@@ -51,4 +55,22 @@ function scrollToTop(el) {
 	el.scrollTop = 0;
 	el.scrollLeft = 0;
 	for (const c of el.children) scrollToTop(c);
+}
+
+export function confirm(message, okText = 'OK', cancelText = 'Cancel') {
+	return new Promise((resolve) => {
+		$.confirmBlurb.innerHTML = message;
+		$.confirmOk.innerHTML = okText;
+		$.confirmCancel.innerHTML = cancelText;
+		function onOk() { resolve(true); clearCallbacks(); }
+		function onCancel() { resolve(false); clearCallbacks(); }
+		function clearCallbacks() {
+			closeModal();
+			$.confirmOk.removeEventListener('click', onOk);
+			$.confirmCancel.removeEventListener('click', onCancel);
+		}
+		$.confirmOk.addEventListener('click', onOk);
+		$.confirmCancel.addEventListener('click', onCancel);
+		openModal('confirm');
+	});
 }

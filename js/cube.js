@@ -1,6 +1,7 @@
-import { shadowDom, el, classIf } from "./dom.js";
+import { shadowDom, el, classIf } from "../common/dom.js";
 import './cell.js';
 import style from './cube-style.js';
+import { reducedMotion } from "../common/dark.js";
 
 export default class Cube extends HTMLElement {
 	constructor() {
@@ -75,6 +76,10 @@ export default class Cube extends HTMLElement {
 	set rotation(x) {
 		this._rot = x;
 		this.root.style.setProperty('--base-rotation', `${-x * 360}deg`);
+		// quick hack to update the scrollbar which i cba doing with like an event emitter or something
+		const w = document.getElementById('scroller').clientWidth -
+			(document.body.scrollWidth || window.scrollWidth);
+		window.scrollTo(x * w / 3, 0);
 	}
 
 	spinTo(x) {
@@ -83,6 +88,10 @@ export default class Cube extends HTMLElement {
 		while (x - startX < -0.5) x += 1;
 		if (Math.abs(x - startX) < 0.1) return false;
 		this.targetSpin = x;
+		if (reducedMotion.active) {
+			this.rotation = x;
+			return true;
+		}
 		requestAnimationFrame(x => {
 			start = x;
 			nextFrame(start);
@@ -95,10 +104,6 @@ export default class Cube extends HTMLElement {
 			// this long string of gibberish is smoothstep:
 			const p = f<0 ? 0 : f>1 ? 1 : (3*f**2 - 2*f**3), q = 1-p;
 			self.rotation = startX * q + p * x;
-			// quick hack to update the scrollbar which i cba doing with like an event emitter or something
-			const w = document.getElementById('scroller').clientWidth -
-				(document.body.scrollWidth || window.scrollWidth);
-			window.scrollTo(x * w / 3, 0);
 			if (f < 1) requestAnimationFrame(nextFrame);
 		}
 	}

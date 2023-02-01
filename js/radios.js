@@ -1,4 +1,4 @@
-import { shadowDom, el, classIf } from "./dom.js";
+import { shadowDom, el, classIf } from "../common/dom.js";
 import style from "./radio-style.js";
 
 export default class Radios extends HTMLElement {

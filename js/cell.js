@@ -1,4 +1,4 @@
-import { shadowDom, el, classIf } from "./dom.js";
+import { shadowDom, el, classIf } from "../common/dom.js";
 import style from "./cell-style.js";
 
 export default class DokuCell extends HTMLElement {
