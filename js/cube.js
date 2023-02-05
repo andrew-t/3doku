@@ -2,6 +2,7 @@ import { shadowDom, el, classIf } from "../common/dom.js";
 import './cell.js';
 import style from './cube-style.js';
 import { reducedMotion } from "../common/dark.js";
+import $ from "../util/dom.js";
 
 export default class Cube extends HTMLElement {
 	constructor() {
@@ -48,10 +49,7 @@ export default class Cube extends HTMLElement {
 		this.undoStack = [];
 	}
 
-	async loadPuzzle(url) {
-		const resp = await fetch(url);
-		const json = await resp.text();
-		const { answers, moves, clues } = JSON.parse(json);
+	usePuzzle({ answers, moves, clues }) {
 		for (let i = 0; i < 96; ++i) this.cells[i].answer = answers[i];
 		for (const c of clues) this.cells[c].makeClue();
 		this.reset();
@@ -77,8 +75,7 @@ export default class Cube extends HTMLElement {
 		this._rot = x;
 		this.root.style.setProperty('--base-rotation', `${-x * 360}deg`);
 		// quick hack to update the scrollbar which i cba doing with like an event emitter or something
-		const w = document.getElementById('scroller').clientWidth -
-			(document.body.scrollWidth || window.scrollWidth);
+		const w = $.scroller.clientWidth - (document.body.scrollWidth || window.scrollWidth);
 		window.scrollTo(x * w / 3, 0);
 	}
 
@@ -141,13 +138,17 @@ export default class Cube extends HTMLElement {
 	}
 
 	pushUndo(cell) {
-		this.undoStack.push({
-			cell,
-			state: this.cells.map(cell => ({
-				pen: cell.value,
-				pencil: [...cell.pencil],
-				highlight: [...cell.input.classList].filter(c => c.startsWith('highlight-')).map(c => c.substring(10))[0]
-			}))
+		const state = this.cells.map(cell => ({
+			pen: cell.value,
+			pencil: [...cell.pencil],
+			highlight: [...cell.input.classList].filter(c => c.startsWith('highlight-')).map(c => c.substring(10))[0]
+		}));
+		this.undoStack.push({ cell, state });
+		this.onUpdate?.({
+			undoStack: this.undoStack,
+			state,
+			full: this.cells.every(cell => this.value !== null),
+			solved: this.cells.every(cell => this.value == this.answer)
 		});
 	}
 

@@ -12,7 +12,9 @@ export default `
 }
 
 #root {
-	transform: scale(0.5);
+	transform:
+		scale(0.5)
+		translateY(calc(50% - 50vmin));
 	height: 100%;
 	perspective: 500vmin;
 	transform-style: preserve-3d;

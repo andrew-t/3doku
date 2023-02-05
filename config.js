@@ -1,6 +1,6 @@
 import { SYSTEM } from "./util/dark.js";
 
-export const launchDate = '2023-01-30';
+export const launchDate = new Date().toISOString().substring(0, 10); //'2023-01-30';
 export const namespace = '3doku';
 
 export const defaults = {
@@ -10,10 +10,13 @@ export const defaults = {
 	results: {},
 	savedState: { puzzleId: -1 },
 	dark: SYSTEM,
-	reducedMotion: SYSTEM
+	reducedMotion: SYSTEM,
+	undoStack: [],
+	autopencil: false,
+	showErrors: false
 };
 
-export const noExport = [];
+export const noExport = ['undoStack'];
 
 export const exportTransforms = {
 	results: object => {

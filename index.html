@@ -2,7 +2,6 @@
 <html><head>
 	<title>3Doku</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-	<script src="js/main.js" type="module"></script>
 	<link rel="stylesheet" type="text/css" href="3d.css" />
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2BJ5624NT"></script>
@@ -16,7 +15,7 @@
 </head><body>
 	<div id="scroller"></div>
 	<div id="main">
-		<h1>3Doku</h1>
+		<h1>3Doku <span id="puzzle-id"></span></h1>
 		<doku-cube id="cube"></doku-cube>
 		<div id="sidebar">
 			<radio-group
@@ -96,12 +95,20 @@
 			<p>You should also check out my word-based puzzle, <a href="https://www.andrewt.net/puzzles/cell-tower">Cell Tower</a>!</p>
 			<p class="smol">3Doku © 2023 <a href="https://twitter.com/Andrew_Taylor">@Andrew_Taylor</a>. Font is <a href="https://github.com/JulietaUla/Montserrat">Montserrat</a>.</p>
 		</div>
-		<button id="close-help" class="primary">Start</button>
+		<button id="close-instructions" class="primary">Loading...</button>
+		<a href="?" id="jump-to-today" class="secondary button">Today’s puzzle</a>
 	</dialog>
 	<dialog id="options-modal">
 		<div>
 			<h1>Options</h1>
 			<button id="help">How to play</button>
+			<label class="stacked">
+				Select a puzzle
+				<select id="game"><option></option></select>
+			</label>
+			<p>Current streak: <span id="current-streak"></span></p>
+			<p>Best streak: <span id="best-streak"></span></p>
+			<p>Puzzles completed: <span id="completion-percent"></span></p>
 			<button id="export-button">Transfer data to another device</button>
 			<button id="delete-data">Delete data</button>
 			<fieldset>
@@ -126,10 +133,26 @@
 		<button id="confirm-ok" class="primary">OK</button>
 		<button id="confirm-cancel">Cancel</button>
 	</dialog>
-	<dialog id="export">
-		<h1>Export data</h1>
-		<p>Use your other device to <a href="" id="export-link">open this link</a> <span id="code-worked">or scan this QR code</span></p>
-		<p id="export-qr-container"></p>
+	<dialog id="export-modal">
+		<div>
+			<h1>Export data</h1>
+			<p>Use your other device to <a href="" id="export-link">open this link</a> <span id="code-worked">or scan this QR code</span></p>
+			<p id="export-qr-container"></p>
+		</div>
 		<button id="close-export" class="primary">Done</button>
 	</dialog>
+	<dialog id="result">
+		<div>
+			<p>🎉 Congratulations! 🎉</p>
+			<p>Current streak: <span id="current-streak-2"></span></p>
+			<p>Best streak: <span id="best-streak-2"></span></p>
+		</div>
+		<div class="footer">
+			<a href="?" id="today-next" class="button">Play today’s puzzle</a>
+			<div id="next-puzzle-container" class="secondary button">
+				Next puzzle in <span id="next-puzzle"></span>
+			</div>
+		</div>
+	</dialog>
+	<script src="js/main.js" type="module"></script>
 </body></html>

@@ -1,5 +1,6 @@
 import { shadowDom, el, classIf } from "../common/dom.js";
 import style from "./cell-style.js";
+import $ from "../util/dom.js";
 
 export default class DokuCell extends HTMLElement {
 	constructor() {
@@ -44,18 +45,19 @@ export default class DokuCell extends HTMLElement {
 				}
 			}
 			classIf(this.pencilMarkDiv, 'hidden', this.value != null);
-			if (document.getElementById('autopencil').checked) this.propagate();
+			if ($.autopencil.checked) this.propagate();
 		});
 
 		this.input.addEventListener('click', e => {
 			switch (this.tool) {
 				case 'pencil':
-					const p = document.getElementById('pencil-value').value;
+					if (this.value != null) break;
+					const p = $.pencilValue.value;
 					this.setPencil(p, !this.pencil[p]);
 					this.cube.pushUndo(this);
 					break;
 				case 'highlight':
-					const colour = document.getElementById('highlight-colour').value;
+					const colour = $.highlightColour.value;
 					if (colour == 'none') {
 						this.clearHighlights();
 						this.cube.pushUndo(this);
@@ -75,15 +77,14 @@ export default class DokuCell extends HTMLElement {
 			}
 		});
 
-		document.getElementById('show-errors')
-			.addEventListener('change', () => this.updateErrorFlag());
+		$.showErrors.addEventListener('change', () => this.updateErrorFlag());
 
 		this.reset();
 	}
 
 	updateErrorFlag() {
 		this.input.setCustomValidity(
-			document.getElementById('show-errors').checked &&
+			$.showErrors.checked &&
 			this.answer !== null &&
 			this.value !== null &&
 			this.value !== this.answer
