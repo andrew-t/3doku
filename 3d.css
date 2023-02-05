@@ -126,6 +126,9 @@ dialog > div {
 	flex-grow: 1;
 	overflow: auto;
 }
+dialog.footer {
+	flex-grow: 0;
+}
 
 dialog button,
 dialog .button {

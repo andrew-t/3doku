@@ -80,6 +80,7 @@
 			<label><input type="checkbox" id="autopencil"><span>Autopencil</span></label>
 			<p>Autopencil will delete pencilmarks when you add a number with the pen tool. It is convenient, but be careful as if you make a mistake, Autopencil might delete a number which is correct.</p>
 			<label><input type="checkbox" id="show-errors"><span>Highlight errors</span></label>
+			<p>This will flag up incorrect guesses in yellow (when the pen tool is selected). This is very useful but can be high stakes — if any mistakes get highlighted, that counts as taking a hint, and your streak will be reset.</p>
 			<button id="reveal-solution">Reveal solution</button>
 			<!--button id="hint">Suggest a move</button-->
 		</div>
@@ -148,6 +149,7 @@
 			<p>Best streak: <span id="best-streak-2"></span></p>
 		</div>
 		<div class="footer">
+			<button id="close-result" class="secondary">View completed cube</button>
 			<a href="?" id="today-next" class="button">Play today’s puzzle</a>
 			<div id="next-puzzle-container" class="secondary button">
 				Next puzzle in <span id="next-puzzle"></span>

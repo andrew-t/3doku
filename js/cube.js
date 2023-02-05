@@ -147,8 +147,8 @@ export default class Cube extends HTMLElement {
 		this.onUpdate?.({
 			undoStack: this.undoStack,
 			state,
-			full: this.cells.every(cell => this.value !== null),
-			solved: this.cells.every(cell => this.value == this.answer)
+			full: this.cells.every(cell => cell.value !== null),
+			solved: this.cells.every(cell => cell.value == cell.answer)
 		});
 	}
 
