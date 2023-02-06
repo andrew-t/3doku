@@ -50,6 +50,7 @@ input.band-0-group.band-1-group { --bg: #fec; }
 input.band-2-group { --bg: #cfd; }
 input.band-0-group.band-2-group { --bg: #ffc; }
 input.band-1-group.band-2-group { --bg: #dfe; }
+input.highlight-pencil { --bg: #fcc; }
 input.highlight-red { --bg: #fcc !important; }
 input.highlight-blue { --bg: #bcf !important; }
 input.highlight-green { --bg: #cfc !important; }

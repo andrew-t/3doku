@@ -45,8 +45,9 @@ export default class Radios extends HTMLElement {
 		this.dispatchEvent(event);
 	}
 
-	disable(...options) {
+	disable(options, fallback) {
 		for (const option of options) this.radios[option].setAttribute('disabled', true);
+		if (options.includes(this.value)) this.value = fallback;
 	}
 }
 

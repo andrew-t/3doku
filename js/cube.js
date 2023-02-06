@@ -105,25 +105,6 @@ export default class Cube extends HTMLElement {
 		}
 	}
 
-	findMove() {
-		// this cell can only be a 5:
-		for (const cell of this.cells) {
-			const candidates = nWhere(n => cell.pencil[n]);
-			if (candidates.length == 1 && cell.value == null)
-				return { cell, value: candidates[0] };
-		}
-		// the 5 in this group has to be here:
-		for (const group of this.groups)
-			for (let n = 0; n < 16; ++n) {
-				const candidates = group.cells.filter(c => c.pencil[n]);
-				if (candidates.length == 1 && candidates[0].value == null)
-					return { cell: candidates[0], value: n, group };
-			}
-		// TODO: cleverer things
-		// give up
-		return null;
-	}
-
 	fillInPencilMarks() {
 		for (const cell of this.cells) cell.resetPencil(true);
 		for (const cell of this.cells) cell.propagate();
@@ -135,6 +116,9 @@ export default class Cube extends HTMLElement {
 
 	setTool(tool) {
 		for (const cell of this.cells) cell.setTool(tool);
+	}
+	setPencilValue(value) {
+		for (const cell of this.cells) cell.setPencilValue(value);
 	}
 
 	pushUndo(cell) {
@@ -202,10 +186,6 @@ class Group {
 		for (const cell of this.cells)
 			cell.unhighlight(this.className);
 	}
-}
-
-function arrRand(arr) {
-	return arr[~~(Math.random() * arr.length)];
 }
 
 function nWhere(c) {

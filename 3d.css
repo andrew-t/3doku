@@ -253,3 +253,7 @@ select {
 	width: 100%;
 	margin-top: 0.5em;
 }
+
+#next-puzzle {
+	font-family: "DejaVu Sans Mono", Consolas, Monaco, monospace;
+}

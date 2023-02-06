@@ -12,41 +12,39 @@ import './radios.js';
 const { cube } = $;
 
 // Save and load the day's state. Also check if the game is over:
-let showResultsModalOnCompletion = true;
+let showResultsModalOnCompletion = true, loaded = false;
 loadPuzzle().then(json => {
-	const initialState = storage.savedState;
-	const initialUndoStack = storage.undoStack;
 	cube.usePuzzle(json);
-	if (isTodaysPuzzle && initialState?.puzzleId == puzzleId) {
-		cube.undoStack = initialUndoStack.map(({ cell, state }) => ({ cell: cube.cells[cell], state }));
-		initialState.state.forEach(({ h: highlight, pencil, pen, isClue }, i) => {
+	if (isTodaysPuzzle && storage.savedState?.puzzleId == puzzleId) {
+		cube.undoStack = storage.undoStack.map(({ cell, state }) => ({ cell: cube.cells[cell], state }));
+		storage.savedState.state.forEach(({ h: highlight, pencil, pen, isClue }, i) => {
 			const cell = cube.cells[i];
 			if (highlight) cell.input.classList.add(`highlight-${highlight}`);
 			if (isClue) return;
 			if (pen != null) cell.value = pen;
 			for (let i = 0; i < 16; ++i) cell.setPencil(i, !!(pencil & (1 << i)));
 		});
+		loaded = true;
 	}
 });
 cube.onUpdate = ({ undoStack, state, full, solved }) => {
 	if (solved) {
 		onWin();
-		$.tool.value = 'none';
-		$.tool.disable('pen', 'pencil');
+		$.tool.disable(['pen', 'pencil'], 'none');
 		if (showResultsModalOnCompletion) openModal('result');
 		showResultsModalOnCompletion = false;
 		$.reset.classList.add('hidden');
 		$.undo.classList.add('hidden');
 		$.showResult.classList.remove('hidden');
 	}
-	if (isTodaysPuzzle) {
+	if (isTodaysPuzzle && loaded) {
 		storage.undoStack = undoStack.map(({ cell, state }) => ({ cell: cube.cells.indexOf(cell), state }));
 		storage.savedState = {
 			puzzleId,
 			state: state.map(({ pen, pencil, highlight }, i) => {
 				if (cube.cells[i].isClue) return { h: highlight, isClue: true };
 				if (pen !== null) return { h: highlight, pen: pen };
-				return { h: highlight, pencil: pencil.reduce((a, n) => (a << 1) | n) };
+				return { h: highlight, pencil: pencil.reduceRight((a, n) => (a << 1) | n) };
 			})
 		};
 		if (cube.cells.some(c => c.value !== null && c.value != c.answer))
@@ -79,6 +77,7 @@ $.tool.addEventListener('change', e => {
 	classIf($.buttons, 'hidden', e.value == 'pencil' || e.value == 'highlight');
 	cube.setTool(e.value);
 });
+$.pencilValue.addEventListener('change', e => cube.setPencilValue($.pencilValue.value));
 button('undo', e => cube.popUndo());
 button('reveal-solution', async e => {
 	let prompt = "Reveal the answers?";
@@ -101,7 +100,6 @@ button('close-instructions', e => {
 button('close-assistance', e => closeModal());
 button('close-options', e => closeModal());
 button('close-result', e => closeModal());
-// TODO: when the pencil tool is selected (or when you change the pencil value) highlight all cells that COULD be that number
 
 // Wire up the horizontal scrollbar to the cube's rotation:
 window.addEventListener('scroll', e => spinCube());

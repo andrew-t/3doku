@@ -25,6 +25,7 @@ export default class DokuCell extends HTMLElement {
 		this.input.addEventListener('focus', e => {
 			if (this.tool == 'pen') {
 				this.pencilMarkDiv.classList.add('hidden');
+				this.input.setSelectionRange(0, this.input.value.length)
 				for (const group of this.groups)
 					group.highlight();
 			}
@@ -52,8 +53,7 @@ export default class DokuCell extends HTMLElement {
 			switch (this.tool) {
 				case 'pencil':
 					if (this.value != null) break;
-					const p = $.pencilValue.value;
-					this.setPencil(p, !this.pencil[p]);
+					this.setPencil(this._pencilValue, !this.pencil[this._pencilValue]);
 					this.cube.pushUndo(this);
 					break;
 				case 'highlight':
@@ -117,6 +117,8 @@ export default class DokuCell extends HTMLElement {
 		if (typeof n != 'number' || n < 0 || n > 15 || n != ~~n)
 			throw new Error('Invalid value: ' + n);
 		this.input.value = n + 1;
+		for (let i = 0; i < 16; ++i)
+			this.setPencil(i, i == n);
 	}
 
 	makeClue() {
@@ -151,19 +153,38 @@ export default class DokuCell extends HTMLElement {
 	}
 
 	setPencil(n, allowed) {
+		if (this.value !== null) allowed = this.value == n;
 		this.pencil[n] = allowed;
 		classIf(this.pencilMarks[n], 'hidden', !allowed);
+		classIf(this.input, 'highlight-pencil', this.tool == 'pencil' && this.pencil[this._pencilValue]);
 	}
 
+	_pencilValue = 0;
 	setTool(tool) {
 		switch (tool) {
-			case 'pen': this.input.setAttribute('type', 'text'); break;
-			case 'pencil': case 'highlight': case 'none':
+			case 'pen':
+				this.setPencilValue(null);
+				this.input.setAttribute('type', 'text');
+				break;
+			case 'pencil': 
+				this.setPencilValue(this._pencilValue);
+				this.input.setAttribute('type', 'button');
+				break;
+			case 'highlight': case 'none':
+				this.setPencilValue(null);
 				this.input.setAttribute('type', 'button');
 				break;
 			default: throw new Error("Invalid tool: " + tool);
 		}
 		this.tool = tool;
+	}
+	setPencilValue(value) {
+		if (value === null) {
+			this.input.classList.remove('highlight-pencil');
+			return;
+		}
+		this._pencilValue = value;
+		classIf(this.input, 'highlight-pencil', this.pencil[this._pencilValue]);
 	}
 }
 
