@@ -44,6 +44,10 @@ export default class Radios extends HTMLElement {
 		event.value = value;
 		this.dispatchEvent(event);
 	}
+
+	disable(...options) {
+		for (const option of options) this.radios[option].setAttribute('disabled', true);
+	}
 }
 
 window.customElements.define('radio-group', Radios);

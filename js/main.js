@@ -31,7 +31,13 @@ loadPuzzle().then(json => {
 cube.onUpdate = ({ undoStack, state, full, solved }) => {
 	if (solved) {
 		onWin();
+		$.tool.value = 'none';
+		$.tool.disable('pen', 'pencil');
 		if (showResultsModalOnCompletion) openModal('result');
+		showResultsModalOnCompletion = false;
+		$.reset.classList.add('hidden');
+		$.undo.classList.add('hidden');
+		$.showResult.classList.remove('hidden');
 	}
 	if (isTodaysPuzzle) {
 		storage.undoStack = undoStack.map(({ cell, state }) => ({ cell: cube.cells.indexOf(cell), state }));
@@ -75,7 +81,9 @@ $.tool.addEventListener('change', e => {
 });
 button('undo', e => cube.popUndo());
 button('reveal-solution', async e => {
-	if (!await confirm("Reveal the answers?")) return;
+	let prompt = "Reveal the answers?";
+	if (isTodaysPuzzle) prompt += ' This will break your streak.';
+	if (!await confirm(prompt)) return;
 	onCheat();
 	showResultsModalOnCompletion = false;
 	for (const c of cube.cells) c.value = c.answer;
@@ -85,6 +93,7 @@ button('reveal-solution', async e => {
 button('assistance', e => openModal('assistance-modal'));
 button('help', e => openModal('help-modal'));
 button('options', e => openModal('options-modal'));
+button('show-result', e => openModal('result'));
 button('close-instructions', e => {
 	onStart();
 	clearModals();

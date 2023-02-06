@@ -42,10 +42,10 @@ label.tool-pen input { background-image: url('assets/pen-nib-solid.svg'); }
 label.tool-pencil input { background-image: url('assets/pencil-solid.svg'); }
 label.tool-highlight input { background-image: url('assets/highlighter-solid.svg'); }
 label.tool-none input { background-image: url('assets/hand-solid.svg'); }
-label.tool-pen input:checked { background-image: url('assets/white/pen-nib-solid.svg'); }
-label.tool-pencil input:checked { background-image: url('assets/white/pencil-solid.svg'); }
-label.tool-highlight input:checked { background-image: url('assets/white/highlighter-solid.svg'); }
-label.tool-none input:checked { background-image: url('assets/white/hand-solid.svg'); }
+label.tool-pen input:checked, label.tool-pen input:disabled { background-image: url('assets/white/pen-nib-solid.svg'); }
+label.tool-pencil input:checked, label.tool-pencil input:disabled { background-image: url('assets/white/pencil-solid.svg'); }
+label.tool-highlight input:checked, label.tool-highlight input:disabled { background-image: url('assets/white/highlighter-solid.svg'); }
+label.tool-none input:checked, label.tool-none input:disabled { background-image: url('assets/white/hand-solid.svg'); }
 
 fieldset span {
 	font-size: 0;
