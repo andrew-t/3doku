@@ -1,4 +1,5 @@
 import { SYSTEM } from "./util/dark.js";
+import $ from "./util/dom.js";
 
 export const launchDate = new Date().toISOString().substring(0, 10); //'2023-01-30';
 export const namespace = '3doku';
@@ -19,6 +20,15 @@ export const defaults = {
 export const noExport = ['undoStack'];
 
 export const exportTransforms = {
+	savedState: ({ state, ...rest }) => ({
+		...rest,
+		state: state.map(({ isClue, highlight, pencil, pen }) => {
+			let str = highlight?.substring(0, 1).toUpperCase() ?? "";
+			if (isClue) return `${str}C`;
+			if (pen != undefined) return `${str}I${pen.toString(16)}`;
+			return `${str}L${pencil.toString(16)}`;
+		}).join("")
+	}),
 	results: object => {
 		const keys = Object.keys(object).map(parseFloat);
 		const max = Math.max(...keys);
@@ -30,6 +40,20 @@ export const exportTransforms = {
 };
 
 export const importTransforms = {
+	savedState: ({ state, ...rest }) => ({
+		...rest,
+		state: state.split(/([ROYGTBP]?[CIL][0-9a-f]*)/g).filter(x => x).map(str => {
+			let [highlight, mode, value] = str.split(/([CIL])/);
+			highlight = Object.keys($.highlightColour.radios).find(k => k[0] == highlight);
+			value = parseInt(value, 16);
+			switch (mode) {
+				case "C": return { highlight, isClue: true };
+				case "I": return { highlight, pen: value };
+				case "L": return { highlight, pencil: value };
+				default: throw new Error("Parse error");
+			}
+		})
+	}),
 	results: string => {
 		const val = {};
 		for (let i = 0; i < string.length; ++i)

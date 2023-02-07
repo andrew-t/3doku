@@ -16,7 +16,7 @@ $.exportButton.addEventListener('click', () => {
 	$.exportLink.setAttribute('href', url);
 	$.exportQrContainer.innerHTML = '';
 	try {
-		new QRCode($.exportQrContainer, url);
+		new QRCode($.exportQrContainer, { text: url, width: 1024, height: 1024 });
 		$.codeWorked.classList.remove('hidden');
 	} catch (e) {
 		console.error(e);
