@@ -12,7 +12,7 @@ import './radios.js';
 const { cube } = $;
 
 // Save and load the day's state. Also check if the game is over:
-let showResultsModalOnCompletion = true, loaded = false;
+let showResultsModalOnCompletion = true;
 loadPuzzle().then(json => {
 	cube.usePuzzle(json);
 	if (isTodaysPuzzle && storage.savedState?.puzzleId == puzzleId) {
@@ -24,33 +24,32 @@ loadPuzzle().then(json => {
 			if (pen != null) cell.value = pen;
 			for (let i = 0; i < 16; ++i) cell.setPencil(i, !!(pencil & (1 << i)));
 		});
-		loaded = true;
 	}
+	cube.onUpdate = ({ undoStack, state, full, solved }) => {
+		if (solved) {
+			onWin();
+			$.tool.disable(['pen', 'pencil'], 'none');
+			if (showResultsModalOnCompletion) openModal('result');
+			showResultsModalOnCompletion = false;
+			$.reset.classList.add('hidden');
+			$.undo.classList.add('hidden');
+			$.showResult.classList.remove('hidden');
+		}
+		if (isTodaysPuzzle) {
+			storage.undoStack = undoStack.map(({ cell, state }) => ({ cell: cube.cells.indexOf(cell), state }));
+			storage.savedState = {
+				puzzleId,
+				state: state.map(({ pen, pencil, highlight }, i) => {
+					if (cube.cells[i].isClue) return { h: highlight, isClue: true };
+					if (pen !== null) return { h: highlight, pen: pen };
+					return { h: highlight, pencil: pencil.reduceRight((a, n) => (a << 1) | n) };
+				})
+			};
+			if (cube.cells.some(c => c.value !== null && c.value != c.answer))
+				onCheat();
+		}
+	};
 });
-cube.onUpdate = ({ undoStack, state, full, solved }) => {
-	if (solved) {
-		onWin();
-		$.tool.disable(['pen', 'pencil'], 'none');
-		if (showResultsModalOnCompletion) openModal('result');
-		showResultsModalOnCompletion = false;
-		$.reset.classList.add('hidden');
-		$.undo.classList.add('hidden');
-		$.showResult.classList.remove('hidden');
-	}
-	if (isTodaysPuzzle && loaded) {
-		storage.undoStack = undoStack.map(({ cell, state }) => ({ cell: cube.cells.indexOf(cell), state }));
-		storage.savedState = {
-			puzzleId,
-			state: state.map(({ pen, pencil, highlight }, i) => {
-				if (cube.cells[i].isClue) return { h: highlight, isClue: true };
-				if (pen !== null) return { h: highlight, pen: pen };
-				return { h: highlight, pencil: pencil.reduceRight((a, n) => (a << 1) | n) };
-			})
-		};
-		if (cube.cells.some(c => c.value !== null && c.value != c.answer))
-			onCheat();
-	}
-};
 
 // Wire up the UI buttons:
 function button(id, cb) {

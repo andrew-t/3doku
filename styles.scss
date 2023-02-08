@@ -444,12 +444,14 @@ select {
 			padding: 0;
 			border-radius: 1em;
 
-			&:checked { background-color: #00f; }
+			&:checked {
+				background-color: #00f;
+				+ span { color: #fff; }
+			}
 		}
 
 		span {
 			color: #000;
-			input:checked + & { color: #fff; }
 		}
 
 		&.tool-pen input { background-image: url('assets/pen-nib-solid.svg'); }
@@ -460,7 +462,7 @@ select {
 		&.tool-pencil input:checked, &.tool-pencil input:disabled { background-image: url('assets/white/pencil-solid.svg'); }
 		&.tool-highlight input:checked, &.tool-highlight input:disabled { background-image: url('assets/white/highlighter-solid.svg'); }
 		&.tool-none input:checked, &.tool-none input:disabled { background-image: url('assets/white/hand-solid.svg'); }
-		
+
 		&.highlight-colour-red input { background: #f00; }
 		&.highlight-colour-yellow input { background: #ff0; }
 		&.highlight-colour-green input { background: #0f0; }
