@@ -1,16 +1,15 @@
 import { shadowDom, el, classIf } from "../common/dom.js";
 import './cell.js';
-import style from './cube-style.js';
 import { reducedMotion } from "../common/dark.js";
-import $ from "../util/dom.js";
+import $, { styles } from "../util/dom.js";
 
 export default class Cube extends HTMLElement {
 	constructor() {
 		super();
 
 		shadowDom(this, `
-			<style>${style}</style>
-			<div id="root"></div>
+			${styles}
+			<div class="cube-root" id="root"></div>
 		`);
 
 		this.groups = [];

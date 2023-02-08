@@ -1,12 +1,12 @@
 import { shadowDom, el, classIf } from "../common/dom.js";
-import style from "./radio-style.js";
+import { styles } from "../util/dom.js";
 
 export default class Radios extends HTMLElement {
 	constructor() {
 		super();
 		shadowDom(this, `
-			<style>${style}</style>
-			<fieldset id="fieldset" class="${this.id}">
+			${styles}
+			<fieldset id="fieldset" class="radios-root ${this.id}">
 				<legend>${this.getAttribute("name")}</legend>
 			</fieldset>
 		`);

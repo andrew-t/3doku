@@ -1,6 +1,5 @@
 import { shadowDom, el, classIf } from "../common/dom.js";
-import style from "./cell-style.js";
-import $ from "../util/dom.js";
+import $, { styles } from "../util/dom.js";
 
 export default class DokuCell extends HTMLElement {
 	constructor() {
@@ -11,8 +10,8 @@ export default class DokuCell extends HTMLElement {
 		this.answer = null;
 
 		shadowDom(this, `
-			<style>${style}</style>
-			<div class="root">
+			${styles}
+			<div class="cell-root">
 				<input id="input">
 				<div id="pencilMarkDiv"></div>
 			</div>
@@ -24,7 +23,7 @@ export default class DokuCell extends HTMLElement {
 
 		this.input.addEventListener('focus', e => {
 			if (this.tool == 'pen') {
-				this.pencilMarkDiv.classList.add('hidden');
+				this.pencilMarkDiv.classList.add('erased');
 				this.input.setSelectionRange(0, this.input.value.length)
 				for (const group of this.groups)
 					group.highlight();
@@ -45,7 +44,7 @@ export default class DokuCell extends HTMLElement {
 					this.cube.pushUndo(this);
 				}
 			}
-			classIf(this.pencilMarkDiv, 'hidden', this.value != null);
+			classIf(this.pencilMarkDiv, 'erased', this.value != null);
 			if ($.autopencil.checked) this.propagate();
 		});
 
@@ -110,10 +109,10 @@ export default class DokuCell extends HTMLElement {
 		this.updateErrorFlag();
 		if (n == null) {
 			this.input.value = '';
-			this.pencilMarkDiv.classList.remove('hidden');
+			this.pencilMarkDiv.classList.remove('erased');
 			return;
 		}
-		this.pencilMarkDiv.classList.add('hidden');
+		this.pencilMarkDiv.classList.add('erased');
 		if (typeof n != 'number' || n < 0 || n > 15 || n != ~~n)
 			throw new Error('Invalid value: ' + n);
 		this.input.value = n + 1;
@@ -155,7 +154,7 @@ export default class DokuCell extends HTMLElement {
 	setPencil(n, allowed) {
 		if (this.value !== null) allowed = this.value == n;
 		this.pencil[n] = allowed;
-		classIf(this.pencilMarks[n], 'hidden', !allowed);
+		classIf(this.pencilMarks[n], 'erased', !allowed);
 		classIf(this.input, 'highlight-pencil', this.tool == 'pencil' && this.pencil[this._pencilValue]);
 	}
 

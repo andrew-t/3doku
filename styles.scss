@@ -1,0 +1,491 @@
+@font-face {
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('assets/font.ttf') format('truetype');
+}
+
+body { padding: 0; margin: 0; }
+
+#main {
+	position: fixed;
+	width: 100%; height: 100%; 
+	padding: 0; margin: 0;
+	display: flex;
+	flex-direction: column;
+	background: #bbb;
+}
+
+h1 { 
+	padding: 1vh 2vh;
+	margin: 0;
+	z-index: 1;
+	pointer-events: none;
+	font-family: Montserrat, sans-serif;
+	background: #fff;
+	font-size: 4vh;
+	user-select: none;
+
+	.dark-mode & { background: #000; color: #fff; }
+}
+
+#cube {
+	display: block;
+	margin: 0 auto;
+	flex: 100vmin 1 1;
+	width: 100vmin;
+}
+
+#sidebar {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 2vh calc(50vw - 37em); margin: 0;
+	background: #fff;
+	overflow: scroll;
+	font-size: min(0.5vh, 1.2vw);
+	flex: 64em 0 0;
+	font-family: Montserrat, sans-serif;
+	display: flex;
+
+	.dark-mode & { background: #000; color: #fff; }
+
+	#tool { flex: 14em 0 0; }
+	#pencil-value,
+	#highlight-colour,
+	#buttons {
+		flex: 56em 0 0;
+		margin-left: 4em;
+	}
+}
+
+#scroller { 
+	position: absolute;
+	left: 0; top: 0;
+	width: 400%; height: 100px;
+}
+
+.hidden { display: none !important; }
+
+button,
+.button {
+	appearance: none;
+	border: none;
+	width: calc(100% - 2em / 6);
+	background: #bbb;
+	margin: calc(1em / 6);
+	padding: 0.35em;
+	border-radius: 1vh;
+	font-size: 6em;
+	font-family: Montserrat, sans-serif;
+	transition: box-shadow 300ms;
+	box-shadow: 0 0 0 0 #00f inset;
+	text-align: center;
+	box-sizing: border-box;
+	text-decoration: none;
+	height: 2em;
+
+	.reduced-motion & { transition: none; }
+
+	&.secondary {
+		background: #bbb;
+		color: #000;
+	}
+
+	&.primary {
+		background: #00f;
+		color: #fff;
+	}
+
+	&:focus {
+		outline: none;
+		box-shadow: 0 0 0 0.2em #00f inset;
+	}
+}
+
+dialog {
+	position: fixed;
+	box-shadow: 0 1vh 3vh #000;
+	top: 0;
+	left: 0;
+	padding: 3vh;
+	width: min(calc(100vw - 8vh), 50vh);
+	margin: 1vh auto;
+	height: 92vh;
+	border: none;
+	border-radius: 3vh;
+	font-size: 4vh;
+
+	.dark-mode & { background: #000; color: #fff; }
+
+	&[open] {
+		display: flex;
+		flex-direction: column;
+		justify-content: stretch;
+	}
+
+	& > div {
+		flex-grow: 1;
+		overflow: auto;
+	}
+
+	&.footer { flex-grow: 0; }
+
+	& button,
+	& .button {
+		font-size: .7em;
+		margin: 1vh 0;
+		height: unset;
+		min-height: 2em;
+	}
+	& > button,
+	& > .button {
+		margin: 2vh 0 0 0;
+		flex: auto 0 0;
+	}
+
+	h1 { padding: 0 0 2vh 0; }
+
+	label {
+		display: flex;
+		font-family: Montserrat, sans-serif;
+		margin: 1vh 0;
+		user-select: none;
+		font-size: .7em;
+
+		span { margin-top: 0.1em; }
+		&.stacked { display: block; }
+	}
+}
+
+input[type=checkbox] {
+	appearance: none;
+	background: #fff;
+	height: 2em;
+	flex: 2em 0 0;
+	margin: 0 0.5em 0 0;
+	border-radius: 0.5em;
+	transition: box-shadow 300ms;
+	box-shadow: 0 0 0 1em #bbb inset;
+	font-size: 0.7em;
+
+	.reduced-motion & { transition: none; }
+
+	&:checked { box-shadow: 0 0 0 0.6em #00f inset; }
+}
+
+p {
+	font-family: Montserrat, sans-serif;
+	font-size: 0.6em;
+	&.smol { font-size: 0.4em; }
+}
+
+img { width: 100%; }
+
+fieldset.radios {
+	border: none;
+	padding: 0;
+	margin: 0.4em 0 0 0;
+
+	legend {
+		font-family: Montserrat, sans-serif;
+		font-size: 0.8em;
+	}
+
+	input {
+		appearance: none;
+		border-radius: 1em;
+		font-size: inherit;
+		width: 1em;
+		height: 1em;
+		margin: 0 0.25em;
+		transform: translateY(0.1em);
+		display: inline-block;
+		background: #bbb;
+		border: 0 solid #00f;
+		box-sizing: border-box;
+		transition: border-width 300ms, background 300ms;
+
+		.reduced-motion & { transition: none; }
+
+		&:checked {
+			border-width: 0.35em;
+			background: #fff;
+		}
+	}
+}
+
+#dialog-overlay {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	background: #0004;
+
+	.dark-mode & { background: #00f4; }
+}
+
+#confirm {
+	height: 30vh;
+	margin: 35vh auto;
+}
+
+select {
+	font-size: 0.75em;
+	font-family: inherit;
+	padding: 0.5em;
+	width: 100%;
+	margin-top: 0.5em;
+}
+
+#next-puzzle {
+	font-family: "DejaVu Sans Mono", Consolas, Monaco, monospace;
+}
+
+.cube-root {
+	// the faces are 100vmin across
+	// there's a 2vmin gutter between each cell
+	// that's a 1vmin padding within each <td>
+	// plus a 1vmin padding around the whole table
+	// that leaves 90vmin for the cells
+	// which is to say, 22.5vmin each
+	--base-rotation: 0deg;
+	transform:
+		scale(0.5)
+		translateY(calc(50% - 50vmin));
+	height: 100%;
+	perspective: 500vmin;
+	transform-style: preserve-3d;
+
+	.hidden { opacity: 0.2; }
+
+	.face {
+		backface-visibility: hidden;
+		position: absolute;
+		top: 0; left: 0;
+		padding: 1vmin;
+		width: 100vmin; height: 100vmin;
+		border: 0px black solid;
+		border-spacing: 0;
+
+		td {
+			padding: 0;
+			width: 24.5vmin;
+			min-width: 24.5vmin;
+			height: 24.5vmin;
+			font-size: 20vmin;
+			overflow: hidden;
+		}
+
+		&.f0 {
+			background: #0c0;
+			transform:
+				rotateY(var(--base-rotation))
+				rotate3d(0.7, 0, 0.7, -54.74deg)
+				translate3d(0, 0, 50vmin);
+		}
+		&.f1 {
+			background: #c00;
+			transform:
+				rotateY(var(--base-rotation))
+				rotate3d(0.7, 0, 0.7, -54.74deg)
+				translate3d(0, 0, -50vmin)
+				rotateY(180deg);
+		}
+		&.f2 {
+			background: #fc0;
+			transform:
+				rotateY(var(--base-rotation))
+				rotate3d(0.7, 0, 0.7, -54.74deg)
+				translate3d(0, -50vmin, 0)
+				rotateX(90deg);
+		}
+		&.f3 {
+			background: #80c;
+			transform:
+				rotateY(var(--base-rotation))
+				rotate3d(0.7, 0, 0.7, -54.74deg)
+				translate3d(0, 50vmin, 0)
+				rotateX(-90deg)
+				rotateZ(180deg);
+		}
+		&.f4 {
+			background: #00c;
+			transform:
+				rotateY(var(--base-rotation))
+				rotate3d(0.7, 0, 0.7, -54.74deg)
+				translate3d(50vmin, 0, 0)
+				rotateY(90deg);
+		}
+		&.f5 {
+			background: #0cc;
+			transform:
+				rotateY(var(--base-rotation))
+				rotate3d(0.7, 0, 0.7, -54.74deg)
+				translate3d(-50vmin, 0, 0)
+				rotateY(-90deg);
+		}
+	}
+}
+
+.cell-root {
+	position: relative;
+	width: 24.5vmin;
+	height: 24.5vmin;
+
+	input, #pencilMarkDiv {
+		position: absolute;
+		left: 1vmin; top: 1vmin;
+		width: 22.5vmin;
+		height: 22.5vmin;
+		margin: 0;
+		padding: 0;
+	}
+
+	input {
+		--bg: white;
+		font-size: 16vmin;
+		font-family: Montserrat, sans-serif;
+		text-align: center;
+		background: var(--bg);
+		border-radius: 3vmin;
+		border: none;
+		transition:
+			box-shadow 300ms,
+			background 300ms;
+		box-shadow:
+			0 0 0 0.5vmin var(--bg) inset,
+			0 0 0 0.5vmin #48f inset;
+
+		&[readonly=true] {
+			color: blue;
+			box-shadow:
+				0 0 0 0.5vmin var(--bg) inset,
+				0 0 0 1.5vmin black inset;
+			user-select: none;
+		}
+
+		&.face-group { --bg: #cdf; }
+		&.band-0-group { --bg: #fcc; }
+		&.band-1-group { --bg: #ffc; }
+		&.band-0-group.band-1-group { --bg: #fec; }
+		&.band-2-group { --bg: #cfd; }
+		&.band-0-group.band-2-group { --bg: #ffc; }
+		&.band-1-group.band-2-group { --bg: #dfe; }
+
+		&.highlight-pencil { --bg: #fcc; }
+
+		&.highlight-red { --bg: #fcc !important; }
+		&.highlight-blue { --bg: #bcf !important; }
+		&.highlight-green { --bg: #cfc !important; }
+		&.highlight-purple { --bg: #ecf !important; }
+		&.highlight-orange { --bg: #fdb !important; }
+		&.highlight-yellow { --bg: #ffc !important; }
+		&.highlight-teal { --bg: #bef !important; }
+
+		&:invalid {
+			--bg: #ff0 !important; color: #f00;
+			box-shadow:
+				0 0 0 0.5vmin var(--bg) inset,
+				0 0 0 1.5vmin red inset;
+		}
+
+		&:focus {
+			outline: none;
+			box-shadow:
+				0 0 0 0.5vmin var(--bg) inset,
+				0 0 0 1.5vmin #48f inset
+				!important;
+		}
+	}
+
+	#pencilMarkDiv {
+		display: grid;
+		grid-template-rows: repeat(4, 1fr);
+		grid-template-columns: repeat(4, 1fr);
+		font-size: 4vmin;
+		pointer-events: none;
+		transition: opacity 300ms;
+		font-family: Montserrat, sans-serif;
+		text-align: center;
+		opacity: 0.5;
+
+		div { transition: opacity 300ms; }
+	}
+
+	.erased { opacity: 0 !important; }
+}
+
+.radios-root {
+	border: none;
+	padding: 0;
+	margin: 0;
+
+	legend { font-size: 0; }
+
+	label {
+		display: inline-block;
+		width: 12em;
+		height: 12em;
+		position: relative;
+		margin: 1em;
+		padding: 0;
+
+		input {
+			appearance: none;
+			width: 100%;
+			height: 100%;
+			background: #bbb;
+			background-size: 60%;
+			background-position: 50% 50%;
+			background-repeat: no-repeat;
+			margin: 0;
+			padding: 0;
+			border-radius: 1em;
+
+			&:checked { background-color: #00f; }
+		}
+
+		span {
+			color: #000;
+			input:checked + & { color: #fff; }
+		}
+
+		&.tool-pen input { background-image: url('assets/pen-nib-solid.svg'); }
+		&.tool-pencil input { background-image: url('assets/pencil-solid.svg'); }
+		&.tool-highlight input { background-image: url('assets/highlighter-solid.svg'); }
+		&.tool-none input { background-image: url('assets/hand-solid.svg'); }
+		&.tool-pen input:checked, &.tool-pen input:disabled { background-image: url('assets/white/pen-nib-solid.svg'); }
+		&.tool-pencil input:checked, &.tool-pencil input:disabled { background-image: url('assets/white/pencil-solid.svg'); }
+		&.tool-highlight input:checked, &.tool-highlight input:disabled { background-image: url('assets/white/highlighter-solid.svg'); }
+		&.tool-none input:checked, &.tool-none input:disabled { background-image: url('assets/white/hand-solid.svg'); }
+		
+		&.highlight-colour-red input { background: #f00; }
+		&.highlight-colour-yellow input { background: #ff0; }
+		&.highlight-colour-green input { background: #0f0; }
+		&.highlight-colour-blue input { background: #04f; }
+		&.highlight-colour-teal input { background: #0cf; }
+		&.highlight-colour-orange input { background: #fc0; }
+		&.highlight-colour-purple input { background: #c0f; }
+		&.highlight-colour-none input { background: #fff; box-shadow: 0 0 0 .2em #000 inset }
+	}
+
+	span { font-size: 0; }
+
+	&.pencil-value span {
+		z-index: 1;
+		font-size: 6em;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 2em;
+		height: 2em;
+		line-height: 2em;
+		text-align: center;
+	}
+
+	&.highlight-colour label { width: 26em; }
+	&.highlight-colour input { transition: box-shadow 500ms; }
+	&.highlight-colour input:checked { box-shadow: 0 0 0 1em #000 inset; }
+}

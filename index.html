@@ -2,7 +2,7 @@
 <html><head>
 	<title>3Doku</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-	<link rel="stylesheet" type="text/css" href="3d.css" />
+	<link rel="stylesheet" type="text/css" href="styles.scss" id="styles" />
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q2BJ5624NT"></script>
 	<script>
@@ -114,13 +114,13 @@
 			<p>Puzzles completed: <span id="completion-percent"></span></p>
 			<button id="export-button">Transfer data to another device</button>
 			<button id="delete-data">Delete data</button>
-			<fieldset>
+			<fieldset class="radios">
 				<legend>Dark Mode</legend>
 				<label><input id="dark-on" type="radio" name="dark"> On</label>
 				<label><input id="dark-off" type="radio" name="dark"> Off</label>
 				<label><input id="dark-system" type="radio" name="dark"> Use system theme</label>
 			</fieldset>
-			<fieldset>
+			<fieldset class="radios">
 				<legend>Reduced Animation</legend>
 				<label><input id="reduced-motion-on" type="radio" name="reduced-motion"> On</label>
 				<label><input id="reduced-motion-off" type="radio" name="reduced-motion"> Off</label>

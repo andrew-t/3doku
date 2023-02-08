@@ -1,0 +1,28 @@
+{
+  "name": "3doku",
+  "version": "1.0.0",
+  "description": "3doku",
+  "main": "config.js",
+  "scripts": {
+    "dev": "rm -rf dist; mkdir -p dist/puzzles; cp -r puzzles dist/; parcel index.html",
+    "upload-code": "rm -rf dist; parcel build index.html --public-url /puzzles/3doku && rsync -r 'dist/' 'andrewtaylor_andrewt@ssh.phx.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku'",
+    "upload-test": "rm -rf dist; parcel build index.html --public-url /puzzles/3doku-beta && rsync -r 'dist/' 'andrewtaylor_andrewt@ssh.phx.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku-beta'",
+    "upload-puzzles": "rsync -r 'puzzles/' 'andrewtaylor_andrewt@ssh.phx.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku/puzzles' && rsync -r 'puzzles/' 'andrewtaylor_andrewt@ssh.phx.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku-beta/puzzles';"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrew-t/3doku.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andrew-t/3doku/issues"
+  },
+  "homepage": "https://github.com/andrew-t/3doku#readme",
+  "dependencies": {
+    "parcel": "^2.8.3"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "2.8.3"
+  }
+}
