@@ -12,7 +12,7 @@ export default class DokuCell extends HTMLElement {
 		shadowDom(this, `
 			${styles}
 			<div class="cell-root">
-				<input id="input">
+				<input id="input" inputmode="numeric">
 				<div id="pencilMarkDiv"></div>
 			</div>
 		`);
