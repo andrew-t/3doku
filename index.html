@@ -31,7 +31,7 @@
 	<div id="scroller"></div>
 	<div id="main">
 		<h1>3Doku <span id="puzzle-id"></span></h1>
-		<doku-cube id="cube"></doku-cube>
+		<doku-cube id="cube" tabindex="0"></doku-cube>
 		<div id="sidebar">
 			<radio-group
 				id="tool"
@@ -89,8 +89,8 @@
 	</div>
 	<div id="dialog-overlay"></div>
 	<dialog id="assistance-modal">
+		<h1>Assistance</h1>
 		<div>
-			<h1>Assistance</h1>
 			<p>You <i>can</i> complete 3Doku completely manually, but it can get annoying, so here are some tools to make it a bit easier.</p>
 			<button id="fill-in-pencil">Fill in pencil marks</button>
 			<label><input type="checkbox" id="autopencil"><span>Autopencil</span></label>
@@ -104,8 +104,8 @@
 		<button id="close-assistance" class="primary">Close</button>
 	</dialog>
 	<dialog id="help-modal" open>
+		<h1>How to play 3Doku</h1>
 		<div>
-			<h1>How to play 3Doku</h1>
 			<p>3Doku is a classic sudoku wrapped around a cube, although unlike a classic sudoku it uses the numbers 1-16 rather than 1-9.</p>
 			<p>Each face of the solved cube contains each of the numbers 1-16, and like a classic sudoku there are also "rows" and "columns" which contain the numbers 1-16.</p>
 			<img src="assets/groups.png" alt="An example image of the cube, with the groups highlighted.">
@@ -117,8 +117,8 @@
 		<a href="?" id="jump-to-today" class="secondary button">Today’s puzzle</a>
 	</dialog>
 	<dialog id="options-modal">
+		<h1>Options</h1>
 		<div>
-			<h1>Options</h1>
 			<button id="help">How to play</button>
 			<label class="stacked">
 				Select a puzzle
@@ -152,8 +152,8 @@
 		<button id="confirm-cancel">Cancel</button>
 	</dialog>
 	<dialog id="export-modal">
+		<h1>Export data</h1>
 		<div>
-			<h1>Export data</h1>
 			<p>Use your other device to <a href="" id="export-link">open this link</a> <span id="code-worked">or scan this QR code</span></p>
 			<p id="export-qr-container" aria-hidden></p>
 		</div>

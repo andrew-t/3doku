@@ -108,10 +108,11 @@ dialog {
 	box-shadow: 0 1vh 3vh #000;
 	top: 0;
 	left: 0;
-	padding: 3vh;
+	bottom: 1vh;
 	width: min(calc(100vw - 8vh), 50vh);
+	height: auto;
 	margin: 1vh auto;
-	bottom: 3vh;
+	padding: 3vh;
 	border: none;
 	border-radius: 3vh;
 	font-size: 4vh;
@@ -129,7 +130,7 @@ dialog {
 		overflow: auto;
 	}
 
-	&.footer { flex-grow: 0; }
+	&.footer, & > h1 { flex-grow: 0; }
 
 	& button,
 	& .button {

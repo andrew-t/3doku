@@ -49,6 +49,10 @@ export default class Radios extends HTMLElement {
 		for (const option of options) this.radios[option].setAttribute('disabled', true);
 		if (options.includes(this.value)) this.value = fallback;
 	}
+
+	focus() {
+		this.radios[this._val]?.focus();
+	}
 }
 
 window.customElements.define('radio-group', Radios);

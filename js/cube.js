@@ -20,13 +20,9 @@ export default class Cube extends HTMLElement {
 
 		this.faces = [];
 		this.cells = [];
-		const faceEls = [];
 		for (let f = 0; f < 6; ++f) {
 			const table = el(null, `table.face.f${f}`);
-			// Append them in this silly order so the tab order is reasonable.
-			// Ideally I'd rewrite the code so they were natively in this order,
-			// but that would be an absurd waste of my time.
-			faceEls[[5,2,4,1,0,3][f]] = table;
+			this.root.appendChild(table);
 			const tbody = el(this.faces[f] = table, 'tbody');
 			for (let r = 0; r < 4; ++r) {
 				const tr = el(tbody, 'tr');
@@ -34,18 +30,24 @@ export default class Cube extends HTMLElement {
 					const cell = el(el(tr, 'td'), 'doku-cell');
 					this.cells.push(cell);
 					cell.cube = this;
+					cell.input.addEventListener('focus', e => this.lastFocus = cell);
 					for (const n of bands(f, r, c))
 						this.groups[n].addCell(cell);
 				}
 			}
 		}
-		for (const el of faceEls) this.root.appendChild(el);
-
-		this.root.addEventListener('keyup', e => {
-			if (e.key == 'Tab') this.spinToCell(this.shadowRoot.activeElement);
-		});
 
 		this.undoStack = [];
+
+		this.addEventListener('focus', e => {
+			const cell = this.lastFocus ?? this.cells[0];
+			cell.input.focus();
+			this.spinToCell(cell);
+		});
+	}
+
+	cellAt(face, x, y) {
+		return this.cells[(face << 4) + (y << 2) + x];
 	}
 
 	usePuzzle({ answers, moves, clues }) {
