@@ -50,14 +50,14 @@ class Sudoku:
 		return True
 
 	# returns true on success and false on failure
-	def solve(self, using_pointers=False):
-		while self.find_move(using_pointers):
+	def solve(self, **kwargs):
+		while self.find_move(**kwargs):
 			if self.is_solved():
 				return True
 		return False
 
 	# returns true if it found a move, false otherwise
-	def find_move(self, using_pointers=True):
+	def find_move(self, using_pointers=False):
 		for cell in self.cells:
 			# Don't check cells we've already solved
 			if cell.answer_known: continue
@@ -84,30 +84,42 @@ class Sudoku:
 					places[0].set_answer(n)
 					return True
 		if not using_pointers: return False
-		# Check to see if there are any pointers — eg, two numbers that have to go in two cells. This is the same thing as 14 cells that can only be 14 numbers, so these two deductions are the same and we only need to implement one. I forget which I did.
+		# Check to see if there are any pointers — eg, two numbers that have to go in two cells. This is the same thing as 14 cells that can only be 14 numbers, so these two deductions are the same and we only need to implement one. As it goes, the latter is the one coded up.
 		for group in self.groups:
 			candidates = [ cell for cell in group if not cell.answer_known ]
 			id = f"{group.i}/{','.join([ str(cell.pencil) for cell in candidates ])}"
 			if (id in self.checked_moves): continue
 			self.checked_moves.add(id)
+			numbers_we_know = 0
+			for cell in group:
+				if cell.answer_known:
+					numbers_we_know |= (1 << cell.answer)
 			# exclude 0 and 65535 because they're trivial cases; they are always true and never useful
 			for bits in range(1, 65535):
 				n = self.how_many[bits]
 				# we can also exclude all the cases with 1 or 15 bits because those are equivalent to the basic logic above, which is faster than checking all this
 				if n == 1 or n == 15: continue
+				# the set of numbers we consider isn't allowed to contain numbers we've already placed; that would be pointless and also cause bugs
+				if numbers_we_know & bits: continue
+				# Find all the cells which can contain any of the numbers we're considering, even if they could contain other things too.
 				could_be = [ cell for cell in candidates if cell.pencil & bits ]
 				could_be_n = len(could_be)
-				# if could_be_n < n: return None
+				# We only care about the case where N numbers are locked to N cells — so we know those cells can't be anything else.
 				if could_be_n == len(candidates) or could_be_n != n: continue
-				# ok so this means there are (say) 3 numbers that can only possibly be in the same 3 cells in this group, so therefore the rest of the group can't be them
+				# ok so this means there are (say) 3 numbers that can only possibly be in the same 3 cells in this group
 				self.moves.append({
 					"group": group.i,
-					"numbers": [ i for i in range(self.n) if bits & (1 << i) ]
+					"numbers": [ i for i in range(self.n) if bits & (1 << i) ],
+					"couldBe": [ cell.i for cell in could_be ],
+					# "bits": bits
 					# "n": could_be_n
 				})
-				for cell in group:
-					if not cell in could_be:
-						cell.pencil &= ~bits
+				# therefore, the cells that COULD be the numbers we're considering can't be anything BUT those numbers — otherwise there wouldn't be space for them.
+				for cell in could_be:
+					cell.pencil &= bits
+					if cell.answer != None and not cell.pencil & (1 << cell.answer):
+						print(id, bits)
+						raise Exception("Wrong pencil deductions!")
 				return True
 		return False
 

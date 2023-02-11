@@ -1,12 +1,11 @@
 import random
 
 class Cell:
-	def __init__(self, g1, g2, g3, answer=None):
+	def __init__(self, groups):
 		self.groups = []
-		self.put_into_group(g1)
-		self.put_into_group(g2)
-		self.put_into_group(g3)
-		self.answer = answer
+		for group in groups:
+			self.put_into_group(group)
+		self.answer = None
 		self.pencil = 65535
 		self.is_clue = False
 		self.answer_known = False
