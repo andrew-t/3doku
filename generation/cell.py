@@ -1,12 +1,12 @@
 import random
 
 class Cell:
-	def __init__(self, g1, g2, g3):
+	def __init__(self, g1, g2, g3, answer=None):
 		self.groups = []
 		self.put_into_group(g1)
 		self.put_into_group(g2)
 		self.put_into_group(g3)
-		self.answer = None
+		self.answer = answer
 		self.pencil = 65535
 		self.is_clue = False
 		self.answer_known = False
@@ -28,7 +28,7 @@ class Cell:
 	def set_answer(self, n):
 		if not (self.pencil & (1 << n)):
 			raise Exception("Invalid answer set")
-		if (self.answer != None and self.answer != n):
+		if self.answer != None and self.answer != n:
 			raise Exception("Wrong answer set")
 		self.answer = n
 		self.mark_answer_known()
@@ -36,9 +36,6 @@ class Cell:
 	def mark_answer_known(self):
 		self.answer_known = True
 		self.pencil = 1 << self.answer
-		self.propagate()
-
-	def propagate(self):
 		for group in self.groups:
 			for cell in group:
 				if cell is self: continue

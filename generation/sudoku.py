@@ -77,7 +77,7 @@ class Sudoku:
 			for n in range(self.n):
 				bit = 1 << n
 				places = [cell for cell in group if cell.pencil & (1 << n)]
-				if len(places) == 1 and places[0].answer is None:
+				if len(places) == 1 and not places[0].answer_known:
 					self.moves.append({
 						"cell": cell.i,
 						"group": group.i,
@@ -88,7 +88,7 @@ class Sudoku:
 		if not using_pointers: return False
 		# Check to see if there are any pointers — eg, two numbers that have to go in two cells. This is the same thing as 14 cells that can only be 14 numbers, so these two deductions are the same and we only need to implement one. I forget which I did.
 		for group in self.groups:
-			candidates = [ cell for cell in group if cell.answer == None ]
+			candidates = [ cell for cell in group if not cell.answer_known ]
 			id = f"{group.i}/{','.join([ str(cell.pencil) for cell in candidates ])}"
 			if (id in self.checked_moves): continue
 			self.checked_moves.add(id)
