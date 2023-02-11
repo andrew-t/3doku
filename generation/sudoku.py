@@ -17,10 +17,16 @@ class Sudoku:
 			if len(group) != self.n:
 				raise Exception("bad groups")
 
+	def answers(self):
+		return [ cell.answer for cell in self.cells ]
+
+	def clues(self):
+		return [ cell.i for cell in self.cells if cell.is_clue ]
+
 	def to_json(self):
 		return {
-			"answers": [ cell.answer for cell in self.cells ],
-			"clues": [ cell.i for cell in self.cells if cell.is_clue ],
+			"answers": self.answers(),
+			"clues": self.clues(),
 			"moves": self.moves
 		}
 
