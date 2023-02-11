@@ -110,11 +110,20 @@
 			<p>Each face of the solved cube contains each of the numbers 1-16, and like a classic sudoku there are also "rows" and "columns" which contain the numbers 1-16.</p>
 			<img src="assets/groups.png" alt="An example image of the cube, with the groups highlighted.">
 			<p>Look at the rows and columns within each face, and follow them over the edge onto the next face, wrapping all the way around the cube until you get back to the first face. If you need help with this, select the 'pen' tool and click a cell on the cube — the groups its in will be highlighted.</p>
+			<button id="keyboard-controls" class="secondary">Keyboard controls</button>
 			<p>You should also check out my word-based puzzle, <a href="https://www.andrewt.net/puzzles/cell-tower">Cell Tower</a>!</p>
 			<p class="smol">3Doku © 2023 <a href="https://twitter.com/Andrew_Taylor">@Andrew_Taylor</a>. Font is <a href="https://github.com/JulietaUla/Montserrat">Montserrat</a>.</p>
 		</div>
 		<button id="close-instructions" class="primary">Loading...</button>
 		<a href="?" id="jump-to-today" class="secondary button">Today’s puzzle</a>
+	</dialog>
+	<dialog id="keyboard-modal">
+		<h1>Keyboard controls</h1>
+		<div>
+			<p>The controls are navigated like any other webpage, using tab, the arrow keys, and space. There are a couple of extra controls attached to the cube itself, though.</p>
+			<p>Rather than tabbing through the 96 textboxes that make up the cube, the cube acts as a single tab stop and you move between cells using the arrow keys. This can get a little confusing when you go round a corner — where two faces meet, they aren't always the same way up, so you can get two cells that are both "above" each other, and pressing "up" will just skip between them. As an alternative, you can move in a more consisitent, if less obvious, direction by using R and F to track around the red bands, T and G to track around the green bands, and Y and H to track around the yellow bands. This works even when those bands are not highlighted, although obviously it's tricky to use properly then.</p>
+		</div>
+		<button id="close-keyboard-modal" class="primary">Done</button>
 	</dialog>
 	<dialog id="options-modal">
 		<h1>Options</h1>

@@ -90,6 +90,7 @@ button('reveal-solution', async e => {
 });
 button('assistance', e => openModal('assistance-modal'));
 button('help', e => openModal('help-modal'));
+button('keyboard-controls', e => openModal('keyboard-modal'));
 button('options', e => openModal('options-modal'));
 button('show-result', e => openModal('result'));
 button('close-instructions', e => {
@@ -99,6 +100,7 @@ button('close-instructions', e => {
 button('close-assistance', e => closeModal());
 button('close-options', e => closeModal());
 button('close-result', e => closeModal());
+button('close-keyboard-modal', e => closeModal());
 
 // Wire up the horizontal scrollbar to the cube's rotation:
 window.addEventListener('scroll', e => spinCube());
