@@ -13,7 +13,9 @@ def generate_puzzle():
 		iterations += 1
 		print(f"Generating puzzle... {iterations}")
 		cube = Sudokube()
-		if cube.try_generate():
+		if cube.try_generate(
+			use_pointers_after=10
+		):
 			print(f"generated valid puzzle in {iterations} tries")
 			return cube
 

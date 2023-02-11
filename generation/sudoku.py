@@ -37,11 +37,15 @@ class Sudoku:
 		return not any(self.unsolved_cells())
 
 	# returns true on success and false on failure
-	def try_generate(self, pre_guesses=10):
+	def try_generate(self, use_pointers_after=False):
+		guesses = 0
 		while True:
-			if self.solve(using_pointers=pre_guesses < 0):
+			if self.solve(
+				using_pointers=use_pointers_after
+					and guesses >= use_pointers_after
+			):
 				return True
-			pre_guesses -= 1
+			guesses += 1
 			if not self.add_random_clue(): return False
 
 	# returns true on success and false on failure
