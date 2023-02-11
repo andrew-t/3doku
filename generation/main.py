@@ -2,29 +2,57 @@
 
 import random
 import json
+from uuid import uuid4 as uuid
 
 from sudokube import Sudokube
 
-# TODO: generate a grid of answers first and then use it to generate clues, the theory being that always guessing valid clues should allow hard puzzles to be generated without too many reboots. my guess is we'll get mostly easy ones but i can easily pull out the hard ones
-
-def generate_puzzle(answers=None, **kwargs):
-	iterations = 0
+def generate_easy_puzzle():
 	while True:
-		iterations += 1
-		print(f"Generating puzzle... {iterations}")
-		cube = Sudokube(answers=answers)
-		if cube.try_generate(**kwargs):
-			print(f"generated valid puzzle in {iterations} tries")
+		print(" - Generating candidate grid")
+		cube = Sudokube()
+		if cube.try_generate():
 			return cube
 
-easy_puzzle = generate_puzzle()
-potted_answers = easy_puzzle.answers()
-puzzle = generate_puzzle(
-	answers=potted_answers,
-	use_pointers_after=10
-)
+# generate an easy puzzle as a quick way to fill the grid
+print("Generating answer grid")
+easy_puzzle = generate_easy_puzzle()
+answers = easy_puzzle.answers()
+print(answers)
 
-puzzle_json = puzzle.to_json()
+intended_difficulty = {
+	"using_pointers": True
+}
+
+# use the filled grid to ensure the real puzzle generation doesn't waste time on impossible guesses
+print("Generating clues")
+puzzle = Sudokube(answers=answers)
+puzzle.try_generate(**intended_difficulty)
+clues = puzzle.clues()
+print(clues)
+
+# try to remove as many clues as possible and see if it's still solvable
+print("Pruning clues")
+test = None
+while True:
+	print(" - Starting clue pruning loop")
+	for clue in clues:
+		print(f"   - Testing clue in cell {clue}")
+		test_clues = [ c for c in clues if c != clue ]
+		test = Sudokube(answers, test_clues)
+		if test.solve(**intended_difficulty):
+			print(f"     - Deleting clue in cell {clue}")
+			clues = test_clues
+			break
+	else:
+		# we didn't manage to remove any clues on the last iteration, so stop
+		break
+
+# now solve it just from the clues, so we know what kinds of logic it actually requires
+print("Calculating solution")
+solution = Sudokube(answers=answers, clues=clues)
+solution.solve(**intended_difficulty)
+
+puzzle_json = solution.to_json()
 print(puzzle_json)
-with open("puzzle.json", "w") as f:
+with open(f"candidates/{uuid()}.json", "w") as f:
 	json.dump(puzzle_json, f)

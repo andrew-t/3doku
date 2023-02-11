@@ -37,15 +37,9 @@ class Sudoku:
 		return all(cell.answer_known for cell in self.cells)
 
 	# returns true on success and false on failure
-	def try_generate(self, use_pointers_after=False):
-		guesses = 0
+	def try_generate(self, **kwargs):
 		while True:
-			if self.solve(
-				using_pointers=use_pointers_after
-					and guesses >= use_pointers_after
-			):
-				return True
-			guesses += 1
+			if self.solve(**kwargs): return True
 			if not self.add_random_clue(): return False
 
 	# returns true on success and false on failure
@@ -56,7 +50,7 @@ class Sudoku:
 		return True
 
 	# returns true on success and false on failure
-	def solve(self, using_pointers=True):
+	def solve(self, using_pointers=False):
 		while self.find_move(using_pointers):
 			if self.is_solved():
 				return True
