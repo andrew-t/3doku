@@ -31,10 +31,10 @@ class Sudoku:
 		}
 
 	def unsolved_cells(self):
-		return ( cell for cell in self.cells if cell.answer == None )
+		return ( cell for cell in self.cells if not cell.answer_known )
 
 	def is_solved(self):
-		return not any(self.unsolved_cells())
+		return all(cell.answer_known for cell in self.cells)
 
 	# returns true on success and false on failure
 	def try_generate(self, use_pointers_after=False):
