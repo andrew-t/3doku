@@ -33,10 +33,10 @@ class Sudoku:
 	# returns true on success and false on failure
 	def try_generate(self, pre_guesses=10):
 		while True:
-			if self.is_solved(): return True
+			if self.solve(using_pointers=pre_guesses < 0):
+				return True
 			pre_guesses -= 1
 			if not self.add_random_clue(): return False
-			while self.find_move(pre_guesses < 0): pass
 
 	# returns true on success and false on failure
 	def add_random_clue(self):
@@ -45,8 +45,15 @@ class Sudoku:
 		cell.make_clue()
 		return True
 
+	# returns true on success and false on failure
+	def solve(self, using_pointers=True):
+		while self.find_move(using_pointers):
+			if self.is_solved():
+				return True
+		return False
+
 	# returns true if it found a move, false otherwise
-	def find_move(self, advanced):
+	def find_move(self, using_pointers=True):
 		for cell in self.cells:
 			# Don't check cells we've already solved
 			if cell.answer_known: continue
@@ -72,7 +79,7 @@ class Sudoku:
 					})
 					places[0].set_answer(n)
 					return True
-		if not advanced: return False
+		if not using_pointers: return False
 		# Check to see if there are any pointers — eg, two numbers that have to go in two cells. This is the same thing as 14 cells that can only be 14 numbers, so these two deductions are the same and we only need to implement one. I forget which I did.
 		for group in self.groups:
 			candidates = [ cell for cell in group if cell.answer == None ]
