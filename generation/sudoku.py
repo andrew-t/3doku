@@ -11,6 +11,8 @@ class Sudoku:
 		self.moves = []
 		self.checked_moves = set()
 		self.n = len(self.groups[0])
+		for group in self.groups:
+			group.freeze()
 		for i in range(len(self.cells)):
 			self.cells[i].i = i
 			self.cells[i].grid = self
@@ -21,6 +23,7 @@ class Sudoku:
 		new_cells = [cell.clone(new_groups, no_answers) for cell in self.cells]
 		cosima = Sudoku(new_groups, new_cells, self.how_many)
 		cosima.moves = [m for m in self.moves]
+		cosima.checked_moves = set(self.checked_moves)
 		return cosima
 
 	def check(self):
@@ -147,7 +150,10 @@ class Sudoku:
 					# print(f"        - what if cell {cell.i} were {i}?")
 					bizarro_world = self.clone(no_answers=True)
 					bizarro_world.cells[cell.i].set_answer(i)
-					result = bizarro_world.solve(brute_force=brute_force-1)
+					result = bizarro_world.solve(
+						brute_force=brute_force-1,
+						using_pointers=using_pointers
+					)
 					if result is None:
 						self.moves.append({
 							"cell": cell.i,

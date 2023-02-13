@@ -22,7 +22,7 @@ class Cell:
 
 	def put_into_group(self, group):
 		self.groups.append(group)
-		group.append(self)
+		group.add_cell(self)
 
 	def make_clue(self):
 		if self.answer == None:
