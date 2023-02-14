@@ -33,6 +33,20 @@ class Cell:
 			self.mark_answer_known()
 		self.is_clue = True
 
+	def set_pencil(self, value):
+		if value == self.pencil:
+			return
+		if self.answer != None and not value & (1 << self.answer):
+			print(id, bits, value, self.answer)
+			raise Exception("Wrong pointer deductions!")
+		self.pencil = value
+		self.enqueue()
+		for group in self.groups:
+			group.enqueue()
+
+	def enqueue(self):
+		self.grid.deduction_queue.enqueue(self, 100)
+
 	# this is for during solving, it marks the answer as known
 	def set_answer(self, n):
 		if not (self.pencil & (1 << n)):
@@ -51,3 +65,4 @@ class Cell:
 			for cell in group:
 				if cell is self: continue
 				cell.pencil &= ~self.pencil
+			group.enqueue()

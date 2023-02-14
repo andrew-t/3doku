@@ -1,3 +1,7 @@
+from collections import namedtuple
+
+GroupDeduction = namedtuple('GroupDeduction', ['group', 'type'])
+
 class Group:
 	def __init__(self, i):
 		self.cells = set()
@@ -24,3 +28,8 @@ class Group:
 
 	def not_in(self, other):
 		return self.cells.difference(other.cells)
+
+	def enqueue(self):
+		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'only_place'), 90)
+		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'pointers'), 80)
+		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'x_wing'), 50)

@@ -18,7 +18,8 @@ def Sudokube(answers=None, clues=None):
 	if answers:
 		for i in range(len(cells)):
 			cells[i].answer = answers[i]
+	grid = Sudoku(groups, cells, how_many_16)
 	if clues:
 		for i in clues:
 			cells[i].make_clue()
-	return Sudoku(groups, cells, how_many_16)
+	return grid

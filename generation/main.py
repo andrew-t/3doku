@@ -24,7 +24,7 @@ def generate_easy_puzzle():
 		if cube.try_generate():
 			return cube
 
-def generate_puzzle(brute_force, **intended_difficulty):
+def generate_puzzle(**intended_difficulty):
 	# generate an easy puzzle as a quick way to fill the grid
 	log_line("Generating answer grid")
 	easy_puzzle = generate_easy_puzzle()
@@ -35,7 +35,7 @@ def generate_puzzle(brute_force, **intended_difficulty):
 	log_line("Generating clues")
 	puzzle = Sudokube(answers=answers)
 	# don't use brute force here, it's too slow, use it when we're pruning clues, that's plenty, we don't want loads of brute force puzzles anyway
-	puzzle.try_generate(brute_force=False, **intended_difficulty, easy_before=10)
+	puzzle.try_generate(**intended_difficulty)
 	clues = puzzle.clues()
 	# log_line(clues)
 
@@ -48,7 +48,7 @@ def generate_puzzle(brute_force, **intended_difficulty):
 		log_append(clue)
 		test_clues = [ c for c in clues if c != clue ]
 		test = Sudokube(answers, test_clues)
-		if test.solve(brute_force=brute_force, **intended_difficulty):
+		if test.solve(**intended_difficulty):
 			log_append(" deleted, ")
 			clues = test_clues
 		else:
@@ -58,7 +58,7 @@ def generate_puzzle(brute_force, **intended_difficulty):
 	# now solve it just from the clues, so we know what kinds of logic it actually requires
 	log_line("Calculating solution")
 	solution = Sudokube(answers=answers, clues=clues)
-	solution.solve(brute_force=brute_force, **intended_difficulty)
+	solution.solve(**intended_difficulty)
 
 	id = uuid()
 	log_line(f"Saving solution as {id}")
@@ -79,4 +79,4 @@ def generate_puzzle(brute_force, **intended_difficulty):
 
 if __name__ == "__main__":
 	while True:
-		generate_puzzle(brute_force=1, using_pointers=True)
+		generate_puzzle(using_pointers=True)
