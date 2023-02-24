@@ -17,6 +17,11 @@ def log_append(part):
 	print(part, end="")
 	stdout.flush()
 
+def move_type(move):
+	if "canOnlyBe" in move: return "cell-can-only-be"
+	if "onlyPlaceFor" in move: return "the-N-must-go-here"
+	if "couldBe" in move: return "pointers"
+
 def generate_easy_puzzle():
 	while True:
 		# log_line(" - Generating candidate grid")
@@ -24,10 +29,32 @@ def generate_easy_puzzle():
 		if cube.try_generate():
 			return cube
 
+def grid_line(pad, grid, faces, clues_only=False):
+	for row in range(4):
+		print(" " * (pad + 2), end="")
+		for face in faces:
+			for x in range(4):
+				cell = grid.cells[face * 16 + row * 4 + x]
+				print(hex(cell.answer)[2] if cell.is_clue or not clues_only else "-", end="")
+		print("")
+
+def print_grid(grid):
+	log_line("Printing grid:")
+	print("")
+	grid_line(0, grid, [2])
+	grid_line(0, grid, [0, 4, 1, 5])
+	grid_line(8, grid, [3])
+
+def check_grid(grid):
+	for group in grid.groups:
+		assert { cell.answer for cell in group } == { range(16) }
+
 def generate_puzzle(**intended_difficulty):
 	# generate an easy puzzle as a quick way to fill the grid
 	log_line("Generating answer grid")
 	easy_puzzle = generate_easy_puzzle()
+	print_grid(easy_puzzle)
+	check_grid(easy_puzzle)
 	answers = easy_puzzle.answers()
 	# log_line(answers)
 
@@ -69,14 +96,11 @@ def generate_puzzle(**intended_difficulty):
 
 	log_line(f"{len(clues)} clues")
 	
-	log_line("✅ Requires pointers"
-		if any("numbers" in move for move in puzzle_json["moves"])
-		else "No pointers")
-	
-	log_line("⚠️  Requires brute force"
-		if any("puzzleInvalidIf" in move for move in puzzle_json["moves"])
-		else "No brute force")
+	log_line(f"Requires: {', '.join(set( move_type(move) for move in puzzle.moves ))}")
 
 if __name__ == "__main__":
 	while True:
-		generate_puzzle(using_pointers=True)
+		generate_puzzle(
+			using_pointers=True,
+			using_x_wings=True
+		)

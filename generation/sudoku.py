@@ -1,20 +1,18 @@
 import random
 
 from cell import Cell
-from group import Group, GroupDeduction
+from group import Group, GroupDeduction, GroupPartition
 from queue import PrioritisedQueue
 
 class Sudoku:
-	def __init__(self, groups, cells, how_many):
+	def __init__(self, groups, cells):
 		self.groups = groups
 		self.cells = cells
-		self.how_many = how_many
 		self.moves = []
 		self.n = len(self.groups[0])
 		self.deduction_queue = PrioritisedQueue()
 		for group in self.groups:
-			group.grid = self
-			group.freeze()
+			group.freeze(self)
 		for i in range(len(self.cells)):
 			self.cells[i].i = i
 			self.cells[i].grid = self
@@ -23,15 +21,14 @@ class Sudoku:
 	def clone(self, no_answers=False):
 		new_groups = [Group(group.i) for group in self.groups]
 		new_cells = [cell.clone(new_groups, no_answers) for cell in self.cells]
-		cosima = Sudoku(new_groups, new_cells, self.how_many)
+		cosima = Sudoku(new_groups, new_cells)
 		cosima.moves = [m for m in self.moves]
 		cosima.checked_moves = set(self.checked_moves)
 		return cosima
 
 	def check(self):
 		for group in self.groups:
-			if len(group) != self.n:
-				raise Exception("bad groups")
+			assert len(group) == self.n
 
 	def answers(self):
 		return [ cell.answer for cell in self.cells ]
@@ -53,28 +50,21 @@ class Sudoku:
 		return all(cell.answer_known for cell in self.cells)
 
 	# returns true on success and false on failure
-	def try_generate(self, easy_before=10, **kwargs):
-		guesses = 0
+	def try_generate(self, **kwargs):
 		while True:
-			if self.solve(**(kwargs if guesses >= easy_before else {})): return True
+			if self.solve(**kwargs): return True
 			if not self.add_random_clue(): return False
-			guesses += 1
 
 	# returns true on success and false on failure
 	def add_random_clue(self):
 		cell = random.choice(list(self.unsolved_cells()))
-		if cell.pencil == 0: return False
+		if not cell.pencil: return False
 		cell.make_clue()
 		return True
 
 	# returns true on success and false on failure
 	# returns NONE when the puzzle is invalid
 	def solve(self, **kwargs):
-		if not self.deduction_queue:
-			for cell in self.cells:
-				self.deduction_queue.append(cell)
-			for group in self.groups:
-				self.deduction_queue.append(group)
 		while True:
 			result = self.find_move(**kwargs)
 			if result is None: return None
@@ -83,39 +73,61 @@ class Sudoku:
 
 	# returns true if it found a move, false otherwise
 	# returns NONE when the puzzle is invalid
-	def find_move(self, using_pointers=False):
+	def find_move(self,
+		using_pointers=False,
+		using_x_wings=False
+	):
 		while self.deduction_queue.has_items():
 			candidate = self.deduction_queue.pop()
 			match candidate:
 
 				case Cell():
 					# there's only one deduction we can do on a cell, and it's pretty easy
-					if self.how_many[candidate.pencil] == 1 and not candidate.answer_known:
-						for n in range(self.n):
-							if candidate.pencil == (1 << n):
-								candidate.set_answer(n)
-								self.moves.append({
-									"cell": candidate.i,
-									"canOnlyBe": n
-								})
+					if len(candidate.pencil) == 1 and not candidate.answer_known:
+						n = candidate.pencil.__iter__().__next__()
+						candidate.set_answer(n)
+						self.moves.append({
+							"cell": candidate.i,
+							"canOnlyBe": n
+						})
 						return True
 
-				case GroupDeduction(group=group, type="only_place"):
-					for n in range(self.n):
-						bits = 1 << n
-						places = [cell for cell in group if cell.pencil & bits]
-						if len(places) == 1 and not places[0].answer_known:
-							self.moves.append({
-								"cell": places[0].i,
-								"group": group.i,
-								"onlyPlaceFor": n
-							})
-							places[0].set_answer(n)
-							return True
+				case GroupDeduction(partition=GroupPartition(exists=False)):
+					# this group no longer exists
+					pass
 
-				case GroupDeduction(group=group, type="pointers"):
+				case GroupDeduction(partition=partition, type="partition"):
+					partitions = partition.partition()
+					if partitions is False:
+						partition.enqueue_logic()
+					else:
+						partition.group.partitions.remove(partition)
+						partition.group.partitions += partitions
+						partition.exists = False
+						for partition in partitions:
+							partition.enqueue_logic()
+
+				case GroupDeduction(partition=partition, type="only_place"):
+					for n in partition.values:
+						places = [cell for cell in partition if cell.could_be(n)]
+						if not places:
+							return None
+						if len(places) != 1:
+							continue
+						if places[0].answer_known:
+							continue
+						self.moves.append({
+							"cell": places[0],
+							"group": partition.group.i,
+							"onlyPlaceFor": n
+						})
+						places[0].set_answer(n)
+						return True
+
+				case GroupDeduction(partition=partition, type="pointers"):
 					if not using_pointers:
 						continue
+					continue
 					candidates = [ cell for cell in group if not cell.answer_known ]
 					numbers_we_know = 0
 					for cell in group:
@@ -146,7 +158,10 @@ class Sudoku:
 							cell.set_pencil(cell.pencil & bits)
 						return True
 
-				case GroupDeduction(group=group, type="x_wing"):
+				case GroupDeduction(partition=partition, type="x_wing"):
+					if not using_x_wings:
+						continue
+
 					pass
 
 				case _:

@@ -1,38 +1,85 @@
 #!/usr/bin/env python3
 
+import unittest
+from collections import namedtuple
+
+from group import GroupPartition, Group
 from sudoku import Sudoku
-from group import Group
 from cell import Cell
-from how_many import how_many
 
-print("building setup")
-group_under_test = Group(0)
-print("building setup")
-cells = [Cell([group_under_test]) for i in range(4)]
-print("building setup")
-grid = Sudoku([group_under_test], cells, how_many(4))
+def partitions(group):
+	return frozenset(
+		frozenset( cell.i for cell in partition )
+		for partition in group.partitions
+	)
 
-# only cells 0 and 1 can have a 2 or 3 in them
-# but they can also have other numbers
-cells[0].pencil = 15
-cells[1].pencil = 14
-cells[2].pencil = 3
-cells[3].pencil = 3
+class TestGrid(unittest.TestCase):
 
-# we should be able to deduce they can't be 0 or 1
-print("starting search")
-result = grid.find_move(using_pointers = True)
+	def test_get_partition(self):
+		group = Group(0)
+		cells = [Cell([group], 4) for i in range(4)]
+		grid = Sudoku([group], cells)
+		self.assertEqual([group.partition_for(cells[0])], group.partitions)
 
-if not result:
-	print("❌ couldn't find a move")
-	exit()
+	def test_rule_out(self):
+		group = Group(0)
+		cells = [Cell([group], 4) for i in range(4)]
+		grid = Sudoku([group], cells)
+		cells[0].rule_out(0)
+		grid.solve()
+		self.assertEqual(cells[0].pencil, {1, 2, 3})
 
-print(grid.moves)
+	def test_rule_out_get_partition(self):
+		group = Group(0)
+		cells = [Cell([group], 4) for i in range(4)]
+		grid = Sudoku([group], cells)
+		partition = group.partitions[0]
+		cells[0].rule_out(0)
+		grid.solve()
+		self.assertEqual([group.partition_for(cells[0])], [partition])
 
-pencils = [ cell.pencil for cell in cells ]
-if pencils != [ 12, 12, 3, 3 ]:
-	print("❌ pencils were wrong")
-	print(pencils)
-	exit()
+	def test_rule_out_2(self):
+		group = Group(0)
+		cells = [Cell([group], 4) for i in range(4)]
+		grid = Sudoku([group], cells)
+		cells[0].rule_out(0)
+		cells[0].rule_out(1)
+		grid.solve()
+		self.assertEqual(cells[0].pencil, {2, 3})
 
-print("✅ all good!")
+	def test_rule_out_2_split(self):
+		group = Group(0)
+		cells = [Cell([group], 4) for i in range(4)]
+		grid = Sudoku([group], cells)
+		cells[0].rule_out(0)
+		cells[1].rule_out(0)
+		grid.solve()
+		self.assertEqual(cells[0].pencil, {1, 2, 3})
+
+	def test_partition(self):
+		group = Group(0)
+		cells = [Cell([group], 4) for i in range(4)]
+		grid = Sudoku([group], cells)
+		self.assertEqual(partitions(group), frozenset([frozenset([0, 1, 2, 3])]))
+		cells[0].rule_out(0)
+		cells[0].rule_out(1)
+		cells[1].rule_out(0)
+		cells[1].rule_out(1)
+		cells[2].rule_out(2)
+		cells[2].rule_out(3)
+		cells[3].rule_out(2)
+		cells[3].rule_out(3)
+		grid.solve()
+		self.assertEqual(partitions(group), frozenset([frozenset([0, 1]), frozenset([2, 3])]))
+
+	def test_set_answer(self):
+		group = Group(0)
+		cells = [Cell([group], 4) for i in range(4)]
+		grid = Sudoku([group], cells)
+		cells[0].set_answer(0)
+		self.assertEqual(cells[1].pencil, { 1, 2, 3 })
+		cells[1].set_answer(0)
+		self.assertEqual(cells[1].pencil, { 2, 3 })
+
+if __name__ == '__main__':
+	unittest.main()
