@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "3doku",
   "scripts": {
+    "test": "generation/test.py",
     "dev": "rm -rf dist; mkdir -p dist/puzzles; cp -r puzzles dist/; parcel index.html",
     "upload-code": "rm -rf dist; parcel build index.html --public-url /puzzles/3doku && rsync -r 'dist/' 'andrewtaylor_andrewt@ssh.phx.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku'",
     "upload-test": "rm -rf dist; parcel build index.html --public-url /puzzles/3doku-beta && rsync -r 'dist/' 'andrewtaylor_andrewt@ssh.phx.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku-beta'",

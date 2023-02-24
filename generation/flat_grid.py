@@ -25,9 +25,21 @@ def FlatGrid(n, pot=None):
 	return grid
 
 def print_grid(grid):
-	for x in range(grid.n):
-		for y in range(grid.n):
+	for y in range(grid.n):
+		for x in range(grid.n):
 			cell = grid.cells[x + y * grid.n]
 			print(hex(cell.answer)[2] if cell.answer_known else "-", end="")
+		print("")
+	print("")
+
+def print_pencil(grid):
+	for y in range(grid.n):
+		for n in range(grid.n):
+			for x in range(grid.n):
+				cell = grid.cells[x + y * grid.n]
+				print("." if cell.answer_known else
+					n if n in cell.pencil
+					else "-", end="")
+			print("  ", end="")
 		print("")
 	print("")

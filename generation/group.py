@@ -38,15 +38,14 @@ class GroupPartition:
 	def partition(self):
 		partitions = []
 		for cell in self.cells:
-			for partition in partitions:
-				if not partition.values.isdisjoint(cell.pencil):
-					partition.cells.add(cell)
-					partition.values |= cell.pencil
-					break
-			else:
-				partitions.append(GroupPartition(
-					self.group, [cell], list(cell.pencil)
-				))
+			# if cell.answer_known: continue
+			cell_partition = GroupPartition(self.group, [cell], list(cell.pencil))
+			for partition in [x for x in partitions]:
+				if not partition.values.isdisjoint(cell_partition.values):
+					cell_partition.cells |= partition.cells
+					cell_partition.values |= partition.values
+					partitions.remove(partition)
+			partitions.append(cell_partition)
 		return partitions if partitions[0].cells != self.cells else False
 
 class Group:

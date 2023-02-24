@@ -50,16 +50,21 @@ class Sudoku:
 		return all(cell.answer_known for cell in self.cells)
 
 	# returns true on success and false on failure
-	def try_generate(self, **kwargs):
+	def try_generate(self, debug=None, **kwargs):
 		while True:
-			if self.solve(**kwargs): return True
-			if not self.add_random_clue(): return False
+			if self.solve(debug=debug, **kwargs): return True
+			if not self.add_random_clue(debug=debug): return False
 
 	# returns true on success and false on failure
-	def add_random_clue(self):
+	def add_random_clue(self, debug=None):
 		cell = random.choice(list(self.unsolved_cells()))
 		if not cell.pencil: return False
 		cell.make_clue()
+		self.moves.append({
+			"cell": cell.i,
+			"randomlyAssigned": cell.answer
+		})
+		if debug: debug(self)
 		return True
 
 	# returns true on success and false on failure
@@ -70,12 +75,14 @@ class Sudoku:
 			if result is None: return None
 			if not result: return False
 			if self.is_solved(): return True
+			if "debug" in kwargs and kwargs["debug"]: kwargs["debug"](self)
 
 	# returns true if it found a move, false otherwise
 	# returns NONE when the puzzle is invalid
 	def find_move(self,
 		using_pointers=False,
-		using_x_wings=False
+		using_x_wings=False,
+		debug=None
 	):
 		while self.deduction_queue.has_items():
 			candidate = self.deduction_queue.pop()
@@ -106,6 +113,7 @@ class Sudoku:
 						partition.exists = False
 						for partition in partitions:
 							partition.enqueue_logic()
+						if debug: debug(self)
 
 				case GroupDeduction(partition=partition, type="only_place"):
 					for n in partition.values:
@@ -117,7 +125,7 @@ class Sudoku:
 						if places[0].answer_known:
 							continue
 						self.moves.append({
-							"cell": places[0],
+							"cell": places[0].i,
 							"group": partition.group.i,
 							"onlyPlaceFor": n
 						})

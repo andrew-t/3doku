@@ -10,7 +10,7 @@ from sudokube import Sudokube
 
 def log_line(line):
 	print("")
-	print(datetime.now(), line, end="")
+	print(f"\033[1;36m{datetime.now()}\033[0m", line, end="")
 	stdout.flush()
 
 def log_append(part):
@@ -20,7 +20,9 @@ def log_append(part):
 def move_type(move):
 	if "canOnlyBe" in move: return "cell-can-only-be"
 	if "onlyPlaceFor" in move: return "the-N-must-go-here"
-	if "couldBe" in move: return "pointers"
+	if "couldBe" in move: return "👉 pointers"
+	if "randomlyAssigned" in move: return "⚠️ guesswork"
+	return str(move)
 
 def generate_easy_puzzle():
 	while True:
@@ -47,7 +49,12 @@ def print_grid(grid):
 
 def check_grid(grid):
 	for group in grid.groups:
-		assert { cell.answer for cell in group } == { range(16) }
+		# assert { cell.answer for cell in group } == { i for i in range(16) }
+		if { cell.answer for cell in group } != { i for i in range(16) }:
+			print([ cell.i for cell in group ])
+			print({ cell.answer for cell in group })
+			print({ i for i in range(16) })
+			raise Exception("check failed")
 
 def generate_puzzle(**intended_difficulty):
 	# generate an easy puzzle as a quick way to fill the grid
@@ -96,7 +103,7 @@ def generate_puzzle(**intended_difficulty):
 
 	log_line(f"{len(clues)} clues")
 	
-	log_line(f"Requires: {', '.join(set( move_type(move) for move in puzzle.moves ))}")
+	log_line(f"Requires: {', '.join(set( move_type(move) for move in solution.moves ))}")
 
 if __name__ == "__main__":
 	while True:
