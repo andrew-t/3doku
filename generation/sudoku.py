@@ -4,6 +4,8 @@ from cell import Cell
 from group import Group, GroupDeduction, GroupPartition
 from queue import PrioritisedQueue
 
+from combinatorics import every_combination_of
+
 class Sudoku:
 	def __init__(self, groups, cells):
 		self.groups = groups
@@ -133,37 +135,39 @@ class Sudoku:
 						return True
 
 				case GroupDeduction(partition=partition, type="pointers"):
-					if not using_pointers:
-						continue
-					continue
-					candidates = [ cell for cell in group if not cell.answer_known ]
-					numbers_we_know = 0
-					for cell in group:
-						if cell.answer_known:
-							numbers_we_know |= (1 << cell.answer)
-					# exclude 0 and 65535 because they're trivial cases; they are always true and never useful
-					for bits in range(1, 65535):
-						n = self.how_many[bits]
-						# we can also exclude all the cases with 1 or 15 bits because those are equivalent to the basic logic above, which is faster than checking all this
-						if n == 1 or n == 15: continue
-						# the set of numbers we consider isn't allowed to contain numbers we've already placed; that would be pointless and also cause bugs
-						if numbers_we_know & bits: continue
+					if not using_pointers: continue
+					# partitions of length 1 are trivial and it's convenient to assume they don't exist so filter them out here
+					if len(partition) < 2: continue
+					# any cells we already know should have been removed from the partition by now
+					assert all( not cell.answer_known for cell in partition )
+
+					n = len(partition)
+					assert n == len(partition.values)
+					for guess_values in every_combination_of(partition.values):
+						guess_n = len(guess_values)
+						# If guess_n == 0 or guess_n == n then we can't do anything
+						# If guess_n == 1 that's the same as "this cell can only be a 4"
+						# If guess_n == n - 1 that's the same as "the 4 can only go here"
+						# or maybe it's the other way round, whatever
+						if guess_n <= 1 or guess_n >= n - 1: continue
 						# Find all the cells which can contain any of the numbers we're considering, even if they could contain other things too.
-						could_be = [ cell for cell in candidates if cell.pencil & bits ]
+						could_be = [ cell for cell in partition if cell.pencil & guess_values ]
 						could_be_n = len(could_be)
 						# We only care about the case where N numbers are locked to N cells — so we know those cells can't be anything else.
-						if could_be_n == len(candidates) or could_be_n != n: continue
+						if could_be_n != guess_n: continue
 						# ok so this means there are (say) 3 numbers that can only possibly be in the same 3 cells in this group
 						self.moves.append({
-							"group": group.i,
-							"numbers": [ i for i in range(self.n) if bits & (1 << i) ],
+							"group": partition.group.i,
+							"numbers": list(guess_values),
 							"couldBe": [ cell.i for cell in could_be ],
 							# "bits": bits
 							# "n": could_be_n
 						})
 						# therefore, the cells that COULD be the numbers we're considering can't be anything BUT those numbers — otherwise there wouldn't be space for them.
 						for cell in could_be:
-							cell.set_pencil(cell.pencil & bits)
+							for value in list(cell.pencil):
+								if value not in guess_values:
+									cell.rule_out(value)
 						return True
 
 				case GroupDeduction(partition=partition, type="x_wing"):

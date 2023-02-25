@@ -1,6 +1,17 @@
+from collections import namedtuple
+
 from group import GroupPartition, Group
 from sudoku import Sudoku
 from cell import Cell
+
+Pot = namedtuple('Pot', ['answer', 'is_clue'])
+def flat_from_string(str):
+	pot = [
+		(Pot(None, False) if char == '_' else Pot(int(char) + 1, True))
+		for char in str.strip()
+		if char.strip()
+	]
+	return FlatGrid(int(len(pot) ** 0.25), pot)
 
 def FlatGrid(n, pot=None):
 	groups = [ Group(i) for i in range(3 * n * n) ]

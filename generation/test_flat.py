@@ -30,9 +30,10 @@ def generate(n):
 		print(clues.moves)
 		return
 
-generate(2)
-print()
-# generate(3)
-# print()
-# generate(4)
-# print()
+if __name__ == "__main__":
+	generate(2)
+	print()
+	# generate(3)
+	# print()
+	# generate(4)
+	# print()

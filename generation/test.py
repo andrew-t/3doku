@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 import unittest
-from collections import namedtuple
 
 from group import GroupPartition, Group
 from sudoku import Sudoku
 from cell import Cell
+
+import flat_grid
+import test_flat
 
 def partitions(group):
 	return partitions_direct(group.partitions)
@@ -93,11 +95,28 @@ class TestGrid(unittest.TestCase):
 	def test_set_answer(self):
 		group = Group(0)
 		cells = [Cell([group], 4) for i in range(4)]
-		grid = Sudoku([group], cells)
+		Sudoku([group], cells)
 		cells[0].set_answer(0)
 		self.assertEqual(cells[1].pencil, { 1, 2, 3 })
 		cells[1].set_answer(1)
 		self.assertEqual(cells[2].pencil, { 2, 3 })
+
+	def test_pointer(self):
+		grid = flat_grid.flat_from_string("""
+			____
+			____
+			12__
+			____
+		""")
+		grid.solve(
+			# debug=test_flat.debug,
+			using_pointers=True
+		)
+		self.assertEqual(grid.moves,
+			[{'group': 7, 'numbers': [2, 3], 'couldBe': [15, 14]}]
+		)
+		self.assertEqual(grid.cells[14].pencil, { 2, 3 })
+		self.assertEqual(grid.cells[15].pencil, { 2, 3 })
 
 if __name__ == '__main__':
 	unittest.main()
