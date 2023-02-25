@@ -191,6 +191,7 @@ class Sudoku:
 										overlap_groups = [ group for group in overlap_a.groups if group in overlap_b.groups ]
 										# Pretty sure this can only ever have one thing in it but idk, maybe for crazy geometries there can be more?
 										for overlap_group in overlap_groups:
+											if overlap_group == partition.group: continue
 											overlap_partition = overlap_group.partition_for(overlap_a)
 											if overlap_b not in overlap_partition: continue
 											if value not in overlap_partition.values: continue
@@ -211,13 +212,15 @@ class Sudoku:
 													if cell.could_be(value):
 														ruled_out_from.append(cell)
 														cell.rule_out(value)
-											if ruled_out_from: self.moves.append({
-												"groups": [partition.group.i, overlap_group.i],
-												"cells": [ a.i, b.i, overlap_a.i, overlap_b.i ],
-												"pivotValue": value,
-												"ruledOutFrom": [ cell.i for cell in ruled_out_from ]
-											})
-					pass
+											if ruled_out_from:
+												self.moves.append({
+													"groups": [partition.group.i, overlap_group.i],
+													"counterGroups": [a_partition.group.i, b_partition.group.i],
+													"cells": [ a.i, b.i, overlap_a.i, overlap_b.i ],
+													"pivotValue": value,
+													"ruledOutFrom": [ cell.i for cell in ruled_out_from ]
+												})
+												return True
 
 				case _:
 					print(candidate)
