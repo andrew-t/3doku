@@ -21,6 +21,7 @@ def move_type(move):
 	if "canOnlyBe" in move: return "cell-can-only-be"
 	if "onlyPlaceFor" in move: return "the-N-must-go-here"
 	if "couldBe" in move: return "👉 pointers"
+	if "pivotValue" in move: return "🚀 x-wings"
 	if "randomlyAssigned" in move: return "⚠️ guesswork"
 	return str(move)
 

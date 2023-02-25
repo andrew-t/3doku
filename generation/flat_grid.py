@@ -1,13 +1,13 @@
 from collections import namedtuple
 
-from group import GroupPartition, Group
+from group import Group
 from sudoku import Sudoku
 from cell import Cell
 
 Pot = namedtuple('Pot', ['answer', 'is_clue'])
 def flat_from_string(str):
 	pot = [
-		(Pot(None, False) if char == '_' else Pot(int(char) + 1, True))
+		(Pot(int(char) - 1, True) if (char >= '0' and char <= '9') else Pot(None, False))
 		for char in str.strip()
 		if char.strip()
 	]

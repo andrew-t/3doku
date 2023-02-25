@@ -159,9 +159,7 @@ class Sudoku:
 						self.moves.append({
 							"group": partition.group.i,
 							"numbers": list(guess_values),
-							"couldBe": [ cell.i for cell in could_be ],
-							# "bits": bits
-							# "n": could_be_n
+							"couldBe": [ cell.i for cell in could_be ]
 						})
 						# therefore, the cells that COULD be the numbers we're considering can't be anything BUT those numbers — otherwise there wouldn't be space for them.
 						for cell in could_be:
@@ -171,9 +169,54 @@ class Sudoku:
 						return True
 
 				case GroupDeduction(partition=partition, type="x_wing"):
-					if not using_x_wings:
-						continue
-
+					if not using_x_wings: continue
+					for value in partition.values:
+						could_be = [ cell for cell in partition if cell.could_be(value) ]
+						# I suspect you could have a 3x3x3 X-wing, but I've never seen it listed in the literature
+						# so maybe you can't for some reason, but also maybe it's deemed unreasonably hard?
+						# also it'd probably take bloody ages to solve for, so we can probably leave it out of this
+						if len(could_be) != 2: continue
+						# so we've identified a digit that can only be in two places in this partition, let's find candidate x-wings
+						# and since we're limiting to 2 cells, we can write it out explicitly instead of trying to be clever with iterated loops
+						[ a, b ] = could_be
+						assert a is not b
+						a_partitions = [ group.partition_for(a) for group in a.groups if group != partition.group ]
+						b_partitions = [ group.partition_for(b) for group in b.groups if group != partition.group ]
+						for a_partition in a_partitions:
+							for b_partition in b_partitions:
+								for overlap_a in a_partition:
+									if overlap_a == a: continue
+									for overlap_b in b_partition:
+										if overlap_b == b or overlap_b == overlap_a: continue
+										overlap_groups = [ group for group in overlap_a.groups if group in overlap_b.groups ]
+										# Pretty sure this can only ever have one thing in it but idk, maybe for crazy geometries there can be more?
+										for overlap_group in overlap_groups:
+											overlap_partition = overlap_group.partition_for(overlap_a)
+											if overlap_b not in overlap_partition: continue
+											if value not in overlap_partition.values: continue
+											# next we have to check that our overlap partition implies the same fact that only the two cells can be `value`
+											if any(
+												cell.could_be(value) != (cell is overlap_a or cell is overlap_b)
+												for cell in overlap_partition
+											): continue
+											# looks like we have a legit x-wing. now we need to wipe every candidate for `value` from the perpendicular groups.
+											ruled_out_from = []
+											for cell in a_partition:
+												if cell != a and cell not in overlap_group:
+													if cell.could_be(value):
+														ruled_out_from.append(cell)
+														cell.rule_out(value)
+											for cell in b_partition:
+												if cell != b and cell not in overlap_group:
+													if cell.could_be(value):
+														ruled_out_from.append(cell)
+														cell.rule_out(value)
+											if ruled_out_from: self.moves.append({
+												"groups": [partition.group.i, overlap_group.i],
+												"cells": [ a.i, b.i, overlap_a.i, overlap_b.i ],
+												"pivotValue": value,
+												"ruledOutFrom": [ cell.i for cell in ruled_out_from ]
+											})
 					pass
 
 				case _:

@@ -115,10 +115,34 @@ class TestGrid(unittest.TestCase):
 		self.assertEqual(len(grid.moves), 1)
 		move = grid.moves[0]
 		self.assertEqual(move['group'], 7)
-		self.assertEqual(set(move['numbers']), { 2, 3 })
+		self.assertEqual(set(move['numbers']), { 0, 1 })
 		self.assertEqual(set(move['couldBe']), { 14, 15 })
-		self.assertEqual(grid.cells[14].pencil, { 2, 3 })
-		self.assertEqual(grid.cells[15].pencil, { 2, 3 })
+		self.assertEqual(grid.cells[14].pencil, { 0, 1 })
+		self.assertEqual(grid.cells[15].pencil, { 0, 1 })
+
+	def test_x_wing(self):
+		# the X cells in the first column must be 3 and 4
+		# the X cells in the third column must be 1 and 3
+		# either way, two opposite corners of the X-wing must be 3s
+		# and therefore neither cell marked . can be a 3
+		# (the extra 2s are in there just because you can work them out anyway)
+		grid = flat_grid.flat_from_string("""
+			1_2_
+			x2x.
+			2_4_
+			x.x2
+		""")
+		grid.solve(
+			# debug=test_flat.debug,
+			using_pointers=True,
+			using_x_wings=True
+		)
+		self.assertTrue(len(grid.moves) >= 1)
+		xw = grid.moves[0]
+		self.assertEqual(set(xw["cells"]), { 4, 6, 12, 14 })
+		self.assertEqual(set(xw["ruledOutFrom"]), { 7, 13 })
+		self.assertEqual(set(xw["groups"]), { 0, 2 })
+		self.assertEqual(xw["pivotValue"], 2)
 
 if __name__ == '__main__':
 	unittest.main()
