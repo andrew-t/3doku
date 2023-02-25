@@ -35,6 +35,7 @@ class GroupPartition:
 		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'partitions'), 80)
 		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'pointers'), 70)
 		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'x_wing'), 50)
+		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'swordfish'), 40)
 
 	def partition(self):
 		partitions = []

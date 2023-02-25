@@ -134,7 +134,6 @@ class TestGrid(unittest.TestCase):
 		""")
 		grid.solve(
 			# debug=test_flat.debug,
-			using_pointers=True,
 			using_x_wings=True
 		)
 		self.assertTrue(len(grid.moves) >= 1)
@@ -143,6 +142,38 @@ class TestGrid(unittest.TestCase):
 		self.assertEqual(set(xw["ruledOutFrom"]), { 7, 13 })
 		self.assertEqual(set(xw["groups"]), { 0, 2 })
 		self.assertEqual(xw["pivotValue"], 2)
+
+	def test_swordfish(self):
+		# e is either end of the loop
+		# the x-chain proves one of the e's must be a 4
+		# also, the y-chain proves one of the E's must be a 4
+		# either way, the . cell can't be a 4
+		# because the e's (or E's) form a pointer to it
+		grid = flat_grid.flat_from_string("""
+			195 367 248
+			E78 .5E 369
+			3x6 e98 157
+
+		    __3 78y 59y
+		    7_9 e_5 x_6
+		    584 9_6 71_
+		    
+		    832 549 671
+		    9x7 _13 x25
+		    y51 _72 9_y
+		""")
+		grid.solve(
+			# debug=test_flat.debug,
+			using_swordfish=True
+		)
+		# print(grid.moves)
+		# this actually finds a second "swordfish" in the fourth column
+		# but it's really just a pointer, which is technically a special case of swordfish
+		# so since pointers are turned off here, we get it twice
+		self.assertTrue(len(grid.moves) >= 1)
+		sf = grid.moves[0]
+		self.assertEqual(sf["value"], 3)
+		self.assertEqual(sf["ruledOutFrom"], [12])
 
 if __name__ == '__main__':
 	unittest.main()

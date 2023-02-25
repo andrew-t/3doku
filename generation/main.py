@@ -23,6 +23,7 @@ def move_type(move):
 	if "couldBe" in move: return "🗃️  partitions"
 	if "pointingValue" in move: return "👉 pointers"
 	if "pivotValue" in move: return "🚀 x-wings"
+	if "chain" in move: return f"🐟 {move['parity']} swordfish"
 	if "randomlyAssigned" in move: return "⚠️ guesswork"
 	return str(move)
 
@@ -115,5 +116,6 @@ if __name__ == "__main__":
 			# It is my current belief that X-wings cannot exist on a cube.
 			# The four cells cannot be in four different subgrids (faces) because the geometry forbids it
 			# and if they're squeezed into two adjacent faces then what you've got is just two pointers.
-			using_x_wings=False
+			using_x_wings=False,
+			using_swordfish=True
 		)

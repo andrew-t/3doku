@@ -85,6 +85,7 @@ class Sudoku:
 		using_pointers=False,
 		using_partitions=False,
 		using_x_wings=False,
+		using_swordfish=False,
 		debug=None
 	):
 		while self.deduction_queue.has_items():
@@ -248,7 +249,82 @@ class Sudoku:
 													"ruledOutFrom": [ cell.i for cell in ruled_out_from ]
 												})
 												return True
+											
+				case GroupDeduction(partition=partition, type="swordfish"):
+					if not using_swordfish: continue
+					if len(partition) < 2: continue
+					assert all( not cell.answer_known for cell in partition )
+					# start by finding a start point
+					for start in partition:
+						for value in start.pencil:
+							# check there'll be something to rule out
+							could_be = [ cell for cell in partition if cell.could_be(value) ]
+							if len(could_be) < 3: continue
+							# now, step through the grid until we land back in `partition`.
+							loops = list(self.find_loopbacks(partition.group, partition.group, value, [start]))
+							if not loops: continue
+
+							# take the shortest loop to be our "canonical" one
+							loops.sort(key=lambda loop: len(loop))
+							loop = loops[0]
+
+							# so there are two types of loops: odd (1) and even (0)
+							parity = len(loop) % 2
+							# and all the loops must be the same parity, otherwise the start cell both is and isn't the target value
+							assert all(len(loop) % 2 == parity for loop in loops)
+
+							if parity == 0:
+								# a traditional swordfish (which may be the only kind allowable in 2D) is even
+								# which is to say that if one end of the chain is not a 4 (or whatever) then the other end must be
+								# and therefore they form a pointer to other cells in the target group
+								ruled_out_from = [ cell for cell in could_be if cell not in loop ]
+								for cell in ruled_out_from:
+									cell.rule_out(value)
+								self.moves.append({
+									"group": partition.group.i,
+									"chain": [ cell.i for cell in loop ],
+									"value": value,
+									"ruledOutFrom": [ cell.i for cell in ruled_out_from ],
+									"parity": "even"
+								})
+								return True
+							
+							else:
+								# an odd swordfish says that if one end of the chain is a 4 (or whatever) then SO MUST THE OTHER END BE
+								# this is obviously nonsense so it must be wrong.
+								# we can rule out the target value from both ends of the chain
+								# we might be able to rule it out from all the odd steps, but i think it will propagate along the chain using simpler logic anyway
+								loop[0].rule_out(value)
+								loop[-1].rule_out(value)
+								self.moves.append({
+									"group": partition.group.i,
+									"chain": [ cell.i for cell in loop ],
+									"value": value,
+									"ruledOutFrom": [ loop[0].i, loop[-1].i ],
+									"parity": "odd"
+								})
+								return True
 
 				case _:
 					print(candidate)
 					raise Exception("Unexpected candidate")
+
+	# this is only its own function so it can recurse,
+	# if you got here other than by looking to see what loop_ends does,
+	# you almost certainly don't need it
+	def find_loopbacks(self, start_group, last_group, value, chain):
+		current_cell = chain[-1]
+		for group in current_cell.groups:
+			if group is last_group: continue
+			if group is start_group:
+				yield chain
+				continue
+			could_be = [
+				cell for cell in group.partition_for(current_cell)
+				if cell.could_be(value) and cell is not current_cell
+			]
+			if len(could_be) != 1: continue
+			[next_cell] = could_be
+			if next_cell in chain: continue
+			for end in self.find_loopbacks(start_group, group, value, chain + [next_cell]):
+				yield end
