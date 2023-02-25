@@ -137,7 +137,28 @@ class Sudoku:
 
 				case GroupDeduction(partition=partition, type="pointers"):
 					if not using_pointers: continue
-					# TODO
+					if len(partition) < 2: continue
+					assert all( not cell.answer_known for cell in partition )
+					for value in partition.values:
+						could_be = [ cell for cell in partition if cell.could_be(value) ]
+						other_groups = [ group for group in could_be[0].groups if all( group in cell.groups for cell in could_be ) ]
+						if len(other_groups) == 1:
+							assert other_groups == [partition.group]
+							continue
+						# Pretty sure this can only ever have one thing in it but idk, maybe for crazy geometries there can be more?
+						for other_group in other_groups:
+							if other_group is partition.group: continue
+							could_be_here = [ cell for cell in other_group if cell.could_be(value) and cell not in partition ]
+							if not could_be_here: continue
+							self.moves.append({
+								"pointingGroup": partition.group.i,
+								"pointingValue": value,
+								"pointingIntoGroup": other_group.i,
+								"affectedCells": [ cell.i for cell in could_be_here ]
+							})
+							for cell in could_be_here:
+								cell.rule_out(value)
+							return True
 					pass
 
 				case GroupDeduction(partition=partition, type="partitions"):
