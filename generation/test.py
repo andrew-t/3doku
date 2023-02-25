@@ -112,9 +112,11 @@ class TestGrid(unittest.TestCase):
 			# debug=test_flat.debug,
 			using_pointers=True
 		)
-		self.assertEqual(grid.moves,
-			[{'group': 7, 'numbers': [2, 3], 'couldBe': [15, 14]}]
-		)
+		self.assertEqual(len(grid.moves), 1)
+		move = grid.moves[0]
+		self.assertEqual(move['group'], 7)
+		self.assertEqual(set(move['numbers']), { 2, 3 })
+		self.assertEqual(set(move['couldBe']), { 14, 15 })
 		self.assertEqual(grid.cells[14].pencil, { 2, 3 })
 		self.assertEqual(grid.cells[15].pencil, { 2, 3 })
 
