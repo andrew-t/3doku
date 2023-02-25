@@ -20,7 +20,8 @@ def log_append(part):
 def move_type(move):
 	if "canOnlyBe" in move: return "cell-can-only-be"
 	if "onlyPlaceFor" in move: return "the-N-must-go-here"
-	if "couldBe" in move: return "👉 pointers"
+	if "couldBe" in move: return "🗃️ partitions"
+	# if "couldBe" in move: return "👉 pointers"
 	if "pivotValue" in move: return "🚀 x-wings"
 	if "randomlyAssigned" in move: return "⚠️ guesswork"
 	return str(move)
@@ -110,5 +111,6 @@ if __name__ == "__main__":
 	while True:
 		generate_puzzle(
 			using_pointers=True,
+			using_partitions=True,
 			using_x_wings=True
 		)

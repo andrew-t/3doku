@@ -101,7 +101,7 @@ class TestGrid(unittest.TestCase):
 		cells[1].set_answer(1)
 		self.assertEqual(cells[2].pencil, { 2, 3 })
 
-	def test_pointer(self):
+	def test_partition_deduction(self):
 		grid = flat_grid.flat_from_string("""
 			____
 			____
@@ -110,7 +110,7 @@ class TestGrid(unittest.TestCase):
 		""")
 		grid.solve(
 			# debug=test_flat.debug,
-			using_pointers=True
+			using_partitions=True
 		)
 		self.assertEqual(len(grid.moves), 1)
 		move = grid.moves[0]

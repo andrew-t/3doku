@@ -33,6 +33,7 @@ class GroupPartition:
 	def enqueue_logic(self):
 		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'only_place'), 90)
 		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'pointers'), 80)
+		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'partitions'), 70)
 		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'x_wing'), 50)
 
 	def partition(self):

@@ -83,6 +83,7 @@ class Sudoku:
 	# returns NONE when the puzzle is invalid
 	def find_move(self,
 		using_pointers=False,
+		using_partitions=False,
 		using_x_wings=False,
 		debug=None
 	):
@@ -136,6 +137,11 @@ class Sudoku:
 
 				case GroupDeduction(partition=partition, type="pointers"):
 					if not using_pointers: continue
+					# TODO
+					pass
+
+				case GroupDeduction(partition=partition, type="partitions"):
+					if not using_partitions: continue
 					# partitions of length 1 are trivial and it's convenient to assume they don't exist so filter them out here
 					if len(partition) < 2: continue
 					# any cells we already know should have been removed from the partition by now
