@@ -119,12 +119,15 @@ def generate_puzzle(**intended_difficulty):
 
 if __name__ == "__main__":
 	while True:
+		# Generally this algorithm generates hard puzzles more often than easy puzzles.
+		# We want a mix, so randomly force a few easier ones into the mix.
+		level = random.randint(0, 10)
 		generate_puzzle(
-			using_pointers=True,
-			using_partitions=True,
+			using_pointers=level > 1,
+			using_partitions=level > 3,
 			# It is my current belief that X-wings cannot exist on a cube.
 			# The four cells cannot be in four different subgrids (faces) because the geometry forbids it
 			# and if they're squeezed into two adjacent faces then what you've got is just two pointers.
 			using_x_wings=False,
-			using_swordfish=True
+			using_swordfish=level > 7
 		)

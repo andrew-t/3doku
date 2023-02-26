@@ -30,7 +30,10 @@
 </head><body>
 	<div id="scroller"></div>
 	<div id="main">
-		<h1>3Doku <span id="puzzle-id"></span></h1>
+		<div class="header">
+			<h1>3Doku <span id="puzzle-id"></span></h1>
+			<button id="hint-button">Hint</button>
+		</div>
 		<doku-cube id="cube" tabindex="0"></doku-cube>
 		<div id="sidebar">
 			<radio-group
@@ -181,6 +184,13 @@
 				Next puzzle in <span id="next-puzzle"></span>
 			</div>
 		</div>
+	</dialog>
+	<dialog id="hint-modal">
+		<h1>Hint</h1>
+		<div>
+			<p id="hint-text"></p>
+		</div>
+		<button id="close-hint" class="primary">Done</button>
 	</dialog>
 	<script src="js/main.js" type="module"></script>
 </body></html>

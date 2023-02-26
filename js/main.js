@@ -5,6 +5,7 @@ import $ from "../util/dom.js";
 import storage from "../common/data.js";
 
 import '../common/dark.js';
+import './hints.js';
 
 import './cube.js';
 import './radios.js';
@@ -34,6 +35,7 @@ loadPuzzle().then(json => {
 			$.reset.classList.add('hidden');
 			$.undo.classList.add('hidden');
 			$.showResult.classList.remove('hidden');
+			$.hintButton.disabled = true;
 		}
 		if (isTodaysPuzzle) {
 			storage.undoStack = undoStack.map(({ cell, state }) => ({ cell: cube.cells.indexOf(cell), state }));
@@ -49,6 +51,7 @@ loadPuzzle().then(json => {
 				onCheat();
 		}
 	};
+	cube.emitUpdate();
 });
 
 // Wire up the UI buttons:
@@ -95,7 +98,7 @@ button('options', e => openModal('options-modal'));
 button('show-result', e => openModal('result'));
 button('close-instructions', e => {
 	onStart();
-	clearModals();
+	closeModal("help-modal");
 });
 button('close-assistance', e => closeModal());
 button('close-options', e => closeModal());

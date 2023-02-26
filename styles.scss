@@ -17,17 +17,32 @@ body { padding: 0; margin: 0; }
 	background: #bbb;
 }
 
-h1 { 
-	padding: 1vh 2vh;
+.header {
+	display: flex;
 	margin: 0;
 	z-index: 1;
-	pointer-events: none;
-	font-family: Montserrat, sans-serif;
 	background: #fff;
-	font-size: 4vh;
 	user-select: none;
 
 	.dark-mode & { background: #000; color: #fff; }
+
+	h1 {
+		flex-grow: 1;
+		padding: 1vh 2vh;
+		pointer-events: none;
+	}
+
+	button {
+		font-size: 3vh;
+		width: auto;
+		margin: 3vh 2vh;
+		padding: 1vh 3vh;
+	}
+}
+
+h1 {
+	font-size: 4vh;
+	font-family: Montserrat, sans-serif;
 }
 
 #cube {
@@ -63,6 +78,7 @@ h1 {
 	position: absolute;
 	left: 0; top: 0;
 	width: 400%; height: 100px;
+	pointer-events: none;
 }
 
 .hidden { display: none !important; }
@@ -116,6 +132,11 @@ dialog {
 	border: none;
 	border-radius: 3vh;
 	font-size: 4vh;
+
+	&#hint-modal {
+		height: 35vh;
+		top: unset;
+	}
 
 	.dark-mode & { background: #000; color: #fff; }
 

@@ -75,8 +75,16 @@ def build_week():
 	puzzles = [None] * 7
 	for uuid in files:
 		with open(f"generation/candidates/{uuid}.json", "r") as f:
-			puzzle = json.load(f)
-		difficulty = calculate_difficulty(puzzle)
+			try:
+				puzzle = json.load(f)
+			except Exception as e:
+				print(uuid)
+				raise e
+		try:
+			difficulty = calculate_difficulty(puzzle)
+		except Exception as e:
+			print(uuid)
+			raise e
 		for day in range(week_start, 7):
 			if puzzles[day]: continue
 			(min_difficulty, max_difficulty) = weekly_curve[day]

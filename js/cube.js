@@ -1,4 +1,4 @@
-import { shadowDom, el, classIf } from "../common/dom.js";
+import { shadowDom, el } from "../common/dom.js";
 import './cell.js';
 import { reducedMotion } from "../common/dark.js";
 import $, { styles } from "../util/dom.js";
@@ -53,6 +53,7 @@ export default class Cube extends HTMLElement {
 	usePuzzle({ answers, moves, clues }) {
 		for (let i = 0; i < 96; ++i) this.cells[i].answer = answers[i];
 		for (const c of clues) this.cells[c].makeClue();
+		this.solution = moves;
 		this.reset();
 		this.pushUndo();
 	}
@@ -129,6 +130,15 @@ export default class Cube extends HTMLElement {
 			highlight: [...cell.input.classList].filter(c => c.startsWith('highlight-')).map(c => c.substring(10))[0]
 		}));
 		this.undoStack.push({ cell, state });
+		this.emitUpdate();
+	}
+
+	emitUpdate() {
+		const state = this.cells.map(cell => ({
+			pen: cell.value,
+			pencil: [...cell.pencil],
+			highlight: [...cell.input.classList].filter(c => c.startsWith('highlight-')).map(c => c.substring(10))[0]
+		}));
 		this.onUpdate?.({
 			undoStack: this.undoStack,
 			state,

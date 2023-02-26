@@ -122,12 +122,9 @@ class Sudoku:
 				case GroupDeduction(partition=partition, type="only_place"):
 					for n in partition.values:
 						places = [cell for cell in partition if cell.could_be(n)]
-						if not places:
-							return None
-						if len(places) != 1:
-							continue
-						if places[0].answer_known:
-							continue
+						if not places: return None
+						if len(places) != 1: continue
+						if places[0].answer_known: continue
 						self.moves.append({
 							"cell": places[0].i,
 							"group": partition.group.i,
@@ -142,19 +139,26 @@ class Sudoku:
 					assert all( not cell.answer_known for cell in partition )
 					for value in partition.values:
 						could_be = [ cell for cell in partition if cell.could_be(value) ]
-						other_groups = [ group for group in could_be[0].groups if all( group in cell.groups for cell in could_be ) ]
+						other_groups = [
+							group for group in could_be[0].groups
+							if all( group in cell.groups for cell in could_be )
+						]
 						if len(other_groups) == 1:
 							assert other_groups == [partition.group]
 							continue
 						# Pretty sure this can only ever have one thing in it but idk, maybe for crazy geometries there can be more?
 						for other_group in other_groups:
 							if other_group is partition.group: continue
-							could_be_here = [ cell for cell in other_group if cell.could_be(value) and cell not in partition ]
+							could_be_here = [
+								cell for cell in other_group
+								if cell.could_be(value) and cell not in partition
+							]
 							if not could_be_here: continue
 							self.moves.append({
 								"pointingGroup": partition.group.i,
 								"pointingValue": value,
 								"pointingIntoGroup": other_group.i,
+								"pointingCells": [ cell.i for cell in could_be ],
 								"affectedCells": [ cell.i for cell in could_be_here ]
 							})
 							for cell in could_be_here:
@@ -187,6 +191,7 @@ class Sudoku:
 						self.moves.append({
 							"group": partition.group.i,
 							"numbers": list(guess_values),
+							"antiNumbers": [ value for value in partition.values if value not in guess_values ],
 							"couldBe": [ cell.i for cell in could_be ],
 							"couldNotBe": [ cell.i for cell in partition if cell not in could_be ]
 						})
