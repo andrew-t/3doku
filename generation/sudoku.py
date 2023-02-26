@@ -187,7 +187,8 @@ class Sudoku:
 						self.moves.append({
 							"group": partition.group.i,
 							"numbers": list(guess_values),
-							"couldBe": [ cell.i for cell in could_be ]
+							"couldBe": [ cell.i for cell in could_be ],
+							"couldNotBe": [ cell.i for cell in partition if cell not in could_be ]
 						})
 						# therefore, the cells that COULD be the numbers we're considering can't be anything BUT those numbers — otherwise there wouldn't be space for them.
 						for cell in could_be:
