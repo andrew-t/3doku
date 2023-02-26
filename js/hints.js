@@ -1,12 +1,14 @@
 import { openModal, closeModal, confirm } from "../util/modal.js";
 import { onCheat } from "../common/daily.js";
+import $ from "../util/dom.js";
 
-const cube = document.getElementById('cube');
+const { cube } = $;
+
 let hinted = false;
 
-document.getElementById('close-hint').addEventListener('click', e => closeModal('hint-modal'));
+$.closeHint.addEventListener('click', e => closeModal('hint-modal'));
 
-document.getElementById('hint-button').addEventListener('click', async (e) => {
+$.hintButton.addEventListener('click', async (e) => {
 	console.log('hintclick', e);
 
 	if (!hinted) {
@@ -16,7 +18,7 @@ document.getElementById('hint-button').addEventListener('click', async (e) => {
 		//
 		//        [ Take the hint ]     [ Take the hint ]
 		//
-		if (!await confirm("Accepting a hint will break your streak", "Take hint")) return;
+		if (!await confirm("Accepting a hint will break your streak. It will also clear any highlighting you have set, though this can be restored with the 'undo' button.", "Take hint")) return;
 		hinted = true;
 	}
 
@@ -72,19 +74,38 @@ document.getElementById('hint-button').addEventListener('click', async (e) => {
 
 	// From here on we need the pencilmarks.
 	// Check they're in.
-	for (const cell of cube.cells) {
-		if (cell.value !== null) continue;
-		if (!cell.pencil[cell.answer]) {
-			showHint({}, null,
-				`There are cells whose answer is not pencilled in.
-				Either you have not started using pencil marks,
-				or you have made a mistake while doing so.
-				The next steps require pencil marks,
-				so you may want to turn on "autopencil"
-				and press the "fill in pencil marks" button
-				in the "assistance" window.`
-			);
+	const mispencilled = cube.cells.filter(c =>
+		c.value === null &&
+		!c.pencil[c.answer]
+	);
+	if (mispencilled.length > 0) {
+		showHint({ red: mispencilled }, mispencilled[0],
+			`The highlighted cells do not have their answer pencilled in.
+			Either you have not started using pencil marks,
+			or you have made a mistake while doing so.
+			The next steps require pencil marks,
+			so you may want to turn on "autopencil"
+			and press the "fill in pencil marks" button
+			in the "assistance" window.`
+		);
+		return;
+	}
+	const subpencilled = cube.cells.filter(c => {
+		if (c.value !== null) return false;
+		for (let n = 0; i < 16; ++n) {
+			if (!c.pencil[n]) continue;
+			for (const group of c.groups)
+				for (const cell of group.cells)
+					if (cell.value === n)
+						return true;
 		}
+	});
+	if (subpencilled.length > 0) {
+		showHint({ red: subpencilled }, subpencilled[0],
+			`There are answers pencilled in on the highlighted cells
+			which can be easily ruled out by normal sudoku rules.`
+		);
+		return;
 	}
 
 	// Next, check for cells we can fill in,
@@ -122,7 +143,6 @@ document.getElementById('hint-button').addEventListener('click', async (e) => {
 	// Now it's time for stuff we can't easily work out here,
 	// but stored in the "moves" property of the puzzle itself.
 	for (const move of cube.solution) {
-		console.log(move)
 
 		// We've covered these:
 		if ("onlyPlaceFor" in move) {
@@ -167,40 +187,44 @@ document.getElementById('hint-button').addEventListener('click', async (e) => {
 
 		// Then partitions (it actually doesn't matter what order we put this code in, since we're moving through the "moves" array in its own native order, but let's put them in order of complexity anyway)
 		if ("couldBe" in move) {
-			const { couldBe, couldNotBe, group: groupId, numbers } = move;
+			const {
+				couldBe: couldBeIds,
+				couldNotBe: couldNotBeIds,
+				group: groupId
+			} = move;
+
 			const group = cube.groups[groupId];
-			const antiNumbers = [];
-			for (let i = 0; i < 16; ++i) {
-				if (numbers.includes(i)) continue;
-				if (group.cells.some(cell => cell.value === i)) continue;
-				antiNumbers.push(i);
-			}
+			
+			const couldBe = couldBeIds
+				.map(i => cube.cells[i])
+				.filter(c => c.value === null);
+			const couldNotBe = couldNotBeIds
+				.map(i => cube.cells[i])
+				.filter(c => c.value === null);
+
+			const numbers = [], antiNumbers = [];
+			for (let i = 0; i < 16; ++i)
+				if (couldNotBe.some(c => c.pencil[i]))
+					antiNumbers.push(i);
+				else if (couldBe.some(c => c.pencil[i]))
+					numbers.push(i);
 
 			// Check if it's been done
-			if (!couldBe.some(i => antiNumbers.some(j => cube.cells[i].pencil[j]))) continue;
+			if (!couldBe.some(cell => antiNumbers.some(n => cell.pencil[n]))) continue;
 
-			// If somehow the user has solved any extra cells then pretend we had noticed.
-			for (const cell of [...couldBe]) if (cell.value !== null) {
-				couldBe.splice(couldBe.indexOf(cell), 1);
-				numbers.splice(numbers.indexOf(cell.value), 1);
-			}
-			for (const cell of [...couldNotBe]) if (cell.value !== null) {
-				couldNotBe.splice(couldNotBe.indexOf(cell), 1);
-				antiNumbers.splice(antiNumbers.indexOf(cell.value), 1);
-			}
-
-			const a = couldBe.map(i => cube.cells[i]),
-				b = couldNotBe.map(i => cube.cells[i]);
 			const highlights = {
-				yellow: group.cells.filter(c => !a.includes(c) && !b.includes(c)),
-				blue: a,
-				red: b,
+				yellow: group.cells.filter(c =>
+					!couldBe.includes(c) &&
+					!couldNotBe.includes(c)
+				),
+				blue: couldBe,
+				red: couldNotBe,
 			}
 			
 			if (couldBe.length <= couldNotBe.length) {
 				showHint(
 					highlights,
-					a[0],
+					couldBe[0],
 					`The blue cells are the only places
 					in the highlighted group that the
 					${valueList(numbers)} can go.
@@ -209,7 +233,7 @@ document.getElementById('hint-button').addEventListener('click', async (e) => {
 			} else {
 				showHint(
 					highlights,
-					b[0],
+					couldNotBe[0],
 					`The red cells can only be ${valueList(antiNumbers, "or")}.
 					Therefore, no other cell in the highlighted group
 					can contain those numbers.`
@@ -294,8 +318,7 @@ function showHint(highlights, spinTo, text) {
 		cube.spinToCell(spinTo);
 		cube.pushUndo(spinTo);
 	}
-	const p = document.getElementById("hint-text");
-	p.innerText = "";
-	p.appendChild(document.createTextNode(text));
+	$.hintText.innerText = "";
+	$.hintText.appendChild(document.createTextNode(text));
 	openModal("hint-modal");
 }

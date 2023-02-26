@@ -134,8 +134,12 @@ dialog {
 	font-size: 4vh;
 
 	&#hint-modal {
-		height: 35vh;
+		height: auto;
 		top: unset;
+
+		h1 {
+			margin: 0;
+		}
 	}
 
 	.dark-mode & { background: #000; color: #fff; }
@@ -432,6 +436,7 @@ select {
 		font-family: Montserrat, sans-serif;
 		text-align: center;
 		opacity: 0.5;
+		user-select: none;
 
 		div { transition: opacity 300ms; }
 	}

@@ -1,7 +1,7 @@
 import { SYSTEM } from "./util/dark.js";
 import $ from "./util/dom.js";
 
-export const launchDate = new Date().toISOString().substring(0, 10); //'2023-01-30';
+export const launchDate = '2023-02-21';
 export const namespace = '3doku';
 
 export const defaults = {
@@ -39,12 +39,14 @@ export const exportTransforms = {
 	}
 };
 
+const colours = ['red', 'green', 'blue', 'yellow', 'purple', 'teal', 'orange', 'none'];
+
 export const importTransforms = {
 	savedState: ({ state, ...rest }) => ({
 		...rest,
 		state: state.split(/([ROYGTBP]?[CIL][0-9a-f]*)/g).filter(x => x).map(str => {
 			let [highlight, mode, value] = str.split(/([CIL])/);
-			highlight = Object.keys($.highlightColour.radios).find(k => k[0] == highlight);
+			highlight = colours.find(k => k[0] == highlight);
 			value = parseInt(value, 16);
 			switch (mode) {
 				case "C": return { highlight, isClue: true };
