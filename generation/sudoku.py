@@ -270,8 +270,8 @@ class Sudoku:
 
 							# so there are two types of loops: odd (1) and even (0)
 							parity = len(loop) % 2
-							# and all the loops must be the same parity, otherwise the start cell both is and isn't the target value
-							assert all(len(loop) % 2 == parity for loop in loops)
+							
+							# There used to be some asserts here - one that the parities were all the same, and one that the loops all ended in the same place. These aren't true - most notably, if the loops all end in different places, of course there's no reason the parities should match. It can be simultaneously true that one of A and B is a 2, but neither of A and C are a 2. One could write some asserts here that work, but they'd be a lot and there's no reason to think they'd ever fail, so I'm not going to do it unless a specific reason comes up.
 
 							if parity == 0:
 								# a traditional swordfish (which may be the only kind allowable in 2D) is even

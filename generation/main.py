@@ -43,12 +43,12 @@ def grid_line(pad, grid, faces, clues_only=False):
 				print(hex(cell.answer)[2] if cell.is_clue or not clues_only else "-", end="")
 		print("")
 
-def print_grid(grid):
+def print_grid(grid, clues_only=False):
 	log_line("Printing grid:")
 	print("")
-	grid_line(0, grid, [2])
-	grid_line(0, grid, [0, 4, 1, 5])
-	grid_line(8, grid, [3])
+	grid_line(0, grid, [2], clues_only=clues_only)
+	grid_line(0, grid, [0, 4, 1, 5], clues_only=clues_only)
+	grid_line(8, grid, [3], clues_only=clues_only)
 
 def check_grid(grid):
 	for group in grid.groups:
@@ -58,6 +58,15 @@ def check_grid(grid):
 			print({ cell.answer for cell in group })
 			print({ i for i in range(16) })
 			raise Exception("check failed")
+
+def solve(grid, **intended_difficulty):
+	try:
+		grid.solve(**intended_difficulty)
+	except AssertionError as e:
+		print_grid(grid, True)
+		print(grid.moves)
+		print_grid(grid)
+		raise e
 
 def generate_puzzle(**intended_difficulty):
 	# generate an easy puzzle as a quick way to fill the grid
