@@ -360,7 +360,7 @@ select {
 	width: 24.5vmin;
 	height: 24.5vmin;
 
-	input, #pencilMarkDiv {
+	button, #pencilMarkDiv {
 		position: absolute;
 		left: 1vmin; top: 1vmin;
 		width: 22.5vmin;
@@ -369,7 +369,7 @@ select {
 		padding: 0;
 	}
 
-	input {
+	button {
 		--bg: white;
 		font-size: 16vmin;
 		font-family: Montserrat, sans-serif;

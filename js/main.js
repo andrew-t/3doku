@@ -74,9 +74,9 @@ button('reset', async e => {
 	cube.pushUndo();
 });
 $.tool.addEventListener('change', e => {
-	classIf($.pencilValue, 'hidden', e.value != 'pencil');
+	classIf($.pencilValue, 'hidden', e.value != 'pencil' && e.value != 'pen');
 	classIf($.highlightOptions, 'hidden', e.value != 'highlight');
-	classIf($.buttons, 'hidden', e.value == 'pencil' || e.value == 'highlight');
+	classIf($.buttons, 'hidden', e.value != 'none');
 	cube.setTool(e.value);
 });
 $.pencilValue.addEventListener('change', e => cube.setPencilValue($.pencilValue.value));

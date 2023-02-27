@@ -13,7 +13,7 @@ export default class DokuCell extends HTMLElement {
 		shadowDom(this, `
 			${styles}
 			<div class="cell-root">
-				<input id="input" inputmode="numeric" tabindex="-1">
+				<button id="input" inputmode="numeric" tabindex="-1"></button>
 				<div id="pencilMarkDiv"></div>
 			</div>
 		`);
@@ -22,33 +22,20 @@ export default class DokuCell extends HTMLElement {
 		for (let x = 0; x < 16; ++x)
 			this.pencilMarks[x] = el(this.pencilMarkDiv, 'div', x + 1);
 
-		this.input.addEventListener('focus', e => {
-			if (this.tool == 'pen') {
-				this.pencilMarkDiv.classList.add('erased');
-				this.input.setSelectionRange(0, this.input.value.length);
-			}
-			// Handy debugging
-			console.log("Focussed cell:", this.coords);
-		});
-
-		this.input.addEventListener('blur', e => {
-			if (this.tool == 'pen') {
-				if (!/^([1-9]|1[0-6])?$/.test(this.input.value)) {
-					this.input.value = this._value == null ? '' : (this._value + 1);
-					return;
-				}
-				const newValue = this.input.value ? this.input.value - 1 : null;
-				if (newValue !== this.value) {
-					this.value = newValue;
-					this.cube.pushUndo(this);
-				}
-			}
-			classIf(this.pencilMarkDiv, 'erased', this.value != null);
-			if ($.autopencil.checked) this.propagate();
-		});
+		// Handy debugging
+		this.input.addEventListener('focus', e => console.log("Focussed cell:", this.coords));
 
 		this.input.addEventListener('click', e => {
 			switch (this.tool) {
+				case 'pen':
+					if (this.value === this._pencilValue) this.value = null;
+					else {
+						this.value = this._pencilValue;
+						if ($.autopencil.checked) this.propagate();
+					}
+					this.updatePencilHighlight();
+					this.cube.pushUndo(this);
+					break;
 				case 'pencil':
 					if (this.value != null) break;
 					this.setPencil(this._pencilValue, !this.pencil[this._pencilValue]);
@@ -138,16 +125,18 @@ export default class DokuCell extends HTMLElement {
 		this._value = n;
 		this.updateErrorFlag();
 		if (n == null) {
-			this.input.value = '';
+			this.input.innerText = '';
 			this.pencilMarkDiv.classList.remove('erased');
 			return;
 		}
 		this.pencilMarkDiv.classList.add('erased');
-		if (typeof n != 'number' || n < 0 || n > 15 || n != ~~n)
+		if (typeof n != 'number' || n < 0 || n > 15 || n != ~~n) {
 			throw new Error('Invalid value: ' + n);
-		this.input.value = n + 1;
+		}
+		this.input.innerText = n + 1;
 		for (let i = 0; i < 16; ++i)
 			this.setPencil(i, i == n);
+		classIf(this.input, 'highlight-pencil', this.tool == 'pencil' && this.pencil[this._pencilValue]);
 	}
 
 	makeClue() {
@@ -185,14 +174,14 @@ export default class DokuCell extends HTMLElement {
 		if (this.value !== null) allowed = this.value == n;
 		this.pencil[n] = allowed;
 		classIf(this.pencilMarks[n], 'erased', !allowed);
-		classIf(this.input, 'highlight-pencil', this.tool == 'pencil' && this.pencil[this._pencilValue]);
+		this.updatePencilHighlight();
 	}
 
 	_pencilValue = 0;
 	setTool(tool) {
 		switch (tool) {
 			case 'pen':
-				this.setPencilValue(null);
+				this.setPencilValue(this._pencilValue);
 				this.input.setAttribute('type', 'text');
 				break;
 			case 'pencil': 
@@ -206,14 +195,24 @@ export default class DokuCell extends HTMLElement {
 			default: throw new Error("Invalid tool: " + tool);
 		}
 		this.tool = tool;
+		this.updatePencilHighlight();
 	}
 	setPencilValue(value) {
 		if (value === null) {
 			this.input.classList.remove('highlight-pencil');
 			return;
 		}
+		if (typeof value == 'string' && /^\d+$/.test(value)) value = parseInt(value, 10);
 		this._pencilValue = value;
-		classIf(this.input, 'highlight-pencil', this.pencil[this._pencilValue]);
+		this.updatePencilHighlight();
+	}
+	updatePencilHighlight() {
+		classIf(this.input, 'highlight-pencil',
+			this.tool.startsWith('pen') &&
+			(this.value === null
+				? this.value == this._pencilValue
+				: this.pencil[this._pencilValue])
+		);
 	}
 }
 
