@@ -509,12 +509,12 @@ select {
 		&.highlight-colour-groups {
 			width: 54em;
 			span {
-				font-size: 2rem;
+				font-size: 4,5vmin;
 				position: absolute;
 				left: 0;
 				width: 100%;
 				text-align: center;
-				line-height: 3.5rem;
+				line-height: 8.5vmin;
 			}
 			input:checked {
 				box-shadow: 0 0 0 1vmin #000 inset;
