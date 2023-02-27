@@ -92,7 +92,7 @@ $.hintButton.addEventListener('click', async (e) => {
 	}
 	const subpencilled = cube.cells.filter(c => {
 		if (c.value !== null) return false;
-		for (let n = 0; i < 16; ++n) {
+		for (let n = 0; n < 16; ++n) {
 			if (!c.pencil[n]) continue;
 			for (const group of c.groups)
 				for (const cell of group.cells)
