@@ -67,7 +67,7 @@ h1 {
 
 	#tool { flex: 14em 0 0; }
 	#pencil-value,
-	#highlight-colour,
+	#highlight-options,
 	#buttons {
 		flex: 56em 0 0;
 		margin-left: 4em;
@@ -392,14 +392,6 @@ select {
 			user-select: none;
 		}
 
-		&.face-group { --bg: #cdf; }
-		&.band-0-group { --bg: #fcc; }
-		&.band-1-group { --bg: #ffc; }
-		&.band-0-group.band-1-group { --bg: #fec; }
-		&.band-2-group { --bg: #cfd; }
-		&.band-0-group.band-2-group { --bg: #ffc; }
-		&.band-1-group.band-2-group { --bg: #dfe; }
-
 		&.highlight-pencil { --bg: #fcc; }
 
 		&.highlight-red { --bg: #fcc !important; }
@@ -497,7 +489,38 @@ select {
 		&.highlight-colour-teal input { background: #0cf; }
 		&.highlight-colour-orange input { background: #fc0; }
 		&.highlight-colour-purple input { background: #c0f; }
-		&.highlight-colour-none input { background: #fff; box-shadow: 0 0 0 .2em #000 inset }
+		&.highlight-colour-none {
+			input {
+				background: #fff;
+				box-shadow: 0 0 0 .5vmin #000 inset;
+			}
+			&:before {
+				content: "×";
+				color: #f00;
+				font-size: 12vmin;
+				position: absolute;
+				line-height: 9vmin;
+				width: 9vmin;
+				text-align: center;
+			}
+		}
+		&.highlight-colour-groups {
+			width: 54em;
+			span {
+				font-size: 2rem;
+				position: absolute;
+				left: 0;
+				width: 100%;
+				text-align: center;
+				line-height: 3.5rem;
+			}
+			input:checked {
+				box-shadow: 0 0 0 1vmin #000 inset;
+				+ span {
+					color: white;
+				}
+			}
+		}
 	}
 
 	span { font-size: 0; }
@@ -514,7 +537,6 @@ select {
 		text-align: center;
 	}
 
-	&.highlight-colour label { width: 26em; }
 	&.highlight-colour input { transition: box-shadow 500ms; }
-	&.highlight-colour input:checked { box-shadow: 0 0 0 1em #000 inset; }
+	&.highlight-colour input:checked { box-shadow: 0 0 0 1.5vmin #000 inset; }
 }

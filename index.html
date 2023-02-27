@@ -67,20 +67,23 @@
 				option-14="15"
 				option-15="16"
 			></radio-group>
-			<radio-group
-				class="hidden"
-				id="highlight-colour"
-				name="Highlighter colour"
-				value="red"
-				option-red="Red"
-				option-green="Green"
-				option-blue="Blue"
-				option-yellow="Yellow"
-				option-purple="Purple"
-				option-teal="Teal"
-				option-orange="Orange"
-				option-none="Clear"
-			></radio-group>
+			<div id="highlight-options" class="hidden">
+				<radio-group
+					id="highlight-colour"
+					name="Highlighter colour"
+					value="red"
+					option-red="Red"
+					option-green="Green"
+					option-blue="Blue"
+					option-yellow="Yellow"
+					option-purple="Purple"
+					option-teal="Teal"
+					option-orange="Orange"
+					option-none="Clear"
+					option-groups="Groups for cell"
+				></radio-group>
+				<button id="clear-highlight">Clear all</button>
+			</div>
 			<div id="buttons">
 				<button id="assistance">Assistance</button>
 				<button id="options">Options</button>

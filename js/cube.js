@@ -180,29 +180,18 @@ function *bands(f, r, c) {
 class Group {
 	constructor(type) {
 		this.cells = [];
-		this.className = `${type}-group`;
+		this.className = {
+			face: "highlight-blue",
+			"band-0": "highlight-red",
+			"band-1": "highlight-yellow",
+			"band-2": "highlight-green",
+		}[type];
 	}
 
 	addCell(cell) {
 		this.cells.push(cell);
 		cell.addGroup(this);
 	}
-
-	highlight() {
-		for (const cell of this.cells)
-			cell.highlight(this.className);
-	}
-
-	unhighlight() {
-		for (const cell of this.cells)
-			cell.unhighlight(this.className);
-	}
-}
-
-function nWhere(c) {
-	const out = [];
-	for (let i = 0; i < 16; ++i) if (c(i)) out.push(i);
-	return out;
 }
 
 window.customElements.define('doku-cube', Cube);

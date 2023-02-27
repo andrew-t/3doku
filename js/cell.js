@@ -25,17 +25,13 @@ export default class DokuCell extends HTMLElement {
 		this.input.addEventListener('focus', e => {
 			if (this.tool == 'pen') {
 				this.pencilMarkDiv.classList.add('erased');
-				this.input.setSelectionRange(0, this.input.value.length)
-				for (const group of this.groups)
-					group.highlight();
+				this.input.setSelectionRange(0, this.input.value.length);
 			}
 			// Handy debugging
 			console.log("Focussed cell:", this.coords);
 		});
 
 		this.input.addEventListener('blur', e => {
-			for (const group of this.groups)
-				group.unhighlight();
 			if (this.tool == 'pen') {
 				if (!/^([1-9]|1[0-6])?$/.test(this.input.value)) {
 					this.input.value = this._value == null ? '' : (this._value + 1);
@@ -63,6 +59,17 @@ export default class DokuCell extends HTMLElement {
 					if (colour == 'none') {
 						this.clearHighlights();
 						this.cube.pushUndo(this);
+						return;
+					}
+					if (colour == 'groups') {
+						for (const cell of this.cube.cells) cell.clearHighlights();
+						for (const group of this.groups)
+							for (const cell of group.cells) {
+								cell.clearHighlights();
+								cell.highlight(group.className);
+							}
+						this.clearHighlights();
+						this.highlight("highlight-yellow");
 						return;
 					}
 					const className = `highlight-${colour}`;

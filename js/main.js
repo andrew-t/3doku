@@ -75,7 +75,7 @@ button('reset', async e => {
 });
 $.tool.addEventListener('change', e => {
 	classIf($.pencilValue, 'hidden', e.value != 'pencil');
-	classIf($.highlightColour, 'hidden', e.value != 'highlight');
+	classIf($.highlightOptions, 'hidden', e.value != 'highlight');
 	classIf($.buttons, 'hidden', e.value == 'pencil' || e.value == 'highlight');
 	cube.setTool(e.value);
 });
@@ -104,6 +104,12 @@ button('close-assistance', e => closeModal());
 button('close-options', e => closeModal());
 button('close-result', e => closeModal());
 button('close-keyboard-modal', e => closeModal());
+
+button('clear-highlight', e => {
+	for (const cell of cube.cells) cell.clearHighlights();
+	// TODO - this function should dedupe undos
+	cube.pushUndo(null);
+});
 
 // Wire up the horizontal scrollbar to the cube's rotation:
 window.addEventListener('scroll', e => spinCube());
