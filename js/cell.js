@@ -210,8 +210,8 @@ export default class DokuCell extends HTMLElement {
 		classIf(this.input, 'highlight-pencil',
 			this.tool.startsWith('pen') &&
 			(this.value === null
-				? this.value == this._pencilValue
-				: this.pencil[this._pencilValue])
+				? this.pencil[this._pencilValue]
+				: this.value == this._pencilValue)
 		);
 	}
 }

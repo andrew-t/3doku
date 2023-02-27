@@ -31,7 +31,10 @@
 	<div id="scroller"></div>
 	<div id="main">
 		<div class="header">
-			<h1>3Doku <span id="puzzle-id"></span></h1>
+			<h1>
+				3Doku <span id="puzzle-id"></span><br>
+				<span id="level"></span>
+			</h1>
 			<button id="hint-button">Hint</button>
 		</div>
 		<doku-cube id="cube" tabindex="0"></doku-cube>
@@ -115,10 +118,10 @@
 			<p>3Doku is a classic sudoku wrapped around a cube, although unlike a classic sudoku it uses the numbers 1-16 rather than 1-9.</p>
 			<p>Each face of the solved cube contains each of the numbers 1-16, and like a classic sudoku there are also "rows" and "columns" which contain the numbers 1-16.</p>
 			<img src="assets/groups.png" alt="An example image of the cube, with the groups highlighted.">
-			<p>Look at the rows and columns within each face, and follow them over the edge onto the next face, wrapping all the way around the cube until you get back to the first face. If you need help with this, select the 'pen' tool and click a cell on the cube — the groups its in will be highlighted.</p>
+			<p>Look at the rows and columns within each face, and follow them over the edge onto the next face, wrapping all the way around the cube until you get back to the first face. If you need help with this, select the 'highlighter' tool, in 'groups for cell' mode, and click a cell on the cube — the groups its in will be highlighted.</p>
 			<button id="keyboard-controls" class="secondary">Keyboard controls</button>
 			<p>You should also check out my word-based puzzle, <a href="https://www.andrewt.net/puzzles/cell-tower">Cell Tower</a>!</p>
-			<p class="smol">3Doku © 2023 <a href="https://twitter.com/Andrew_Taylor">@Andrew_Taylor</a>. Font is <a href="https://github.com/JulietaUla/Montserrat">Montserrat</a>.</p>
+			<p class="smol">3Doku © 2023 <a href="https://twitter.com/Andrew_Taylor">@Andrew_Taylor</a>. Font is <a href="https://github.com/JulietaUla/Montserrat">Montserrat</a>. Icons are from <a href="https://fontawesome.com/">FontAwesome Free</a>.</p>
 		</div>
 		<button id="close-instructions" class="primary">Loading...</button>
 		<a href="?" id="jump-to-today" class="secondary button">Today’s puzzle</a>

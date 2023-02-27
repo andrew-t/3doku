@@ -12,10 +12,22 @@ import './radios.js';
 
 const { cube } = $;
 
+const levels = {
+	100: "Very easy",
+	200: "Very easy",
+	300: "Easy",
+	400: "Medium",
+	500: "Tricky",
+	600: "Hard",
+	700: "Fiendish"
+};
+
 // Save and load the day's state. Also check if the game is over:
 let showResultsModalOnCompletion = true;
 loadPuzzle().then(json => {
 	cube.usePuzzle(json);
+	$.level.classList.add(levels[json.difficulty].toLowerCase().replaceAll(' ', '-'));
+	$.level.innerText = levels[json.difficulty];
 	if (isTodaysPuzzle && storage.savedState?.puzzleId == puzzleId) {
 		cube.undoStack = storage.undoStack.map(({ cell, state }) => ({ cell: cube.cells[cell], state }));
 		storage.savedState.state.forEach(({ h: highlight, pencil, pen, isClue }, i) => {
@@ -102,7 +114,7 @@ button('close-instructions', e => {
 });
 button('close-assistance', e => closeModal());
 button('close-options', e => closeModal());
-button('close-result', e => closeModal());
+button('close-result', e => clearModals());
 button('close-keyboard-modal', e => closeModal());
 
 button('clear-highlight', e => {
