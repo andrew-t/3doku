@@ -59,8 +59,6 @@ loadPuzzle().then(json => {
 					return { h: highlight, pencil: pencil.reduceRight((a, n) => (a << 1) | n) };
 				})
 			};
-			if (cube.cells.some(c => c.value !== null && c.value != c.answer))
-				onCheat();
 		}
 	};
 	cube.emitUpdate();

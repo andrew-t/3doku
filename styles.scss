@@ -554,7 +554,7 @@ select {
 
 	&.very-easy, &.easy { background: #cfc; --col: #080; }
 	&.medium { background: #cff; --col: #088; }
-	&.tricky { background: #ffc; --col: #080; }
+	&.tricky { background: #ffc; --col: #880; }
 	&.hard, &.fiendish { background: #fcc; --col: #800; }
 
 	color: var(--col);
