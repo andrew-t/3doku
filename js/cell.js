@@ -28,6 +28,7 @@ export default class DokuCell extends HTMLElement {
 		this.input.addEventListener('click', e => {
 			switch (this.tool) {
 				case 'pen':
+					if (this.isClue) break;
 					if (this.value === this._pencilValue) this.value = null;
 					else {
 						this.value = this._pencilValue;
