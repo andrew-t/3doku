@@ -78,6 +78,10 @@ class Sudoku:
 			if not result: return False
 			if self.is_solved(): return True
 			if "debug" in kwargs and kwargs["debug"]: kwargs["debug"](self)
+	
+	def log_move(self, move, verbose):
+		self.moves.append(move)
+		if verbose: print("Adding deduction:", move)
 
 	# returns true if it found a move, false otherwise
 	# returns NONE when the puzzle is invalid
@@ -86,10 +90,20 @@ class Sudoku:
 		using_partitions=False,
 		using_x_wings=False,
 		using_swordfish=False,
-		debug=None
+		debug=None,
+		verbose=False
 	):
 		while self.deduction_queue.has_items():
 			candidate = self.deduction_queue.pop()
+			if verbose:
+				match candidate:
+					case Cell(i=i):
+						print(f"Checking cell {i}")
+					case GroupDeduction(partition=partition, type=type):
+						if partition.exists:
+							print(f"Checking partition: group {partition.group.i}, cells {numlist(partition)} for option {type}")
+						else:
+							print(f"Skipping ex-partition group {partition.group.i}, cells {numlist(partition)} for option {type}")
 			match candidate:
 
 				case Cell():
@@ -97,10 +111,10 @@ class Sudoku:
 					if len(candidate.pencil) == 1 and not candidate.answer_known:
 						n = candidate.pencil.__iter__().__next__()
 						candidate.set_answer(n)
-						self.moves.append({
+						self.log_move({
 							"cell": candidate.i,
 							"canOnlyBe": n
-						})
+						}, verbose)
 						return True
 
 				case GroupDeduction(partition=GroupPartition(exists=False)):
@@ -110,6 +124,7 @@ class Sudoku:
 				case GroupDeduction(partition=partition, type="partition"):
 					partitions = partition.partition()
 					if partitions is False:
+						# if verbose: print(f"Could not partition group {partition.group.i}")
 						partition.enqueue_logic()
 					else:
 						partition.group.partitions.remove(partition)
@@ -118,6 +133,10 @@ class Sudoku:
 						for partition in partitions:
 							partition.enqueue_logic()
 						if debug: debug(self)
+						if verbose:
+							print(f"Partitioning group {partition.group.i}:")
+							for partition in partitions:
+								print(f" - Cells {numlist(partition)} have {numlist(partition.values)}")
 
 				case GroupDeduction(partition=partition, type="only_place"):
 					for n in partition.values:
@@ -125,11 +144,11 @@ class Sudoku:
 						if not places: return None
 						if len(places) != 1: continue
 						if places[0].answer_known: continue
-						self.moves.append({
+						self.log_move({
 							"cell": places[0].i,
 							"group": partition.group.i,
 							"onlyPlaceFor": n
-						})
+						}, verbose)
 						places[0].set_answer(n)
 						return True
 
@@ -154,15 +173,17 @@ class Sudoku:
 								if cell.could_be(value) and cell not in partition
 							]
 							if not could_be_here: continue
-							self.moves.append({
+							self.log_move({
 								"pointingGroup": partition.group.i,
 								"pointingValue": value,
 								"pointingIntoGroup": other_group.i,
 								"pointingCells": [ cell.i for cell in could_be ],
 								"affectedCells": [ cell.i for cell in could_be_here ]
-							})
+							}, verbose)
 							for cell in could_be_here:
 								cell.rule_out(value)
+							# Push the logic step back onto the queue in case there's more than one deduction we can make here. (We didn't need this before as anything that writes pen deductions will trigger a repartitioning which in turn triggers the logic requeue.)
+							self.deduction_queue.enqueue(candidate, 70)
 							return True
 					pass
 
@@ -188,13 +209,13 @@ class Sudoku:
 						# We only care about the case where N numbers are locked to N cells — so we know those cells can't be anything else.
 						if could_be_n != guess_n: continue
 						# ok so this means there are (say) 3 numbers that can only possibly be in the same 3 cells in this group
-						self.moves.append({
+						self.log_move({
 							"group": partition.group.i,
 							"numbers": list(guess_values),
 							"antiNumbers": [ value for value in partition.values if value not in guess_values ],
 							"couldBe": [ cell.i for cell in could_be ],
 							"couldNotBe": [ cell.i for cell in partition if cell not in could_be ]
-						})
+						}, verbose)
 						# therefore, the cells that COULD be the numbers we're considering can't be anything BUT those numbers — otherwise there wouldn't be space for them.
 						for cell in could_be:
 							for value in list(cell.pencil):
@@ -247,13 +268,14 @@ class Sudoku:
 														ruled_out_from.append(cell)
 														cell.rule_out(value)
 											if ruled_out_from:
-												self.moves.append({
+												self.log_move({
 													"groups": [partition.group.i, overlap_group.i],
 													"counterGroups": [a_partition.group.i, b_partition.group.i],
 													"cells": [ a.i, b.i, overlap_a.i, overlap_b.i ],
 													"pivotValue": value,
 													"ruledOutFrom": [ cell.i for cell in ruled_out_from ]
-												})
+												}, verbose)
+												self.deduction_queue.enqueue(candidate)
 												return True
 											
 				case GroupDeduction(partition=partition, type="swordfish"):
@@ -286,13 +308,14 @@ class Sudoku:
 								ruled_out_from = [ cell for cell in could_be if cell not in loop ]
 								for cell in ruled_out_from:
 									cell.rule_out(value)
-								self.moves.append({
+								self.log_move({
 									"group": partition.group.i,
 									"chain": [ cell.i for cell in loop ],
 									"value": value,
 									"ruledOutFrom": [ cell.i for cell in ruled_out_from ],
 									"parity": "even"
-								})
+								}, verbose)
+								self.deduction_queue.enqueue(candidate, 40)
 								return True
 							
 							else:
@@ -302,13 +325,14 @@ class Sudoku:
 								# we might be able to rule it out from all the odd steps, but i think it will propagate along the chain using simpler logic anyway
 								loop[0].rule_out(value)
 								loop[-1].rule_out(value)
-								self.moves.append({
+								self.log_move({
 									"group": partition.group.i,
 									"chain": [ cell.i for cell in loop ],
 									"value": value,
 									"ruledOutFrom": [ loop[0].i, loop[-1].i ],
 									"parity": "odd"
-								})
+								}, verbose)
+								self.deduction_queue.enqueue(candidate, 40)
 								return True
 
 				case _:
@@ -334,3 +358,13 @@ class Sudoku:
 			if next_cell in chain: continue
 			for end in self.find_loopbacks(start_group, group, value, chain + [next_cell]):
 				yield end
+
+def numlist(l):
+	o = []
+	for i in l:
+		if type(i) == int:
+			o.append(i)
+		else:
+			o.append(i.i)
+	o.sort()
+	return ",".join(str(i) for i in o)

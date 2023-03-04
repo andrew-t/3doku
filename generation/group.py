@@ -31,6 +31,8 @@ class GroupPartition:
 		return
 
 	def enqueue_logic(self):
+		if len(self.cells) == 1: return
+		# if you change these priorities, make sure to change them in sudoku.py too
 		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'only_place'), 90)
 		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'partitions'), 80)
 		self.grid.deduction_queue.enqueue(GroupDeduction(self, 'pointers'), 70)
