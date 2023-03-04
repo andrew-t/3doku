@@ -67,28 +67,37 @@ export default class Cube extends HTMLElement {
 	}
 
 	spinToFace(i) {
-		return this.spinTo([0, 3, 5, 2, 1, 4][i] / 6 + 0.05);
+		switch (i) {
+			case 0: return this.spinTo(1, 1);
+			case 1: return this.spinTo(1.5, 1);
+			case 2: return this.spinTo(1, 0);
+			case 3: return this.spinTo(1.5, 2);
+			case 4: return this.spinTo(1.25, 1);
+			case 5: return this.spinTo(1.75, 1);
+		}
 	}
 
 	get rotation() {
 		return this._rot;
 	}
-	set rotation(x) {
-		this._rot = x;
-		this.root.style.setProperty('--base-rotation', `${-x * 360}deg`);
+	set rotation({ x, y }) {
+		this._rot = { x, y };
+		this.root.style.setProperty('--base-rotation-x', `${-x * 360}deg`);
+		this.root.style.setProperty('--base-rotation-y', `${y * 90 - 90}deg`);
 		// quick hack to update the scrollbar which i cba doing with like an event emitter or something
-		const w = $.scroller.clientWidth - (document.body.scrollWidth || window.scrollWidth);
-		window.scrollTo(x * w / 3, 0);
+		const w = $.scroller.clientWidth - (document.body.scrollWidth ?? window.scrollWidth);
+		const h = $.scroller.clientHeight - (document.body.scrollHeight ?? window.scrollHeight);
+		window.scrollTo(x * w / 3, y * h / 3);
 	}
 
-	spinTo(x) {
-		let start, startX = this.rotation, self = this;
+	spinTo(x, y) {
+		let start, startX = this.rotation.x, startY = this.rotation.y, self = this;
 		while (x - startX > 0.5) x -= 1;
 		while (x - startX < -0.5) x += 1;
-		if (Math.abs(x - startX) < 0.1) return false;
-		this.targetSpin = x;
+		if (Math.abs(x - startX) < 0.1 && Math.abs(y - startY) < 0.1) return false;
+		this.targetSpin = { x, y };
 		if (reducedMotion.active) {
-			this.rotation = x;
+			this.rotation = { x, y };
 			return true;
 		}
 		requestAnimationFrame(x => {
@@ -97,12 +106,12 @@ export default class Cube extends HTMLElement {
 		});
 		return true;
 		function nextFrame(now) {
-			if (self.targetSpin != x) return;
+			if (self.targetSpin.x != x || self.targetSpin.y != y) return;
 			const t = now - start;
 			const f = t / 300;
 			// this long string of gibberish is smoothstep:
 			const p = f<0 ? 0 : f>1 ? 1 : (3*f**2 - 2*f**3), q = 1-p;
-			self.rotation = startX * q + p * x;
+			self.rotation = { x: startX * q + p * x, y: startY * q + p * y };
 			if (f < 1) requestAnimationFrame(nextFrame);
 		}
 	}

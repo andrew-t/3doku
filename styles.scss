@@ -77,7 +77,7 @@ h1 {
 #scroller { 
 	position: absolute;
 	left: 0; top: 0;
-	width: 400%; height: 100px;
+	width: 400%; height: 300%;
 	pointer-events: none;
 }
 
@@ -278,7 +278,8 @@ select {
 	// plus a 1vmin padding around the whole table
 	// that leaves 90vmin for the cells
 	// which is to say, 22.5vmin each
-	--base-rotation: 0deg;
+	--base-rotation-x: 0deg;
+	--base-rotation-y: 0deg;
 	transform:
 		scale(0.5)
 		translateY(calc(50% - 50vmin));
@@ -309,31 +310,35 @@ select {
 		&.f0 {
 			background: #0c0;
 			transform:
-				rotateY(var(--base-rotation))
-				rotate3d(0.7, 0, 0.7, -54.74deg)
+				rotateX(var(--base-rotation-y))
+				rotateY(var(--base-rotation-x))
+				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(0, 0, 50vmin);
 		}
 		&.f1 {
 			background: #c00;
 			transform:
-				rotateY(var(--base-rotation))
-				rotate3d(0.7, 0, 0.7, -54.74deg)
+				rotateX(var(--base-rotation-y))
+				rotateY(var(--base-rotation-x))
+				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(0, 0, -50vmin)
 				rotateY(180deg);
 		}
 		&.f2 {
 			background: #fc0;
 			transform:
-				rotateY(var(--base-rotation))
-				rotate3d(0.7, 0, 0.7, -54.74deg)
+				rotateX(var(--base-rotation-y))
+				rotateY(var(--base-rotation-x))
+				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(0, -50vmin, 0)
 				rotateX(90deg);
 		}
 		&.f3 {
 			background: #80c;
 			transform:
-				rotateY(var(--base-rotation))
-				rotate3d(0.7, 0, 0.7, -54.74deg)
+				rotateX(var(--base-rotation-y))
+				rotateY(var(--base-rotation-x))
+				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(0, 50vmin, 0)
 				rotateX(-90deg)
 				rotateZ(180deg);
@@ -341,16 +346,18 @@ select {
 		&.f4 {
 			background: #00c;
 			transform:
-				rotateY(var(--base-rotation))
-				rotate3d(0.7, 0, 0.7, -54.74deg)
+				rotateX(var(--base-rotation-y))
+				rotateY(var(--base-rotation-x))
+				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(50vmin, 0, 0)
 				rotateY(90deg);
 		}
 		&.f5 {
 			background: #0cc;
 			transform:
-				rotateY(var(--base-rotation))
-				rotate3d(0.7, 0, 0.7, -54.74deg)
+				rotateX(var(--base-rotation-y))
+				rotateY(var(--base-rotation-x))
+				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(-50vmin, 0, 0)
 				rotateY(-90deg);
 		}
