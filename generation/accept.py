@@ -111,8 +111,12 @@ if __name__ == "__main__":
 	while result:
 		(result, id) = build_week()
 
+	difficulties = []
 	print("Current puzzles:")
 	for puzzle_id in range(1, id + 1):
 		with open(f"puzzles/{puzzle_id}.json", "r") as f:
 			puzzle = json.load(f)
+		difficulties.append(puzzle["difficulty"])
 		print(f" - #{puzzle_id}: {print_level(puzzle)}")
+	with open(f"puzzles/difficulties.json", "w") as f:
+		json.dump(difficulties, f)

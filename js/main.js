@@ -1,6 +1,6 @@
 import { classIf } from "../common/dom.js";
 import { openModal, closeModal, clearModals, confirm } from "../util/modal.js";
-import loadPuzzle, { isTodaysPuzzle, puzzleId, onStart, onCheat, onWin } from "../common/daily.js";
+import loadPuzzle, { isTodaysPuzzle, puzzleId, onStart, onCheat, onWin, levels } from "../common/daily.js";
 import $ from "../util/dom.js";
 import storage from "../common/data.js";
 
@@ -11,16 +11,6 @@ import './cube.js';
 import './radios.js';
 
 const { cube } = $;
-
-const levels = {
-	100: "Very easy",
-	200: "Very easy",
-	300: "Easy",
-	400: "Medium",
-	500: "Tricky",
-	600: "Hard",
-	700: "Fiendish"
-};
 
 // Save and load the day's state. Also check if the game is over:
 let showResultsModalOnCompletion = true;

@@ -19,6 +19,16 @@ export const COMPLETED = 2;
 export const CHEATED = 3;
 export const FAILED = 4;
 
+export const levels = {
+	100: "Very easy",
+	200: "Very easy",
+	300: "Easy",
+	400: "Medium",
+	500: "Tricky",
+	600: "Hard",
+	700: "Fiendish"
+};
+
 if (isTodaysPuzzle) {
 	$.jumpToToday.classList.add('hidden');
 	$.todayNext.classList.add('hidden');
@@ -64,21 +74,24 @@ const textResults = {
 	[FAILED]: "💀"
 };
 
-function optionText(i) {
+function optionText(i, difficulty) {
 	return textResults[storage.results[i]] + " " +
-		(i == todaysPuzzleId ? 'Today’s Puzzle': `Puzzle ${i}`);
+		(i == todaysPuzzleId ? 'Today’s Puzzle': `Puzzle ${i}`)
+		+ " (" + levels[difficulty] + ")";
 }
 
-for (let i = todaysPuzzleId; i; --i) {
-	const el = document.createElement('option');
-	el.value = i;
-	el.appendChild(document.createTextNode(optionText(i)));
-	$.game.appendChild(el);
-}
-$.game.value = puzzleId;
-$.game.addEventListener('change', (e) => {
-	const i = e.target.value;
-	if (i) window.location.search = `?p=${i}`;
+getJson('puzzles/difficulties.json').then(difficulties => {
+	for (let i = todaysPuzzleId; i; --i) {
+		const el = document.createElement('option');
+		el.value = i;
+		el.appendChild(document.createTextNode(optionText(i, difficulties[i - 1])));
+		$.game.appendChild(el);
+	}
+	$.game.value = puzzleId;
+	$.game.addEventListener('change', (e) => {
+		const i = e.target.value;
+		if (i) window.location.search = `?p=${i}`;
+	});
 });
 
 function setResult(result) {

@@ -509,22 +509,22 @@ select {
 			&:before {
 				content: "×";
 				color: #f00;
-				font-size: 12vmin;
+				font-size: 15em;
 				position: absolute;
-				line-height: 9vmin;
-				width: 9vmin;
+				line-height: .8em;
+				width: .8em;
 				text-align: center;
 			}
 		}
 		&.highlight-colour-groups {
 			width: 54em;
 			span {
-				font-size: 4.5vmin;
+				font-size: 6em;
 				position: absolute;
 				left: 0;
 				width: 100%;
 				text-align: center;
-				line-height: 8.5vmin;
+				line-height: 2em;
 			}
 			input:checked {
 				box-shadow: 0 0 0 1vmin #000 inset;

@@ -1,7 +1,6 @@
 import { SYSTEM } from "./util/dark.js";
-import $ from "./util/dom.js";
 
-export const launchDate = '2023-02-21';
+export const launchDate = '2023-02-27';
 export const namespace = '3doku';
 
 export const defaults = {
