@@ -1,5 +1,5 @@
 import { openModal, closeModal, confirm } from "../util/modal.js";
-import { onCheat } from "../common/daily.js";
+import { isTodaysPuzzle, onCheat } from "../common/daily.js";
 import $ from "../util/dom.js";
 
 const { cube } = $;
@@ -9,8 +9,6 @@ let hinted = false;
 $.closeHint.addEventListener('click', e => closeModal('hint-modal'));
 
 $.hintButton.addEventListener('click', async (e) => {
-	console.log('hintclick', e);
-
 	if (!hinted) {
 		// rejected confirm dialog:
 		//   
@@ -18,7 +16,7 @@ $.hintButton.addEventListener('click', async (e) => {
 		//
 		//        [ Take the hint ]     [ Take the hint ]
 		//
-		if (!await confirm("Accepting a hint will break your streak. It will also clear any highlighting you have set, though this can be restored with the 'undo' button.", "Take hint")) return;
+		if (!await confirm(`If you accept a hint will ${isTodaysPuzzle ? "your streak will be broken" : "it will not count as completing the puzzle"}. It will also clear any highlighting you have set, though this can be restored with the 'undo' button.`, "Take hint")) return;
 		hinted = true;
 	}
 
@@ -245,7 +243,7 @@ $.hintButton.addEventListener('click', async (e) => {
 		// Lastly, swordfish
 		if ("chain" in move) {
 			const { group, chain, value, ruledOutFrom, parity } = move;
-			if(!ruledOutFrom.some(i => cube.cells[i].pencil[value])) continue;
+			if (!ruledOutFrom.some(i => cube.cells[i].pencil[value])) continue;
 			const first = cube.cells[chain[0]],
 				chainBody = chain.slice(1, chain.length - 1).map(i => cube.cells[i]),
 				last = cube.cells[chain[chain.length - 1]];

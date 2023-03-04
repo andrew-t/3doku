@@ -39,6 +39,10 @@ loadPuzzle().then(json => {
 		});
 	}
 	cube.onUpdate = ({ undoStack, state, full, solved }) => {
+		for (let i = 0; i < 16; ++i)
+			classIf($.pencilValue.shadowRoot.querySelector(`.pencil-value-${i}`),
+				'all-done',
+				state.reduce((a, { pen }) => pen === i ? a + 1 : a, 0) == 6);
 		if (solved) {
 			onWin();
 			$.tool.disable(['pen', 'pencil'], 'none');

@@ -527,6 +527,10 @@ select {
 
 	span { font-size: 0; }
 
+	&.pencil-value .all-done {
+		opacity: 0.5;
+	}
+
 	&.pencil-value span {
 		z-index: 1;
 		font-size: 6em;
