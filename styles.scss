@@ -312,7 +312,6 @@ select {
 			transform:
 				rotateX(var(--base-rotation-y))
 				rotateY(var(--base-rotation-x))
-				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(0, 0, 50vmin);
 		}
 		&.f1 {
@@ -320,7 +319,6 @@ select {
 			transform:
 				rotateX(var(--base-rotation-y))
 				rotateY(var(--base-rotation-x))
-				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(0, 0, -50vmin)
 				rotateY(180deg);
 		}
@@ -329,16 +327,17 @@ select {
 			transform:
 				rotateX(var(--base-rotation-y))
 				rotateY(var(--base-rotation-x))
-				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(0, -50vmin, 0)
 				rotateX(90deg);
+			td {
+				transform: rotate(180deg);
+			}
 		}
 		&.f3 {
 			background: #80c;
 			transform:
 				rotateX(var(--base-rotation-y))
 				rotateY(var(--base-rotation-x))
-				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(0, 50vmin, 0)
 				rotateX(-90deg)
 				rotateZ(180deg);
@@ -348,7 +347,6 @@ select {
 			transform:
 				rotateX(var(--base-rotation-y))
 				rotateY(var(--base-rotation-x))
-				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(50vmin, 0, 0)
 				rotateY(90deg);
 		}
@@ -357,7 +355,6 @@ select {
 			transform:
 				rotateX(var(--base-rotation-y))
 				rotateY(var(--base-rotation-x))
-				//rotate3d(0.7, 0, 0.7, -54.74deg)
 				translate3d(-50vmin, 0, 0)
 				rotateY(-90deg);
 		}

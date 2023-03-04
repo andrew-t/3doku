@@ -1,14 +1,24 @@
 const bandDirections = {
+	//  Green:   Red:     Yellow:  Purple:  Blue:    Teal:
 	r: ["Right", "Right", null,    null,    "Right", "Right"],
 	f: ["Left",  "Left",  null,    null,    "Left",  "Left" ],
-	g: [null,    null,    "Right", "Right", "Down",  "Up"   ],
-	t: [null,    null,    "Left",  "Left",  "Up",    "Down" ],
-	y: ["Up",    "Down",  "Up",    "Down",  null,    null   ],
-	h: ["Down",  "Up",    "Down",  "Up",    null,    null   ],
+	g: [null,    null,    "Left",  "Right", "Down",  "Up"   ],
+	t: [null,    null,    "Right", "Left",  "Up",    "Down" ],
+	y: ["Down",  "Up",    "Up",    "Up",    null,    null   ],
+	h: ["Up",    "Down",  "Down",  "Down",  null,    null   ],
+};
+
+const opposites = {
+	ArrowLeft:  "ArrowRight",
+	ArrowRight: "ArrowLeft",
+	ArrowUp:    "ArrowDown",
+	ArrowDown:  "ArrowUp"
 };
 
 export default function getNewCoords(e, { face, x, y }) {
-	switch (e.key) {
+	let dir = e.key;
+	if (face == 2) dir = opposites[dir] ?? dir;
+	switch (dir) {
 		case "ArrowLeft":
 			if (x > 0) return { face, x: x - 1, y };
 			switch (face) {

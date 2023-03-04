@@ -70,7 +70,7 @@ export default class Cube extends HTMLElement {
 		switch (i) {
 			case 0: return this.spinTo(1, 1);
 			case 1: return this.spinTo(1.5, 1);
-			case 2: return this.spinTo(1, 0);
+			case 2: return this.spinTo(1.5, 0);
 			case 3: return this.spinTo(1.5, 2);
 			case 4: return this.spinTo(1.25, 1);
 			case 5: return this.spinTo(1.75, 1);

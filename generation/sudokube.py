@@ -32,13 +32,15 @@ cell_groups = [
 
 """
 
+Note that the web app shows the yellow face upside down, because that was easier than redoing all the generator logic. Basically each cell is rotated 180 degrees and the keyboard inputs are flipped.
+
 CELL IDS:
 
-  YELLOW:
-  32 33 34 35
-  36 37 38 39
-  40 41 42 43
-  44 45 46 47
+  YELLOW (as defined):      YELLOW (as shown):
+  32 33 34 35               47 46 45 44
+  36 37 38 39               43 42 41 40
+  40 41 42 43               39 38 37 36
+  44 45 46 47               35 34 33 32
 
   GREEN:       BLUE:        RED:         TEAL:
   00 01 02 03  64 65 66 67  16 17 18 19  80 81 82 83
