@@ -56,7 +56,7 @@ weekly_curve = [
 	(400, 500), # wednesday won't be trivial but won't be hard either
 	(500, 600), # thursday has *big* partitions or small swordfish
 	(600, 700), # friday always has swordfish, sometimes big ones
-	(700, 700), # saturday always has big swordfish, utter bastards
+	(600, 700), # saturday same
 	(400, 700), # sunday is a wildcard, but nothing trivial
 ]
 
