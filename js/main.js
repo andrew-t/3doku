@@ -133,10 +133,14 @@ function spinCube(x, y) {
 	const w = $.scroller.clientWidth - window.innerWidth;
 	const h = $.scroller.clientHeight - window.innerHeight;
 	// Divide the scroll position by that to work out the proportion — also multiply up a bit so we have nicer numbers to work with
-	if (x === undefined) x = document.scrollingElement.scrollLeft * 3 / w;
-	else document.scrollingElement.scrollLeft = window.scrollX = x * w / 3;
-	if (y === undefined) y = document.scrollingElement.scrollTop * 2 / h;
-	else document.scrollingElement.scrollTop = window.scrollY = y * h / 2;
+	if (x === undefined) {
+		x = document.scrollingElement.scrollLeft * 3 / w;
+		if ($.invertX.checked) x = 3 - x;
+	} else document.scrollingElement.scrollLeft = window.scrollX = x * w / 3;
+	if (y === undefined) {
+		y = document.scrollingElement.scrollTop * 2 / h;
+		if ($.invertY.checked) y = 2 - y;
+	} else document.scrollingElement.scrollTop = window.scrollY = y * h / 2;
 	if (x > 2) spinCube(x - 1, y);
 	else if (x < 1) spinCube(x + 1, y);
 	else cube.rotation = { x, y };
@@ -155,6 +159,8 @@ function fixSize() {
 // Wire up checkboxes that should be saved between sessions:
 storageCheck('autopencil');
 storageCheck('showErrors');
+storageCheck('invertX');
+storageCheck('invertY');
 function storageCheck(id) {
 	const input = $[id];
 	input.checked = storage[id] == true; // this is often a string so the type coersion is useful here

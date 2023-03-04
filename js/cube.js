@@ -88,6 +88,8 @@ export default class Cube extends HTMLElement {
 		// for the maths, see main.js
 		const w = $.scroller.clientWidth - window.innerWidth;
 		const h = $.scroller.clientHeight - window.innerHeight;
+		if ($.invertX.checked) x = 3 - x;
+		if ($.invertY.checked) y = 2 - y;
 		window.scrollTo(x * w / 3, y * h / 2);
 	}
 
