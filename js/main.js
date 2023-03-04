@@ -129,12 +129,14 @@ button('clear-highlight', e => {
 window.addEventListener('scroll', e => spinCube());
 spinCube(0.5, 1);
 function spinCube(x, y) {
-	const w = $.scroller.clientWidth - (document.body.scrollWidth ?? window.scrollWidth);
-	const h = $.scroller.clientHeight - (document.body.scrollHeight ?? window.scrollHeight);
+	// Find the excess width and height
+	const w = $.scroller.clientWidth - window.innerWidth;
+	const h = $.scroller.clientHeight - window.innerHeight;
+	// Divide the scroll position by that to work out the proportion — also multiply up a bit so we have nicer numbers to work with
 	if (x === undefined) x = document.scrollingElement.scrollLeft * 3 / w;
 	else document.scrollingElement.scrollLeft = window.scrollX = x * w / 3;
-	if (y === undefined) y = document.scrollingElement.scrollTop * 3 / h;
-	else document.scrollingElement.scrollTop = window.scrollY = y * h / 3;
+	if (y === undefined) y = document.scrollingElement.scrollTop * 2 / h;
+	else document.scrollingElement.scrollTop = window.scrollY = y * h / 2;
 	if (x > 2) spinCube(x - 1, y);
 	else if (x < 1) spinCube(x + 1, y);
 	else cube.rotation = { x, y };

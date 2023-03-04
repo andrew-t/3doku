@@ -85,9 +85,10 @@ export default class Cube extends HTMLElement {
 		this.root.style.setProperty('--base-rotation-x', `${-x * 360}deg`);
 		this.root.style.setProperty('--base-rotation-y', `${y * 90 - 90}deg`);
 		// quick hack to update the scrollbar which i cba doing with like an event emitter or something
-		const w = $.scroller.clientWidth - (document.body.scrollWidth ?? window.scrollWidth);
-		const h = $.scroller.clientHeight - (document.body.scrollHeight ?? window.scrollHeight);
-		window.scrollTo(x * w / 3, y * h / 3);
+		// for the maths, see main.js
+		const w = $.scroller.clientWidth - window.innerWidth;
+		const h = $.scroller.clientHeight - window.innerHeight;
+		window.scrollTo(x * w / 3, y * h / 2);
 	}
 
 	spinTo(x, y) {
