@@ -108,6 +108,7 @@ button,
 	box-sizing: border-box;
 	text-decoration: none;
 	height: 2em;
+	display: block;
 
 	.reduced-motion & { transition: none; }
 
@@ -393,7 +394,8 @@ select {
 		border: none;
 		transition:
 			box-shadow 300ms,
-			background 300ms;
+			background 300ms,
+			opacity 300ms;
 		box-shadow:
 			0 0 0 0.5vmin var(--bg) inset,
 			0 0 0 0.5vmin #48f inset;
@@ -405,7 +407,9 @@ select {
 				0 0 0 1.5vmin black inset;
 		}
 
-		&.highlight-pencil { --bg: #fcc; }
+		&.showing-pencil-value:not(.current-pencil-value) {
+			opacity: 0.75;
+		}
 
 		&.highlight-red { --bg: #fcc !important; }
 		&.highlight-blue { --bg: #bcf !important; }
@@ -428,6 +432,9 @@ select {
 				0 0 0 0.5vmin var(--bg) inset,
 				0 0 0 1.5vmin #48f inset
 				!important;
+			+ #pencilMarkDiv {
+				transform: scale(0.85);
+			}
 		}
 	}
 
@@ -437,7 +444,7 @@ select {
 		grid-template-columns: repeat(4, 1fr);
 		font-size: 4vmin;
 		pointer-events: none;
-		transition: opacity 300ms;
+		transition: opacity 300ms, transform 300ms;
 		font-family: Montserrat, sans-serif;
 		text-align: center;
 		opacity: 0.5;

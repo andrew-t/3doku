@@ -13,7 +13,8 @@ export const defaults = {
 	reducedMotion: SYSTEM,
 	undoStack: [],
 	autopencil: false,
-	showErrors: false
+	showErrors: false,
+	pencilHighlighting: true
 };
 
 export const noExport = ['undoStack'];

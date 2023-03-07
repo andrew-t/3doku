@@ -151,8 +151,11 @@ storageCheck('autopencil');
 storageCheck('showErrors');
 storageCheck('invertX');
 storageCheck('invertY');
+storageCheck('pencilHighlighting');
 function storageCheck(id) {
 	const input = $[id];
 	input.checked = storage[id] == true; // this is often a string so the type coersion is useful here
 	input.addEventListener('change', e => storage[id] = input.checked);
 }
+
+$.pencilHighlighting.addEventListener('change', e => cube.setPencil($.pencilValue.value));

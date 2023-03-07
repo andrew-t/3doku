@@ -7,7 +7,7 @@ export default class DokuCell extends HTMLElement {
 		super();
 		this.groups = [];
 		this.pencil = [];
-		this.tool = 'pen';
+		this.tool = 'none';
 		this.answer = null;
 
 		shadowDom(this, `
@@ -137,7 +137,7 @@ export default class DokuCell extends HTMLElement {
 		this.input.innerText = n + 1;
 		for (let i = 0; i < 16; ++i)
 			this.setPencil(i, i == n);
-		classIf(this.input, 'highlight-pencil', this.tool == 'pencil' && this.pencil[this._pencilValue]);
+		this.updatePencilHighlight();
 	}
 
 	makeClue() {
@@ -199,17 +199,17 @@ export default class DokuCell extends HTMLElement {
 		this.updatePencilHighlight();
 	}
 	setPencilValue(value) {
-		if (value === null) {
-			this.input.classList.remove('highlight-pencil');
-			return;
+		if (value !== null) {
+			if (typeof value == 'string' && /^\d+$/.test(value)) value = parseInt(value, 10);
+			this._pencilValue = value;
 		}
-		if (typeof value == 'string' && /^\d+$/.test(value)) value = parseInt(value, 10);
-		this._pencilValue = value;
 		this.updatePencilHighlight();
 	}
 	updatePencilHighlight() {
-		classIf(this.input, 'highlight-pencil',
-			this.tool.startsWith('pen') &&
+		const showPencilValues = this.tool.startsWith('pen') && $.pencilHighlighting.checked;
+		classIf(this.input, 'showing-pencil-value', showPencilValues);
+		classIf(this.input, 'current-pencil-value',
+			showPencilValues &&
 			(this.value === null
 				? this.pencil[this._pencilValue]
 				: this.value == this._pencilValue)
