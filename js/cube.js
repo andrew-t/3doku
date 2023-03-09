@@ -2,6 +2,7 @@ import { regularDom, el } from "../common/dom.js";
 import './cell.js';
 import { reducedMotion } from "../common/dark.js";
 import Drag from "../common/drag.js";
+import $ from "../util/dom.js"
 
 const dragSpeed = -0.01;
 
@@ -14,12 +15,14 @@ class CubeDrag extends Drag {
 	start(d) {
 		return true;
 	}
-	move(e) {
-		let y = this.cube.rotation.y + e.dY * dragSpeed;
+	move({ dX, dY }) {
+		if ($.invertX.checked) dX = -dX;
+		if ($.invertY.checked) dY = -dY;
+		let y = this.cube.rotation.y + dY * dragSpeed;
 		if (y > 2) y = 2;
 		if (y < 0) y = 0;
 		this.cube.rotation = {
-			x: this.cube.rotation.x + e.dX * dragSpeed,
+			x: this.cube.rotation.x + dX * dragSpeed,
 			y: y
 		};
 	}
@@ -130,13 +133,6 @@ export default class Cube extends HTMLElement {
 		this._rot = { x, y };
 		this.root.style.setProperty('--base-rotation-x', `${-x * 360}deg`);
 		this.root.style.setProperty('--base-rotation-y', `${y * 90 - 90}deg`);
-		// quick hack to update the scrollbar which i cba doing with like an event emitter or something
-		// for the maths, see main.js
-		// const w = $.scroller.clientWidth - window.innerWidth;
-		// const h = $.scroller.clientHeight - window.innerHeight;
-		// if ($.invertX.checked) x = 3 - x;
-		// if ($.invertY.checked) y = 2 - y;
-		// window.scrollTo(x * w / 3, y * h / 2);
 	}
 
 	spinTo(x, y) {
