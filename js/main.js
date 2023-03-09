@@ -115,27 +115,6 @@ button('clear-highlight', e => {
 	cube.pushUndo(null);
 });
 
-// Wire up the horizontal scrollbar to the cube's rotation:
-window.addEventListener('scroll', e => spinCube());
-spinCube(0.5, 1);
-function spinCube(x, y) {
-	// Find the excess width and height
-	const w = $.scroller.clientWidth - window.innerWidth;
-	const h = $.scroller.clientHeight - window.innerHeight;
-	// Divide the scroll position by that to work out the proportion — also multiply up a bit so we have nicer numbers to work with
-	if (x === undefined) {
-		x = document.scrollingElement.scrollLeft * 3 / w;
-		if ($.invertX.checked) x = 3 - x;
-	} else document.scrollingElement.scrollLeft = window.scrollX = x * w / 3;
-	if (y === undefined) {
-		y = document.scrollingElement.scrollTop * 2 / h;
-		if ($.invertY.checked) y = 2 - y;
-	} else document.scrollingElement.scrollTop = window.scrollY = y * h / 2;
-	if (x > 2) spinCube(x - 1, y);
-	else if (x < 1) spinCube(x + 1, y);
-	else cube.rotation = { x, y };
-}
-
 // Force the cube to render at a reasonable size:
 window.addEventListener('resize', fixSize);
 fixSize();

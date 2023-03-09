@@ -1,7 +1,47 @@
 import { regularDom, el } from "../common/dom.js";
 import './cell.js';
 import { reducedMotion } from "../common/dark.js";
-import $ from "../util/dom.js";
+import Drag from "../common/drag.js";
+
+const dragSpeed = -0.01;
+
+class CubeDrag extends Drag {
+	constructor(cube) {
+		super();
+		this.registerSource(cube);
+		this.cube = cube;
+	}
+	start(d) {
+		return true;
+	}
+	move(e) {
+		let y = this.cube.rotation.y + e.dY * dragSpeed;
+		if (y > 2) y = 2;
+		if (y < 0) y = 0;
+		this.cube.rotation = {
+			x: this.cube.rotation.x + e.dX * dragSpeed,
+			y: y
+		};
+	}
+	end(d) { }
+}
+
+class Group {
+	constructor(type) {
+		this.cells = [];
+		this.className = {
+			face: "highlight-blue",
+			"band-0": "highlight-red",
+			"band-1": "highlight-yellow",
+			"band-2": "highlight-green",
+		}[type];
+	}
+
+	addCell(cell) {
+		this.cells.push(cell);
+		cell.addGroup(this);
+	}
+}
 
 export default class Cube extends HTMLElement {
 	connectedCallback() {
@@ -47,6 +87,9 @@ export default class Cube extends HTMLElement {
 			cell.input.focus();
 			this.spinToCell(cell);
 		});
+
+		new CubeDrag(this);
+		this.rotation = { x: -0.63, y: 0.72 };
 	}
 
 	cellAt(face, x, y) {
@@ -89,11 +132,11 @@ export default class Cube extends HTMLElement {
 		this.root.style.setProperty('--base-rotation-y', `${y * 90 - 90}deg`);
 		// quick hack to update the scrollbar which i cba doing with like an event emitter or something
 		// for the maths, see main.js
-		const w = $.scroller.clientWidth - window.innerWidth;
-		const h = $.scroller.clientHeight - window.innerHeight;
-		if ($.invertX.checked) x = 3 - x;
-		if ($.invertY.checked) y = 2 - y;
-		window.scrollTo(x * w / 3, y * h / 2);
+		// const w = $.scroller.clientWidth - window.innerWidth;
+		// const h = $.scroller.clientHeight - window.innerHeight;
+		// if ($.invertX.checked) x = 3 - x;
+		// if ($.invertY.checked) y = 2 - y;
+		// window.scrollTo(x * w / 3, y * h / 2);
 	}
 
 	spinTo(x, y) {
@@ -180,6 +223,8 @@ export default class Cube extends HTMLElement {
 	}
 }
 
+window.customElements.define('doku-cube', Cube);
+
 function *bands(f, r, c) {
 	yield f + 12;
 	switch (f) {
@@ -191,22 +236,3 @@ function *bands(f, r, c) {
 		case 5: yield r; yield c + 8; return;
 	}
 }
-
-class Group {
-	constructor(type) {
-		this.cells = [];
-		this.className = {
-			face: "highlight-blue",
-			"band-0": "highlight-red",
-			"band-1": "highlight-yellow",
-			"band-2": "highlight-green",
-		}[type];
-	}
-
-	addCell(cell) {
-		this.cells.push(cell);
-		cell.addGroup(this);
-	}
-}
-
-window.customElements.define('doku-cube', Cube);

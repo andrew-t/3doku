@@ -22,7 +22,6 @@ export default class DokuCell extends HTMLElement {
 				<div data-id="pencilMarkDiv" class="pencilMarkDiv"></div>
 			</div>
 		`);
-		console.log(this, this.innerHTML, this.children, this.input);
 
 		this.pencilMarks = [];
 		for (let x = 0; x < 16; ++x)

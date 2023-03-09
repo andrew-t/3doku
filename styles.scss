@@ -6,6 +6,7 @@
 	src: url('assets/font.ttf') format('truetype');
 }
 
+html { overflow: hidden; }
 body { padding: 0; margin: 0; }
 
 #main, #main *,
@@ -78,14 +79,6 @@ h1 {
 		flex: 56em 0 0;
 		margin-left: 4em;
 	}
-}
-
-#scroller { 
-	position: absolute;
-	left: 0; top: 0;
-	width: calc(100vw + 200vmin);
-	height: calc(100vh + 100vmin);
-	pointer-events: none;
 }
 
 .hidden { display: none !important; }
