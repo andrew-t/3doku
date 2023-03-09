@@ -66,6 +66,7 @@ def build_week():
 		int(fn[:-5])
 		for fn in os.listdir('puzzles')
 		if fn[-5:] == ".json"
+		and fn != 'difficulties.json'
 	] or [0])
 	# This should usually be zero but just in case...
 	week_start = puzzle_id % 7

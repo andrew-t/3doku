@@ -1,15 +1,13 @@
-import { shadowDom, el } from "../common/dom.js";
+import { regularDom, el } from "../common/dom.js";
 import './cell.js';
 import { reducedMotion } from "../common/dark.js";
-import $, { styles } from "../util/dom.js";
+import $ from "../util/dom.js";
 
 export default class Cube extends HTMLElement {
-	constructor() {
-		super();
+	connectedCallback() {
 
-		shadowDom(this, `
-			${styles}
-			<div class="cube-root" id="root"></div>
+		regularDom(this, `
+			<div class="cube-root" data-id="root"></div>
 		`);
 
 		this.groups = [];
@@ -30,7 +28,7 @@ export default class Cube extends HTMLElement {
 					const cell = el(el(tr, 'td'), 'doku-cell');
 					this.cells.push(cell);
 					cell.cube = this;
-					cell.input.addEventListener('focus', e => this.lastFocus = cell);
+					cell.input.addEventListener('focus', e => this.lastFocusedCell = cell);
 					for (const n of bands(f, r, c))
 						this.groups[n].addCell(cell);
 				}
@@ -39,8 +37,13 @@ export default class Cube extends HTMLElement {
 
 		this.undoStack = [];
 
-		this.addEventListener('focus', e => {
-			const cell = this.lastFocus ?? this.cells[0];
+		this.lastFocusedCell = this.cells[16];
+		let lastFocusedElement = document.activeElement;
+		document.addEventListener('keydown', e => {
+			if (document.activeElement == lastFocusedElement) return;
+			lastFocusedElement = document.activeElement;
+			if (document.activeElement != this) return;
+			const cell = this.lastFocusedCell ?? this.cells[0];
 			cell.input.focus();
 			this.spinToCell(cell);
 		});

@@ -64,7 +64,6 @@ h1 {
 	box-sizing: border-box;
 	padding: 2vh calc(50vw - 37em); margin: 0;
 	background: #fff;
-	overflow: scroll;
 	font-size: min(0.5vh, 1.2vw);
 	flex: 64em 0 0;
 	font-family: Montserrat, sans-serif;
@@ -109,6 +108,7 @@ button,
 	text-decoration: none;
 	height: 2em;
 	display: block;
+	color: #000;
 
 	.reduced-motion & { transition: none; }
 
@@ -126,6 +126,10 @@ button,
 		outline: none;
 		box-shadow: 0 0 0 0.2em #00f inset;
 	}
+}
+
+#buttons button {
+	margin-bottom: .35em;
 }
 
 dialog {
@@ -375,7 +379,7 @@ select {
 	width: 24.5vmin;
 	height: 24.5vmin;
 
-	button, #pencilMarkDiv {
+	button, .pencilMarkDiv {
 		position: absolute;
 		left: 1vmin; top: 1vmin;
 		width: 22.5vmin;
@@ -399,6 +403,8 @@ select {
 		box-shadow:
 			0 0 0 0.5vmin var(--bg) inset,
 			0 0 0 0.5vmin #48f inset;
+
+		.reduced-motion & { transition: none; }
 
 		&[readonly=true] {
 			color: blue;
@@ -432,13 +438,13 @@ select {
 				0 0 0 0.5vmin var(--bg) inset,
 				0 0 0 1.5vmin #48f inset
 				!important;
-			+ #pencilMarkDiv {
+			+ .pencilMarkDiv {
 				transform: scale(0.85);
 			}
 		}
 	}
 
-	#pencilMarkDiv {
+	.pencilMarkDiv {
 		display: grid;
 		grid-template-rows: repeat(4, 1fr);
 		grid-template-columns: repeat(4, 1fr);
@@ -449,7 +455,12 @@ select {
 		text-align: center;
 		opacity: 0.5;
 
-		div { transition: opacity 300ms; }
+		.reduced-motion & { transition: none; }
+		
+		div {
+			transition: opacity 300ms;
+			.reduced-motion & { transition: none; }
+		}
 	}
 
 	.erased { opacity: 0 !important; }
@@ -560,7 +571,10 @@ select {
 		text-align: center;
 	}
 
-	&.highlight-colour input { transition: box-shadow 500ms; }
+	&.highlight-colour input {
+		transition: box-shadow 500ms;
+		.reduced-motion & { transition: none; }
+	}
 	&.highlight-colour input:checked {
 		box-shadow: 0 0 0 1.5vmin #000 inset;
 	}

@@ -1,22 +1,28 @@
-import { shadowDom, el, classIf } from "../common/dom.js";
-import $, { styles } from "../util/dom.js";
+import { regularDom, el, classIf } from "../common/dom.js";
+import $ from "../util/dom.js";
 import getNewCoords from "./cell-coords.js";
 
+// This forces Safari to render the cells on the GPU, and prevents them from animating. This stops them flickering randomly between their current state, their previous state, and complete non-existence like they're fucking Billy Pilgrim or something. Safari's dogshit framerate alas cannot be fixed with a line of CSS.
+if (/apple/i.test(navigator.vendor ?? ""))
+	el(document.body, 'style', `
+		.cell-root { transform: translate3d(0, 0, 0); }
+		.cell-root, .cell-root * { transition: none !important; }
+	`);
+
 export default class DokuCell extends HTMLElement {
-	constructor() {
-		super();
+	connectedCallback() {
 		this.groups = [];
 		this.pencil = [];
 		this.tool = 'none';
 		this.answer = null;
 
-		shadowDom(this, `
-			${styles}
+		regularDom(this, `
 			<div class="cell-root">
-				<button id="input" inputmode="numeric" tabindex="-1"></button>
-				<div id="pencilMarkDiv"></div>
+				<button data-id="input" inputmode="numeric" tabindex="-1"></button>
+				<div data-id="pencilMarkDiv" class="pencilMarkDiv"></div>
 			</div>
 		`);
+		console.log(this, this.innerHTML, this.children, this.input);
 
 		this.pencilMarks = [];
 		for (let x = 0; x < 16; ++x)

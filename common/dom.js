@@ -14,6 +14,14 @@ export function shadowDom(host, template) {
 		host[element.id] = element;
 }
 
+export function regularDom(host, template) {
+	host.innerHTML = template;
+	for (const element of [ ...host.querySelectorAll('[data-id]') ])
+		host[element.dataset.id] = element;
+	// for (const [, id] of [ ...template.matchAll(/data-id="([^"])"/g) ])
+	// 	Object.defineProperty(host, id, { get() { return host.querySelector(`[data-id="${id}"]`) } });
+}
+
 export function classIf(el, cl, cond) {
 	if (cond) el.classList.add(cl);
 	else el.classList.remove(cl);

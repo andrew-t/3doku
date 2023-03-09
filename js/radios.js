@@ -1,12 +1,9 @@
-import { shadowDom, el, classIf } from "../common/dom.js";
-import { styles } from "../util/dom.js";
+import { regularDom, el } from "../common/dom.js";
 
 export default class Radios extends HTMLElement {
-	constructor() {
-		super();
-		shadowDom(this, `
-			${styles}
-			<fieldset id="fieldset" class="radios-root ${this.id}">
+	connectedCallback() {
+		regularDom(this, `
+			<fieldset data-id="fieldset" class="radios-root ${this.id}">
 				<legend>${this.getAttribute("name")}</legend>
 			</fieldset>
 		`);
@@ -27,6 +24,7 @@ export default class Radios extends HTMLElement {
 			el(label, 'span', value);
 			label.classList.add(`${this.id}-${name}`);
 			radio.addEventListener('change', e => {
+				e.stopPropagation();
 				if (radio.checked) this.value = name;
 			});
 		}
@@ -48,10 +46,6 @@ export default class Radios extends HTMLElement {
 	disable(options, fallback) {
 		for (const option of options) this.radios[option].setAttribute('disabled', true);
 		if (options.includes(this.value)) this.value = fallback;
-	}
-
-	focus() {
-		this.radios[this._val]?.focus();
 	}
 }
 
