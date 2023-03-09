@@ -123,6 +123,9 @@ button,
 
 #buttons button {
 	margin-bottom: .35em;
+	&#undo, &#show-result {
+		margin-bottom: 0;
+	}
 }
 
 dialog {
