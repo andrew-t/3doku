@@ -80,7 +80,7 @@ function optionText(i, difficulty) {
 		+ " (" + levels[difficulty] + ")";
 }
 
-getJson('puzzles/difficulties.json').then(difficulties => {
+getJson(`puzzles/difficulties.json?p=${todaysPuzzleId}`).then(difficulties => {
 	for (let i = todaysPuzzleId; i; --i) {
 		const el = document.createElement('option');
 		el.value = i;

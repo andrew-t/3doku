@@ -96,7 +96,7 @@ def build_week():
 	if not all(puzzles[i] for i in range(week_start, 7)):
 		print("Couldn't find another week of puzzles in the bank")
 		print(["Found" if p else "Not found" for p in puzzles])
-		return (False, puzzle_id)
+		return (puzzles, puzzle_id)
 	# Put those puzzles in the rotation, and remove them so we don't use them again
 	for (uuid, puzzle) in puzzles:
 		if not puzzle: continue
@@ -104,13 +104,13 @@ def build_week():
 		os.remove(f"generation/candidates/{uuid}.json")
 		with open(f"puzzles/{puzzle_id}.json", "w") as f:
 			json.dump(puzzle, f)
-	print(f"Accepted a week of puzzles, now up to {id}")
-	return (True, puzzle_id)
+	print(f"Accepted a week of puzzles, now up to {puzzle_id}")
+	return (puzzles, puzzle_id)
 
 if __name__ == "__main__":
-	result = True
-	while result:
-		(result, id) = build_week()
+	puzzles = [True]
+	while all(puzzles):
+		(puzzles, id) = build_week()
 
 	difficulties = []
 	print("Current puzzles:")
