@@ -217,6 +217,10 @@ export default class Cube extends HTMLElement {
 			}
 		}, spinning ? 300 : 0);
 	}
+
+	updatePencilHighlight() {
+		for (const cell of this.cells) cell.updatePencilHighlight();
+	}
 }
 
 window.customElements.define('doku-cube', Cube);

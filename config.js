@@ -14,7 +14,8 @@ export const defaults = {
 	undoStack: [],
 	autopencil: false,
 	showErrors: false,
-	pencilHighlighting: true
+	pencilHighlighting: true,
+	pencilOnLaunch: false,
 };
 
 export const noExport = ['undoStack'];

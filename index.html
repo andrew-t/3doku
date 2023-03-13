@@ -41,14 +41,13 @@
 			<radio-group
 				id="tool"
 				name="Tool"
-				value="none"
+				value="pen"
 				option-none="Nothing"
 				option-pen="Pen"
 				option-pencil="Pencil"
 				option-highlight="Highlight"
 			></radio-group>
 			<radio-group
-				class="hidden"
 				id="pencil-value"
 				name="Pencil Value"
 				value="0"
@@ -86,7 +85,7 @@
 				></radio-group>
 				<button id="clear-highlight">Clear all</button>
 			</div>
-			<div id="buttons">
+			<div id="buttons" class="hidden">
 				<button id="assistance">Assistance</button>
 				<button id="options">Options</button>
 				<button id="reset">Reset</button>
@@ -101,6 +100,7 @@
 		<div>
 			<p>You <i>can</i> complete 3Doku completely manually, but it can get annoying, so here are some tools to make it a bit easier.</p>
 			<button id="fill-in-pencil">Fill in pencil marks</button>
+			<label><input type="checkbox" id="pencil-on-launch"><span>Fill in pencil marks automatically when you start a puzzle</span></label>
 			<label><input type="checkbox" id="autopencil"><span>Autopencil</span></label>
 			<p>Autopencil will delete pencilmarks when you add a number with the pen tool. It is convenient, but be careful as if you make a mistake, Autopencil might delete a number which is correct.</p>
 			<p>Neither "fill in pencil marks" and "autopencil" count as a hint or affect your streak.</p>

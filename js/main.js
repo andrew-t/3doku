@@ -27,7 +27,7 @@ loadPuzzle().then(json => {
 			if (pen != null) cell.value = pen;
 			for (let i = 0; i < 16; ++i) cell.setPencil(i, !!(pencil & (1 << i)));
 		});
-	}
+	} else if ($.pencilOnLaunch.checked) fillInPencilMarks();
 	cube.onUpdate = ({ undoStack, state, full, solved }) => {
 		for (let i = 0; i < 16; ++i)
 			classIf($.pencilValue.querySelector(`.pencil-value-${i}`),
@@ -55,6 +55,8 @@ loadPuzzle().then(json => {
 			};
 		}
 	};
+	cube.setTool('pen');
+	cube.setPencilValue(0);
 	cube.emitUpdate();
 });
 
@@ -66,12 +68,13 @@ button('fill-in-pencil', async e => {
 	let prompt = "Fill in all possibilities in pencil?";
 	if (cube.cells.some(c => c.value === null && c.pencil.some(p => p)))
 		prompt += " This will remove your existing pencil marks.";
-	if (await confirm(prompt)) {
-		cube.fillInPencilMarks();
-		cube.pushUndo();
-		closeModal();
-	}
+	if (await confirm(prompt)) fillInPencilMarks();
 });
+function fillInPencilMarks() {
+	cube.fillInPencilMarks();
+	cube.pushUndo();
+	closeModal();
+}
 button('reset', async e => {
 	if (!await confirm("Remove all your working out so far?")) return;
 	cube.reset();
@@ -127,6 +130,7 @@ function fixSize() {
 
 // Wire up checkboxes that should be saved between sessions:
 storageCheck('autopencil');
+storageCheck('pencilOnLaunch');
 storageCheck('showErrors');
 storageCheck('invertX');
 storageCheck('invertY');

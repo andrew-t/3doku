@@ -142,7 +142,7 @@ export default class DokuCell extends HTMLElement {
 		this.input.innerText = n + 1;
 		for (let i = 0; i < 16; ++i)
 			this.setPencil(i, i == n);
-		this.updatePencilHighlight();
+		this.cube?.updatePencilHighlight();
 	}
 
 	makeClue() {
@@ -180,7 +180,7 @@ export default class DokuCell extends HTMLElement {
 		if (this.value !== null) allowed = this.value == n;
 		this.pencil[n] = allowed;
 		classIf(this.pencilMarks[n], 'erased', !allowed);
-		this.updatePencilHighlight();
+		this.cube?.updatePencilHighlight();
 	}
 
 	_pencilValue = 0;
@@ -208,10 +208,16 @@ export default class DokuCell extends HTMLElement {
 			if (typeof value == 'string' && /^\d+$/.test(value)) value = parseInt(value, 10);
 			this._pencilValue = value;
 		}
-		this.updatePencilHighlight();
+		this.cube.updatePencilHighlight();
 	}
 	updatePencilHighlight() {
-		const showPencilValues = this.tool.startsWith('pen') && $.pencilHighlighting.checked;
+		const showPencilValues =
+			this.tool.startsWith('pen') &&
+			$.pencilHighlighting.checked &&
+			(
+				this.cube.cells.some(c => c.value === null && c.pencil[this._pencilValue]) ||
+				this.cube.cells.reduce((a, c) => c.value === this._pencilValue ? a + 1 : a, 0) == 6
+			);
 		classIf(this.input, 'showing-pencil-value', showPencilValues);
 		classIf(this.input, 'current-pencil-value',
 			showPencilValues &&
