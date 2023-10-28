@@ -24,10 +24,6 @@ hard = {
 	"using_swordfish": True,
 }
 
-weekly_curve = [
-	easy, easy, easy, medium
-]
-
 while True:
 
 	# Accept as many potted puzzles as we can:
@@ -48,7 +44,7 @@ while True:
 	# We're now low on puzzles, so generate some new ones. But what level???
 
 	# if only hard/wildcard puzzles can't be found, generate some puzzles where anything goes
-	if all(puzzles[:5]):
+	if all(puzzles[:4]):
 		print("going for a hard one")
 		generate_puzzle(
 			using_pointers = True,
@@ -68,7 +64,7 @@ while True:
 		)
 
 	# if only easy/medium puzzles can't be found, generate some puzzles that aren't *too* hard
-	elif all(puzzles[6:]):
+	elif all(puzzles[5:]):
 		print("going for a medium one")
 		generate_puzzle(
 			using_pointers = True,
