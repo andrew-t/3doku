@@ -591,3 +591,20 @@ select {
 	color: var(--col);
 	border: 1px solid var(--col);
 }
+
+.promo {
+	background: red;
+	color: white;
+	text-align: center;
+	font-family: Montserrat;
+	display: block;
+	font-size: 0.75em;
+	padding: 0.5em;
+	border-radius: 0.5em;
+	text-decoration: none;
+	&:hover {
+		background: white;
+		color: red;
+		box-shadow: 0 0 0 0.25em red inset;
+	}
+}
