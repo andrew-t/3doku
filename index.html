@@ -114,7 +114,7 @@
 	<dialog id="help-modal" open>
 		<h1>How to play 3Doku</h1>
 		<div>
-			<a href="/puzzles/celtix" class="promo">Try my new puzzle, Celtix</a>
+			<cross-promo game="3doku"></cross-promo>
 			<p>3Doku is a classic sudoku wrapped around a cube, although unlike a classic sudoku it uses the numbers 1-16 rather than 1-9.</p>
 			<p>Each face of the solved cube contains each of the numbers 1-16, and like a classic sudoku there are also "rows" and "columns" which contain the numbers 1-16.</p>
 			<img src="assets/groups.png" alt="An example image of the cube, with the groups highlighted.">
@@ -186,6 +186,7 @@
 	<dialog id="result">
 		<div>
 			<p>🎉 Congratulations! 🎉</p>
+			<cross-promo game="3doku"></cross-promo>
 			<p>Current streak: <span id="current-streak-2"></span></p>
 			<p>Best streak: <span id="best-streak-2"></span></p>
 		</div>
@@ -203,4 +204,5 @@
 		<button id="close-hint" class="primary">Done</button>
 	</dialog>
 	<script src="js/main.js" type="module"></script>
+	<script src="https://www.andrewt.net/puzzles/cross-promo-banner/index.js" type="module"></script>
 </body></html>
