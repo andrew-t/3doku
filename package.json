@@ -7,7 +7,7 @@
     "dev": "rm -rf dist; mkdir -p dist/puzzles; cp -r puzzles dist/; parcel index.html",
     "upload-code": "rm -rf dist; parcel build index.html --public-url /puzzles/3doku && rsync -r 'dist/' 'andrewtaylor_andrewt@ssh.nyc1.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku'",
     "upload-test": "rm -rf dist; parcel build index.html --public-url /puzzles/3doku-beta && rsync -r 'dist/' 'andrewtaylor_andrewt@ssh.nyc1.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku-beta'",
-    "upload-puzzles": "rsync -r 'puzzles/' 'andrewtaylor_andrewt@ssh.nyc1.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku/puzzles' && rsync -r 'puzzles/' 'andrewtaylor_andrewt@ssh.nyc1.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku-beta/puzzles';"
+    "upload-puzzles": "rsync -r --ignore-existing 'puzzles/' 'andrewtaylor_andrewt@ssh.nyc1.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku/puzzles' && rsync -r --ignore-existing 'puzzles/' 'andrewtaylor_andrewt@ssh.nyc1.nearlyfreespeech.net:/home/public/www.andrewt.net/puzzles/3doku-beta/puzzles';"
   },
   "repository": {
     "type": "git",
